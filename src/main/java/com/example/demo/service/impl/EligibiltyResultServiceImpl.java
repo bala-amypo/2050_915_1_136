@@ -10,15 +10,17 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class EligibilityResultServiceImpl implements EligibilityResultService {
+public class EligibiltyResultServiceImpl implements EligibilityResultService {
 
     @Autowired
     private EligibilityResultRepository repository;
 
+    @Override
     public EligibilityResult createResult(EligibilityResult result) {
         return repository.save(result);
     }
 
+    @Override
     public EligibilityResult updateResult(Long id, EligibilityResult result) {
         Optional<EligibilityResult> existing = repository.findById(id);
         if(existing.isPresent()) {
@@ -34,15 +36,17 @@ public class EligibilityResultServiceImpl implements EligibilityResultService {
         return null;
     }
 
+    @Override
     public Optional<EligibilityResult> getResultById(Long id) {
         return repository.findById(id);
     }
 
+    @Override
     public List<EligibilityResult> getAllResults() {
         return repository.findAll();
     }
 
-    
+    @Override
     public boolean deleteResult(Long id) {
         Optional<EligibilityResult> existing = repository.findById(id);
         if(existing.isPresent()) {
