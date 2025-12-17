@@ -114,4 +114,59 @@ public class EligibilityResult {
     public Timestamp getCalculatedAt() {
         return calculatedAt;
     }
+
+    public Object getDtiRatio() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getDtiRatio'");
+    }
+
+    public void setDtiRatio(Object dtiRatio) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setDtiRatio'");
+    }
+
+    public Object getCreditCheckStatus() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getCreditCheckStatus'");
+    }
+
+    public void setUpdatedAt(Timestamp calculatedAt2) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setUpdatedAt'");
+    }
+
+    public Object getTenureMonths() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getTenureMonths'");
+    }
+
+    public void setTenureMonths(Object tenureMonths) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setTenureMonths'");
+    }
+
+    public Object getInterestRate() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getInterestRate'");
+    }
+
+    public void setInterestRate(Object interestRate) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setInterestRate'");
+    }
+
+    public Object getTimestamp() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getTimestamp'");
+    }
+
+    public void setTimestamp(Object timestamp) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setTimestamp'");
+    }
+
+    public void setCreditCheckStatus(Object creditCheckStatus) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setCreditCheckStatus'");
+    }
 }
