@@ -10,18 +10,39 @@ public class FinancialProfile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @OneToOne
+    @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
+
+    @Column(nullable = false)
     private Double monthlyIncome;
 
     private Double monthlyExpenses;
 
     private Double existingLoanEmi;
 
+    @Column(nullable = false)
     private Integer creditScore;
 
     private Double savingsBalance;
 
     private Timestamp lastUpdatedAt;
+
+    @PrePersist
+    @PreUpdate
+    protected void validateAndUpdateTimestamp() {
+       
+        if (monthlyIncome == null || monthlyIncome <= 0) {
+            throw new IllegalArgumentException("Monthly income must be greater than 0");
+        }
+
+        if (creditScore == null || creditScore < 300 || creditScore > 900) {
+            throw new IllegalArgumentException("Credit score must be between 300 and 900");
+        }
+
+        this.lastUpdatedAt = new Timestamp(System.currentTimeMillis());
+    }
 
 
     public Long getId() {
@@ -87,16 +108,4 @@ public class FinancialProfile {
     public void setLastUpdatedAt(Timestamp lastUpdatedAt) {
         this.lastUpdatedAt = lastUpdatedAt;
     }
-    public FinancialProfile() {
-    }
-    public FinancialProfile(Long id,User user,Double monthlyIncome,Double monthlyExpenses,Double existingLoanEmi,Integer creditScore,Double savingsBalance) {
-    this.id=id;
-    this.user = user;
-    this.monthlyIncome = monthlyIncome;
-    this.monthlyExpenses = monthlyExpenses;
-    this.existingLoanEmi = existingLoanEmi;
-    this.creditScore = creditScore;
-    this.savingsBalance = savingsBalance;
-}
-
 }

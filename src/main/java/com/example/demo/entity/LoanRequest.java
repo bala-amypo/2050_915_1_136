@@ -32,7 +32,7 @@ public class LoanRequest {
     public LoanRequest() {
     }
 
-    // Parameterized constructor
+
     public LoanRequest(User user,
                        Double requestedAmount,
                        Integer tenureMonths,
@@ -44,7 +44,6 @@ public class LoanRequest {
         this.status = "PENDING";
     }
 
-    // ===== Validation & Timestamp =====
     @PrePersist
     protected void onCreate() {
         if (requestedAmount == null || requestedAmount <= 0) {
@@ -58,7 +57,6 @@ public class LoanRequest {
         this.appliedAt = new Timestamp(System.currentTimeMillis());
     }
 
-    // ===== Getters and Setters =====
 
     public Long getId() {
         return id;
