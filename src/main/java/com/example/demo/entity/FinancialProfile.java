@@ -32,18 +32,21 @@ public class FinancialProfile {
     @PrePersist
     @PreUpdate
     protected void validateAndUpdateTimestamp() {
-       
+        // Rule: monthlyIncome > 0
         if (monthlyIncome == null || monthlyIncome <= 0) {
             throw new IllegalArgumentException("Monthly income must be greater than 0");
         }
 
+        // Rule: creditScore between 300 and 900
         if (creditScore == null || creditScore < 300 || creditScore > 900) {
             throw new IllegalArgumentException("Credit score must be between 300 and 900");
         }
 
+        // Auto-update timestamp
         this.lastUpdatedAt = new Timestamp(System.currentTimeMillis());
     }
 
+    // ===== Getters and Setters =====
 
     public Long getId() {
         return id;
