@@ -1,58 +1,53 @@
 package com.example.demo.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import com.example.demo.entity.EligibilityResult;
 import com.example.demo.repository.EligibilityResultRepository;
-import com.example.demo.service.EligibilityResultService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class EligibiltyResultServiceImpl implements EligibilityResultService {
+public class EligibilityServiceImpl implements EligibilityService {
 
     @Autowired
     private EligibilityResultRepository repository;
 
-    @Override
     public EligibilityResult createResult(EligibilityResult result) {
         return repository.save(result);
     }
 
-    @Override
+   
     public EligibilityResult updateResult(Long id, EligibilityResult result) {
-        Optional<EligibilityResult> existing = repository.findById(id);
-        if(existing.isPresent()) {
-            EligibilityResult er = existing.get();
-            er.setLoanRequest(result.getLoanRequest());
-            er.setIsEligible(result.getIsEligible());
-            er.setMaxEligibleAmount(result.getMaxEligibleAmount());
-            er.setEstimatedEmi(result.getEstimatedEmi());
-            er.setRiskLevel(result.getRiskLevel());
-            er.setRejectionReason(result.getRejectionReason());
-            return repository.save(er);
-        }
-        return null;
+        return repository.findById(id)
+                .map(existingResult -> {
+                    existingResult.setMaxEligibleAmount(result.getMaxEligibleAmount());
+                    existingResult.setInterestRate(result.getInterestRate());
+                    existingResult.setTenureMonths(result.getTenureMonths());
+                    existingResult.setUpdatedAt(result.getCalculatedAt());
+                    return repository.save(existingResult);
+                })
+                .orElse(null); // return null if not found
     }
 
-    @Override
+ 
     public Optional<EligibilityResult> getResultById(Long id) {
         return repository.findById(id);
     }
 
-    @Override
+  
     public List<EligibilityResult> getAllResults() {
         return repository.findAll();
     }
 
-    @Override
+    
     public boolean deleteResult(Long id) {
-        Optional<EligibilityResult> existing = repository.findById(id);
-        if(existing.isPresent()) {
-            repository.deleteById(id);
-            return true;
-        }
-        return false;
+        return repository.findById(id)
+                .map(result -> {
+                    repository.delete(result);
+                    return true;
+                })
+                .orElse(false);
     }
 }

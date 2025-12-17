@@ -1,49 +1,64 @@
 package com.example.demo.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
 import com.example.demo.entity.EligibilityResult;
-import com.example.demo.service.EligibilityResultService;
+import com.example.demo.service.EligibilityService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/eligibility-results")
+@RequestMapping("/eligibility")
 public class EligibilityResultController {
 
     @Autowired
-    private EligibilityResultService service;
+    private EligibilityService eligibilityService;
 
     // CREATE
     @PostMapping
-    public EligibilityResult createResult(@RequestBody EligibilityResult result) {
-        return service.createResult(result);
+    public ResponseEntity<EligibilityResult> createResult(@RequestBody EligibilityResult result) {
+        EligibilityResult createdResult = eligibilityService.createResult(result);
+        return ResponseEntity.ok(createdResult);
     }
 
-    // GET ALL
+    // READ - get all results
     @GetMapping
-    public List<EligibilityResult> getAllResults() {
-        return service.getAllResults();
+    public ResponseEntity<List<EligibilityResult>> getAllResults() {
+        List<EligibilityResult> results = eligibilityService.getAllResults();
+        return ResponseEntity.ok(results);
     }
 
-    // GET BY ID
+    // READ - get result by ID
     @GetMapping("/{id}")
-    public Optional<EligibilityResult> getResultById(@PathVariable Long id) {
-        return service.getResultById(id);
+    public ResponseEntity<EligibilityResult> getResultById(@PathVariable Long id) {
+        Optional<EligibilityResult> resultOpt = eligibilityService.getResultById(id);
+        return resultOpt.map(ResponseEntity::ok)
+                        .orElse(ResponseEntity.notFound().build());
     }
 
     // UPDATE
     @PutMapping("/{id}")
-    public EligibilityResult updateResult(@PathVariable Long id, @RequestBody EligibilityResult result) {
-        return service.updateResult(id, result);
+    public ResponseEntity<EligibilityResult> updateResult(
+            @PathVariable Long id,
+            @RequestBody EligibilityResult result) {
+        try {
+            EligibilityResult updatedResult = eligibilityService.updateResult(id, result);
+            return ResponseEntity.ok(updatedResult);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     // DELETE
     @DeleteMapping("/{id}")
-    public String deleteResult(@PathVariable Long id) {
-        boolean deleted = service.deleteResult(id);
-        return deleted ? "Deleted successfully" : "Result not found";
+    public ResponseEntity<Void> deleteResult(@PathVariable Long id) {
+        boolean deleted = eligibilityService.deleteResult(id);
+        if (deleted) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
