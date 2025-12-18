@@ -8,11 +8,9 @@ public interface RiskAssessmentLogService {
 
     RiskAssessmentLog createLog(RiskAssessmentLog log);
 
-    RiskAssessmentLog updateLog(Long id, RiskAssessmentLog log);
-
-    Optional<RiskAssessmentLog> getLogById(Long id);
+    
 
     List<RiskAssessmentLog> getAllLogs();
 
-    boolean deleteLog(Long id);
+    
 }

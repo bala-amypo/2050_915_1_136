@@ -20,36 +20,11 @@ public class EligibilityResultServiceImpl implements EligibilityResultService {
         return repository.save(result);
     }
 
-    @Override
-    public EligibilityResult updateResult(Long id, EligibilityResult result) {
-        return repository.findById(id)
-                .map(existingResult -> {
-                    // Update fields based on your entity
-                    existingResult.setDtiRatio(result.getDtiRatio());
-                    existingResult.setCreditCheckStatus(result.getCreditCheckStatus());
-                    existingResult.setTimestamp(result.getTimestamp());
-                    return repository.save(existingResult);
-                })
-                .orElseThrow(() -> new RuntimeException("EligibilityResult not found with id " + id));
-    }
-
-    @Override
-    public Optional<EligibilityResult> getResultById(Long id) {
-        return repository.findById(id);
-    }
-
+   
     @Override
     public List<EligibilityResult> getAllResults() {
         return repository.findAll();
     }
 
-    @Override
-    public boolean deleteResult(Long id) {
-        return repository.findById(id)
-                .map(result -> {
-                    repository.delete(result);
-                    return true;
-                })
-                .orElse(false);
-    }
+   
 }

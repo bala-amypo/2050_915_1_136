@@ -20,37 +20,11 @@ public class LoanRequestServiceImpl implements LoanRequestService {
         return repository.save(loanRequest);
     }
 
-    @Override
-    public LoanRequest updateLoanRequest(Long id, LoanRequest loanRequest) {
-        return repository.findById(id)
-                .map(existing -> {
-                    existing.setRequestedAmount(loanRequest.getRequestedAmount());
-                    existing.setTenureMonths(loanRequest.getTenureMonths());
-                    existing.setPurpose(loanRequest.getPurpose());
-                    existing.setStatus(loanRequest.getStatus());
-                    existing.setUser(loanRequest.getUser());
-                    return repository.save(existing);
-                })
-                .orElseThrow(() -> new RuntimeException("LoanRequest not found with id " + id));
-    }
-
-    @Override
-    public Optional<LoanRequest> getLoanRequestById(Long id) {
-        return repository.findById(id);
-    }
-
+   
     @Override
     public List<LoanRequest> getAllLoanRequests() {
         return repository.findAll();
     }
 
-    @Override
-    public boolean deleteLoanRequest(Long id) {
-        return repository.findById(id)
-                .map(request -> {
-                    repository.delete(request);
-                    return true;
-                })
-                .orElse(false);
-    }
+   
 }

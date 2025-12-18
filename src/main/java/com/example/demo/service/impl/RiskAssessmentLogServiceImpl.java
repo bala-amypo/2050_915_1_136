@@ -20,35 +20,12 @@ public class RiskAssessmentLogServiceImpl implements RiskAssessmentLogService {
         return repository.save(log);
     }
 
-    @Override
-    public RiskAssessmentLog updateLog(Long id, RiskAssessmentLog log) {
-        return repository.findById(id)
-                .map(existing -> {
-                    existing.setLoanRequestId(log.getLoanRequestId());
-                    existing.setDtiRatio(log.getDtiRatio());
-                    existing.setCreditCheckStatus(log.getCreditCheckStatus());
-                    return repository.save(existing);
-                })
-                .orElseThrow(() -> new RuntimeException("RiskAssessmentLog not found with id " + id));
-    }
-
-    @Override
-    public Optional<RiskAssessmentLog> getLogById(Long id) {
-        return repository.findById(id);
-    }
+   
 
     @Override
     public List<RiskAssessmentLog> getAllLogs() {
         return repository.findAll();
     }
 
-    @Override
-    public boolean deleteLog(Long id) {
-        return repository.findById(id)
-                .map(log -> {
-                    repository.delete(log);
-                    return true;
-                })
-                .orElse(false);
-    }
+   
 }

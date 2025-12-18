@@ -8,11 +8,8 @@ public interface LoanRequestService {
 
     LoanRequest createLoanRequest(LoanRequest loanRequest);
 
-    LoanRequest updateLoanRequest(Long id, LoanRequest loanRequest);
-
-    Optional<LoanRequest> getLoanRequestById(Long id);
 
     List<LoanRequest> getAllLoanRequests();
 
-    boolean deleteLoanRequest(Long id);
+  
 }

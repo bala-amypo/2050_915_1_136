@@ -21,30 +21,10 @@ public class UserServiceImpl implements UserService {
         return repository.save(user);
     }
 
-    @Override
-    public Optional<User> getUserById(Long id) {
-        return repository.findById(id);
-    }
-
+  
     @Override
     public List<User> getAllUsers() {
         return repository.findAll();
     }
 
-    @Override
-    public User updateUser(Long id, User user) {
-        User existingUser = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
-
-        existingUser.setFullName(user.getFullName());
-        existingUser.setEmail(user.getEmail());
-        existingUser.setRole(user.getRole());
-
-        return repository.save(existingUser);
-    }
-
-    @Override
-    public void deleteUser(Long id) {
-        repository.deleteById(id);
-    }
 }
