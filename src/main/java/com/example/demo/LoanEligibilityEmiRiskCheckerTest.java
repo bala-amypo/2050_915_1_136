@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class LoanEligibilityEmiRiskCheckerTest{
 
 	public static void main(String[] args) {
-		SpringApplication.run(.class, args);
+		SpringApplication.run(LoanEligibilityEmiRiskCheckerTest.class, args);
 	}
 
 }
