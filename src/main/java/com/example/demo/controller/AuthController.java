@@ -7,10 +7,10 @@ import com.example.demo.repository.UserRepository;
 import com.example.demo.security.JwtUtil;
 import com.example.demo.service.impl.UserServiceImpl;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
@@ -20,7 +20,7 @@ public class AuthController {
     private final JwtUtil jwtUtil;
 
     public AuthController(
-            UserServiceImpl userService,
+            UserServiceImpl userService,   // kept for constructor compatibility
             JwtUtil jwtUtil,
             UserRepository userRepository) {
 
@@ -28,18 +28,20 @@ public class AuthController {
         this.jwtUtil = jwtUtil;
     }
 
-    // ✅ LOGIN
+    // ===================== LOGIN =====================
     @PostMapping("/login")
-    public ResponseEntity<ModelMap> login(@RequestBody AuthRequest request) {
+    public ResponseEntity<Map<String, Object>> login(
+            @RequestBody AuthRequest request) {
 
         if (request == null ||
-            request.getEmail() == null ||
-            request.getPassword() == null) {
+                request.getEmail() == null ||
+                request.getPassword() == null) {
             throw new BadRequestException("Email and password required");
         }
 
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new BadRequestException("Invalid credentials"));
+                .orElseThrow(() ->
+                        new BadRequestException("Invalid credentials"));
 
         if (!user.getPassword().equals("HASH_" + request.getPassword())) {
             throw new BadRequestException("Invalid credentials");
@@ -47,22 +49,23 @@ public class AuthController {
 
         String token = jwtUtil.generateToken(new HashMap<>(), user.getEmail());
 
-        ModelMap map = new ModelMap();
-        map.addAttribute("message", "Login successful");
-        map.addAttribute("token", token);
-        map.addAttribute("email", user.getEmail());
-        map.addAttribute("role", user.getRole());
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "Login successful");
+        response.put("token", token);
+        response.put("email", user.getEmail());
+        response.put("role", user.getRole());
 
-        return ResponseEntity.ok(map);
+        return ResponseEntity.ok(response);
     }
 
-    // ✅ REGISTER
+    // ===================== REGISTER =====================
     @PostMapping("/register")
-    public ResponseEntity<ModelMap> register(@RequestBody AuthRequest request) {
+    public ResponseEntity<Map<String, Object>> register(
+            @RequestBody AuthRequest request) {
 
         if (request == null ||
-            request.getEmail() == null ||
-            request.getPassword() == null) {
+                request.getEmail() == null ||
+                request.getPassword() == null) {
             throw new BadRequestException("Email and password required");
         }
 
@@ -79,12 +82,12 @@ public class AuthController {
 
         String token = jwtUtil.generateToken(new HashMap<>(), user.getEmail());
 
-        ModelMap map = new ModelMap();
-        map.addAttribute("message", "Registration successful");
-        map.addAttribute("token", token);
-        map.addAttribute("email", user.getEmail());
-        map.addAttribute("role", user.getRole());
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "Registration successful");
+        response.put("token", token);
+        response.put("email", user.getEmail());
+        response.put("role", user.getRole());
 
-        return ResponseEntity.ok(map);
+        return ResponseEntity.ok(response);
     }
 }
