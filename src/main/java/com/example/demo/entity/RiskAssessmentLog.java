@@ -3,7 +3,7 @@ package com.example.demo.entity;
 import jakarta.persistence.*;
 
 @Entity
-public class RiskAssessment {
+public class RiskAssessmentLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -13,12 +13,13 @@ public class RiskAssessment {
     private Double riskScore;
     private Double dtiRatio;
 
-    // getters & setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
     public Long getLoanRequestId() { return loanRequestId; }
-    public void setLoanRequestId(Long loanRequestId) { this.loanRequestId = loanRequestId; }
+    public void setLoanRequestId(Long loanRequestId) {
+        this.loanRequestId = loanRequestId;
+    }
 
     public Double getRiskScore() { return riskScore; }
     public void setRiskScore(Double riskScore) { this.riskScore = riskScore; }
