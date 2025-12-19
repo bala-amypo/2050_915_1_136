@@ -51,8 +51,9 @@ public EligibilityResult evaluateEligibility(long loanRequestId) {
         return resultRepo.save(result);
     }
 
-    // ✅ REQUIRED BY TESTS
-    public EligibilityResult getByLoanRequestId(Long loanRequestId) {
-        return resultRepo.findByLoanRequestId(loanRequestId).orElse(null);
-    }
+   public EligibilityResult getByLoanRequestId(Long loanRequestId) {
+    return resultRepo.findByLoanRequestId(loanRequestId)
+            .orElseThrow(() -> new BadRequestException("Eligibility result not found"));
+}
+
 }

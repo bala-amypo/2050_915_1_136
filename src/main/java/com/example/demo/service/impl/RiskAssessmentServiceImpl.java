@@ -46,8 +46,10 @@ public class RiskAssessmentServiceImpl implements RiskAssessmentService {
         return riskRepo.save(log);
     }
 
-    @Override
-    public RiskAssessment getByLoanRequestId(Long loanRequestId) {
-        return riskRepo.findByLoanRequestId(loanRequestId).orElse(null);
-    }
+   @Override
+public RiskAssessment getByLoanRequestId(Long loanRequestId) {
+    return riskRepo.findByLoanRequestId(loanRequestId)
+            .orElseThrow(() -> new BadRequestException("Risk not found"));
+}
+
 }

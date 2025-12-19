@@ -37,9 +37,11 @@ public class LoanRequestServiceImpl implements LoanRequestService {
     }
 
     @Override
-    public LoanRequest getById(Long id) {
-        return repo.findById(id).orElse(null);
-    }
+public LoanRequest getById(Long id) {
+    return repo.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Loan request not found"));
+}
+
 
     @Override
     public List<LoanRequest> getRequestsByUser(Long userId) {
