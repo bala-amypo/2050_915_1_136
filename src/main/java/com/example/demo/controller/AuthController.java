@@ -13,10 +13,12 @@ public class AuthController {
 
     private final UserService userService;
 
-    public AuthController(UserService userService) {
-        this.userService = userService;
-    }
-
+    // Update your constructor to look like this:
+public AuthController(UserService userService, JwtUtil jwtUtil, UserRepository userRepository) {
+    this.userService = userService;
+    this.jwtUtil = jwtUtil;
+    this.userRepository = userRepository;
+}
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(
             @RequestBody AuthRequest request) {
