@@ -4,6 +4,8 @@ import com.example.demo.entity.*;
 import com.example.demo.exception.BadRequestException;
 import com.example.demo.repository.*;
 import com.example.demo.service.RiskAssessmentService;
+
+import org.springframework.stereotype.Service;
 @Service
 public class RiskAssessmentServiceImpl implements RiskAssessmentService {
 
