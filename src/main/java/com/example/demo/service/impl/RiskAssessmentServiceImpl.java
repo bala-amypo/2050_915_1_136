@@ -11,12 +11,12 @@ public class RiskAssessmentServiceImpl implements RiskAssessmentService {
 
     private final LoanRequestRepository loanRepo;
     private final FinancialProfileRepository profileRepo;
-    private final RiskAssessmentLogRepository riskRepo;
+    private final RiskAssessmentRepository riskRepo;
 
     public RiskAssessmentServiceImpl(
             LoanRequestRepository loanRepo,
             FinancialProfileRepository profileRepo,
-            RiskAssessmentLogRepository riskRepo) {
+            RiskAssessmentRepository riskRepo) {
         this.loanRepo = loanRepo;
         this.profileRepo = profileRepo;
         this.riskRepo = riskRepo;
