@@ -5,49 +5,37 @@ import com.example.demo.exception.BadRequestException;
 import com.example.demo.repository.*;
 import com.example.demo.service.LoanEligibilityService;
 
+import org.springframework.stereotype.Service;
+
+@Service
 public class LoanEligibilityServiceImpl implements LoanEligibilityService {
 
-    private final LoanRequestRepository loanRepo;
-    private final FinancialProfileRepository profileRepo;
-    private final EligibilityResultRepository resultRepo;
+    private final LoanRequestRepository loanRequestRepository;
+    private final FinancialProfileRepository financialProfileRepository;
+    private final EligibilityResultRepository eligibilityResultRepository;
 
-    public LoanEligibilityServiceImpl(
-            LoanRequestRepository loanRepo,
-            FinancialProfileRepository profileRepo,
-            EligibilityResultRepository resultRepo) {
-        this.loanRepo = loanRepo;
-        this.profileRepo = profileRepo;
-        this.resultRepo = resultRepo;
-    }
+   
 
     @Override
-    public EligibilityResult evaluateEligibility(Long loanRequestId) {
+    public EligibilityResult checkEligibility(Long loanRequestId) {
 
-        if (resultRepo.findByLoanRequestId(loanRequestId).isPresent()) {
-            throw new BadRequestException("Eligibility already exists");
-        }
+        LoanRequest loanRequest = loanRequestRepository.findById(loanRequestId)
+                .orElseThrow(() -> new BadRequestException("Loan request not found"));
 
-        LoanRequest request = loanRepo.findById(loanRequestId)
-                .orElseThrow(() -> new BadRequestException("Loan not found"));
-
-        FinancialProfile profile = profileRepo.findByUserId(request.getUser().getId())
+        FinancialProfile profile = financialProfileRepository
+                .findByUserId(loanRequest.getUser().getId())
                 .orElseThrow(() -> new BadRequestException("Profile not found"));
 
-        double disposable = profile.getMonthlyIncome()
-                - profile.getMonthlyExpenses()
-                - profile.getExistingLoanEmi();
-
-        double eligibleAmount = Math.max(0, disposable * 10);
+        double disposableIncome =
+                profile.getMonthlyIncome()
+              - profile.getMonthlyExpenses()
+              - profile.getExistingLoanEmi();
 
         EligibilityResult result = new EligibilityResult();
         result.setLoanRequestId(loanRequestId);
-        result.setMaxEligibleAmount(eligibleAmount);
+        result.setEligible(disposableIncome > 0);
+        result.setDisposableIncome(disposableIncome);
 
-        return resultRepo.save(result);
-    }
-
-    @Override
-    public EligibilityResult getByLoanRequestId(Long loanRequestId) {
-        return resultRepo.findByLoanRequestId(loanRequestId).orElse(null);
+        return eligibilityResultRepository.save(result);
     }
 }
