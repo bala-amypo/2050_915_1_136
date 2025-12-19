@@ -8,7 +8,7 @@ import com.example.demo.service.LoanEligibilityService;
 import org.springframework.stereotype.Service;
 
 @Service
-public class LoanEligibilityServiceImpl implements LoanEligibilityService {
+public class EligibilityServiceImpl implements LoanEligibilityService {
 
     private final LoanRequestRepository loanRequestRepository;
     private final FinancialProfileRepository financialProfileRepository;

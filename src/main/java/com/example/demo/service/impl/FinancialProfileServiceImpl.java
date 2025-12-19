@@ -11,6 +11,12 @@ import org.springframework.stereotype.Service;
 public class FinancialProfileServiceImpl implements FinancialProfileService {
 
     private final FinancialProfileRepository financialProfileRepository;
+     private final UserRepository userRepo;
+
+    public FinancialProfileServiceImpl(FinancialProfileRepository repo,UserRepository userRepo) {
+    this.financialProfileRepository = financialProfileRepository;
+    this.userRepo = userRepo;
+}
 
     public FinancialProfileServiceImpl(FinancialProfileRepository financialProfileRepository) {
         this.financialProfileRepository = financialProfileRepository;
