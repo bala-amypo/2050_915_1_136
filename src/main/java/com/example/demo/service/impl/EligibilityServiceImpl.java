@@ -22,6 +22,11 @@ public class EligibilityServiceImpl implements EligibilityService {
         this.profileRepo = profileRepo;
         this.resultRepo = resultRepo;
     }
+    // REQUIRED BY TESTS — DO NOT CHANGE NAME OR PARAM TYPE
+public EligibilityResult evaluateEligibility(long loanRequestId) {
+    return checkEligibility(loanRequestId);
+}
+
 
     // ✅ METHOD NAME MUST MATCH INTERFACE
     @Override
