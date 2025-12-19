@@ -14,7 +14,7 @@ public class EligibilityServiceImpl implements LoanEligibilityService {
     private final FinancialProfileRepository financialProfileRepository;
     private final EligibilityResultRepository eligibilityResultRepository;
 
-    public LoanEligibilityServiceImpl(
+    public EligibilityServiceImpl(
             LoanRequestRepository loanRequestRepository,
             FinancialProfileRepository financialProfileRepository,
             EligibilityResultRepository eligibilityResultRepository) {
