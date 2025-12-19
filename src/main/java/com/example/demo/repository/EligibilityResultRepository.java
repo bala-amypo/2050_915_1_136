@@ -1,10 +1,9 @@
 package com.example.demo.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 import com.example.demo.entity.EligibilityResult;
+import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.Optional;
 
-@Repository
 public interface EligibilityResultRepository extends JpaRepository<EligibilityResult, Long> {
-    // Additional query methods can be added if needed
+    Optional<EligibilityResult> findByLoanRequestId(Long loanRequestId);
 }
