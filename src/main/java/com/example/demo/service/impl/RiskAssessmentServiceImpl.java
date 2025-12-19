@@ -23,7 +23,7 @@ public class RiskAssessmentServiceImpl implements RiskAssessmentService {
     }
 
     @Override
-    public RiskAssessmentLog assessRisk(Long loanRequestId) {
+    public RiskAssessment assessRisk(Long loanRequestId) {
 
         if (riskRepo.findByLoanRequestId(loanRequestId).isPresent()) {
             throw new BadRequestException("Risk already assessed");
@@ -38,7 +38,7 @@ public class RiskAssessmentServiceImpl implements RiskAssessmentService {
         double dti = fp.getMonthlyIncome() == 0 ? 0 :
                 fp.getExistingLoanEmi() / fp.getMonthlyIncome();
 
-        RiskAssessmentLog log = new RiskAssessmentLog();
+        RiskAssessment log = new RiskAssessment();
         log.setLoanRequestId(loanRequestId);
         log.setDtiRatio(dti);
         log.setRiskScore(Math.min(100, dti * 100));
@@ -47,7 +47,7 @@ public class RiskAssessmentServiceImpl implements RiskAssessmentService {
     }
 
     @Override
-    public RiskAssessmentLog getByLoanRequestId(Long loanRequestId) {
+    public RiskAssessment getByLoanRequestId(Long loanRequestId) {
         return riskRepo.findByLoanRequestId(loanRequestId).orElse(null);
     }
 }

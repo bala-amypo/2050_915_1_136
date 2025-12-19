@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.RiskAssessmentLog;
+import com.example.demo.entity.RiskAssessment;
 import com.example.demo.service.RiskAssessmentService;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +15,7 @@ public class RiskLogController {
     }
 
     @PostMapping("/{loanId}")
-    public RiskAssessmentLog assess(@PathVariable Long loanId) {
+    public RiskAssessment assess(@PathVariable Long loanId) {
         return service.assessRisk(loanId);
     }
 }
