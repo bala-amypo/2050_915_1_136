@@ -1,45 +1,28 @@
 package com.example.demo.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.demo.entity.FinancialProfile;
+import com.example.demo.service.FinancialProfileService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.example.demo.entity.FinancialProfile;
-import com.example.demo.entity.User;
-import com.example.demo.service.FinancialProfileService;
-
-import java.util.List;
-import java.util.Optional;
-
 @RestController
-@RequestMapping("/financial-profiles")
+@RequestMapping("/api/financial-profiles")
 public class FinancialProfileController {
 
-    @Autowired
-    private FinancialProfileService service;
+    private final FinancialProfileService service;
+
+    public FinancialProfileController(FinancialProfileService service) {
+        this.service = service;
+    }
 
     @PostMapping
-    public FinancialProfile createProfile(@RequestBody FinancialProfile profile) throws Exception {
-        return service.createProfile(profile);
+    public ResponseEntity<FinancialProfile> createOrUpdate(
+            @RequestBody FinancialProfile profile) {
+        return ResponseEntity.ok(service.createOrUpdate(profile));
     }
 
-    @GetMapping
-    public List<FinancialProfile> getAllProfiles() {
-        return service.getAllProfiles();
-    }
-
-    @GetMapping("/{id}")
-    public Optional<FinancialProfile> getProfileById(@PathVariable Long id) {
-        return service.getProfileById(id);
-    }
-
-    @PutMapping("/{id}")
-    public FinancialProfile updateProfile(@PathVariable Long id, @RequestBody FinancialProfile profile) throws Exception {
-        return service.updateProfile(id, profile);
-    }
-
-    @DeleteMapping("/{id}")
-    public String deleteProfile(@PathVariable Long id) {
-        boolean deleted = service.deleteProfile(id);
-        return deleted ? "Deleted successfully" : "Profile not found";
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<FinancialProfile> getByUser(@PathVariable Long userId) {
+        return ResponseEntity.ok(service.getByUserId(userId));
     }
 }
