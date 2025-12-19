@@ -5,6 +5,7 @@ import com.example.demo.service.EligibilityService;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.ui.ModelMap;
 
 @RestController
 @RequestMapping("/eligibility")
