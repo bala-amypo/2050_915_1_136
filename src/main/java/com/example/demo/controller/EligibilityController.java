@@ -3,8 +3,10 @@ package com.example.demo.controller;
 import com.example.demo.entity.EligibilityResult;
 import com.example.demo.service.impl.EligibilityServiceImpl;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/eligibility")
@@ -17,15 +19,15 @@ public class EligibilityController {
     }
 
     @PostMapping("/{loanRequestId}")
-    public ResponseEntity<ModelMap> checkEligibility(
+    public ResponseEntity<Map<String, Object>> checkEligibility(
             @PathVariable Long loanRequestId) {
 
         EligibilityResult result =
                 eligibilityService.evaluateEligibility(loanRequestId);
 
-        ModelMap response = new ModelMap();
-        response.addAttribute("eligible", result.getEligible());
-        response.addAttribute("disposableIncome", result.getDisposableIncome());
+        Map<String, Object> response = new HashMap<>();
+        response.put("eligible", result.getEligible());
+        response.put("disposableIncome", result.getDisposableIncome());
 
         return ResponseEntity.ok(response);
     }

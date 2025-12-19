@@ -3,10 +3,11 @@ package com.example.demo.controller;
 import com.example.demo.entity.LoanRequest;
 import com.example.demo.service.LoanRequestService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/loan")
@@ -20,27 +21,29 @@ public class LoanRequestController {
 
     // ✅ SUBMIT LOAN REQUEST
     @PostMapping
-    public ResponseEntity<ModelMap> submit(@RequestBody LoanRequest lr) {
+    public ResponseEntity<Map<String, Object>> submit(
+            @RequestBody LoanRequest lr) {
 
         LoanRequest saved = service.submitRequest(lr);
 
-        ModelMap map = new ModelMap();
-        map.addAttribute("message", "Loan request submitted successfully");
-        map.addAttribute("data", saved);
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "Loan request submitted successfully");
+        response.put("data", saved);
 
-        return ResponseEntity.ok(map);
+        return ResponseEntity.ok(response);
     }
 
     // ✅ GET LOAN REQUESTS BY USER
     @GetMapping("/user/{id}")
-    public ResponseEntity<ModelMap> byUser(@PathVariable Long id) {
+    public ResponseEntity<Map<String, Object>> byUser(
+            @PathVariable Long id) {
 
         List<LoanRequest> list = service.getRequestsByUser(id);
 
-        ModelMap map = new ModelMap();
-        map.addAttribute("message", "Loan requests fetched successfully");
-        map.addAttribute("data", list);
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "Loan requests fetched successfully");
+        response.put("data", list);
 
-        return ResponseEntity.ok(map);
+        return ResponseEntity.ok(response);
     }
 }
