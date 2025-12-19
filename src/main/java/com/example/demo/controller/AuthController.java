@@ -6,7 +6,7 @@ import com.example.demo.entity.User;
 import com.example.demo.exception.BadRequestException;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.security.JwtUtil;
-
+import com.example.demo.service.impl.UserServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +19,7 @@ public class AuthController {
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
 
-    import com.example.demo.service.impl.UserServiceImpl;
+   
     public AuthController(
         UserServiceImpl userService,
         JwtUtil jwtUtil,
