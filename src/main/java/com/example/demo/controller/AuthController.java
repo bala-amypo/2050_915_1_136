@@ -6,7 +6,6 @@ import com.example.demo.entity.User;
 import com.example.demo.exception.BadRequestException;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.security.JwtUtil;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,9 +43,9 @@ public class AuthController {
         String token = jwtUtil.generateToken(new HashMap<>(), user.getEmail());
 
         AuthResponse response = new AuthResponse();
-        response.token = token;
-        response.email = user.getEmail();
-        response.role = user.getRole();
+        response.setToken(token);
+        response.setEmail(user.getEmail());
+        response.setRole(user.getRole());
 
         return ResponseEntity.ok(response);
     }
@@ -75,9 +74,9 @@ public class AuthController {
         String token = jwtUtil.generateToken(new HashMap<>(), user.getEmail());
 
         AuthResponse response = new AuthResponse();
-        response.token = token;
-        response.email = user.getEmail();
-        response.role = user.getRole();
+        response.setToken(token);
+        response.setEmail(user.getEmail());
+        response.setRole(user.getRole());
 
         return ResponseEntity.ok(response);
     }
