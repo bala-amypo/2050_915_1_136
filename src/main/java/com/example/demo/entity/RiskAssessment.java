@@ -3,7 +3,7 @@ package com.example.demo.entity;
 import jakarta.persistence.*;
 
 @Entity
-public class RiskAssessmentLog {
+public class RiskAssessment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
