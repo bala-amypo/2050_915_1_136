@@ -2,6 +2,8 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.LoanRequest;
 import com.example.demo.service.LoanRequestService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,13 +18,29 @@ public class LoanRequestController {
         this.service = service;
     }
 
+    // ✅ SUBMIT LOAN REQUEST
     @PostMapping
-    public LoanRequest submit(@RequestBody LoanRequest lr) {
-        return service.submitRequest(lr);
+    public ResponseEntity<ModelMap> submit(@RequestBody LoanRequest lr) {
+
+        LoanRequest saved = service.submitRequest(lr);
+
+        ModelMap map = new ModelMap();
+        map.addAttribute("message", "Loan request submitted successfully");
+        map.addAttribute("data", saved);
+
+        return ResponseEntity.ok(map);
     }
 
+    // ✅ GET LOAN REQUESTS BY USER
     @GetMapping("/user/{id}")
-    public List<LoanRequest> byUser(@PathVariable Long id) {
-        return service.getRequestsByUser(id);
+    public ResponseEntity<ModelMap> byUser(@PathVariable Long id) {
+
+        List<LoanRequest> list = service.getRequestsByUser(id);
+
+        ModelMap map = new ModelMap();
+        map.addAttribute("message", "Loan requests fetched successfully");
+        map.addAttribute("data", list);
+
+        return ResponseEntity.ok(map);
     }
 }

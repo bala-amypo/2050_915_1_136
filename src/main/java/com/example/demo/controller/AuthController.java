@@ -1,13 +1,13 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.AuthRequest;
-import com.example.demo.dto.AuthResponse;
 import com.example.demo.entity.User;
 import com.example.demo.exception.BadRequestException;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.security.JwtUtil;
 import com.example.demo.service.impl.UserServiceImpl;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -19,20 +19,18 @@ public class AuthController {
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
 
-   
     public AuthController(
-        UserServiceImpl userService,
-        JwtUtil jwtUtil,
-        UserRepository userRepository) {
+            UserServiceImpl userService,
+            JwtUtil jwtUtil,
+            UserRepository userRepository) {
 
-    this.userRepository = userRepository;
-    this.jwtUtil = jwtUtil;
-}
-
+        this.userRepository = userRepository;
+        this.jwtUtil = jwtUtil;
+    }
 
     // ✅ LOGIN
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
+    public ResponseEntity<ModelMap> login(@RequestBody AuthRequest request) {
 
         if (request == null ||
             request.getEmail() == null ||
@@ -49,17 +47,18 @@ public class AuthController {
 
         String token = jwtUtil.generateToken(new HashMap<>(), user.getEmail());
 
-        AuthResponse response = new AuthResponse();
-        response.setToken(token);
-        response.setEmail(user.getEmail());
-        response.setRole(user.getRole());
+        ModelMap map = new ModelMap();
+        map.addAttribute("message", "Login successful");
+        map.addAttribute("token", token);
+        map.addAttribute("email", user.getEmail());
+        map.addAttribute("role", user.getRole());
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(map);
     }
 
     // ✅ REGISTER
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@RequestBody AuthRequest request) {
+    public ResponseEntity<ModelMap> register(@RequestBody AuthRequest request) {
 
         if (request == null ||
             request.getEmail() == null ||
@@ -80,11 +79,12 @@ public class AuthController {
 
         String token = jwtUtil.generateToken(new HashMap<>(), user.getEmail());
 
-        AuthResponse response = new AuthResponse();
-        response.setToken(token);
-        response.setEmail(user.getEmail());
-        response.setRole(user.getRole());
+        ModelMap map = new ModelMap();
+        map.addAttribute("message", "Registration successful");
+        map.addAttribute("token", token);
+        map.addAttribute("email", user.getEmail());
+        map.addAttribute("role", user.getRole());
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(map);
     }
 }
