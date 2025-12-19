@@ -5,15 +5,17 @@ import com.example.demo.exception.BadRequestException;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
+    }
+
+    private String hash(String raw) {
+        return "HASH_" + raw;
     }
 
     @Override
@@ -21,8 +23,8 @@ public class UserServiceImpl implements UserService {
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
             throw new BadRequestException("Email already exists");
         }
-        user.setPassword(encoder.encode(user.getPassword()));
-        user.setRole(User.Role.CUSTOMER.name());
+        user.setPassword(hash(user.getPassword()));
+        user.setRole("CUSTOMER");
         return userRepository.save(user);
     }
 

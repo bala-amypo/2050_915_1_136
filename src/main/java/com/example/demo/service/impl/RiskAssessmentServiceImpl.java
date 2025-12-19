@@ -9,45 +9,43 @@ public class RiskAssessmentServiceImpl implements RiskAssessmentService {
 
     private final LoanRequestRepository loanRepo;
     private final FinancialProfileRepository profileRepo;
-    private final RiskAssessmentRepository riskRepo;
+    private final RiskAssessmentLogRepository riskRepo;
 
     public RiskAssessmentServiceImpl(
             LoanRequestRepository loanRepo,
             FinancialProfileRepository profileRepo,
-            RiskAssessmentRepository riskRepo) {
+            RiskAssessmentLogRepository riskRepo) {
         this.loanRepo = loanRepo;
         this.profileRepo = profileRepo;
         this.riskRepo = riskRepo;
     }
 
     @Override
-    public RiskAssessment assessRisk(Long loanRequestId) {
+    public RiskAssessmentLog assessRisk(Long loanRequestId) {
 
         if (riskRepo.findByLoanRequestId(loanRequestId).isPresent()) {
             throw new BadRequestException("Risk already assessed");
         }
 
-        LoanRequest request = loanRepo.findById(loanRequestId)
+        LoanRequest lr = loanRepo.findById(loanRequestId)
                 .orElseThrow(() -> new BadRequestException("Loan not found"));
 
-        FinancialProfile profile = profileRepo.findByUserId(request.getUser().getId())
+        FinancialProfile fp = profileRepo.findByUserId(lr.getUser().getId())
                 .orElseThrow(() -> new BadRequestException("Profile not found"));
 
-        double income = profile.getMonthlyIncome();
-        double emi = profile.getExistingLoanEmi();
+        double dti = fp.getMonthlyIncome() == 0 ? 0 :
+                fp.getExistingLoanEmi() / fp.getMonthlyIncome();
 
-        double dti = income == 0 ? 0.0 : emi / income;
+        RiskAssessmentLog log = new RiskAssessmentLog();
+        log.setLoanRequestId(loanRequestId);
+        log.setDtiRatio(dti);
+        log.setRiskScore(Math.min(100, dti * 100));
 
-        RiskAssessment ra = new RiskAssessment();
-        ra.setLoanRequestId(loanRequestId);
-        ra.setDtiRatio(dti);
-        ra.setRiskScore(Math.min(100.0, dti * 100));
-
-        return riskRepo.save(ra);
+        return riskRepo.save(log);
     }
 
     @Override
-    public RiskAssessment getByLoanRequestId(Long loanRequestId) {
+    public RiskAssessmentLog getByLoanRequestId(Long loanRequestId) {
         return riskRepo.findByLoanRequestId(loanRequestId).orElse(null);
     }
 }

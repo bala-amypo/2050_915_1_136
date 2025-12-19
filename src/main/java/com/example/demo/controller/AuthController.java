@@ -5,48 +5,40 @@ import com.example.demo.dto.AuthResponse;
 import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.security.JwtUtil;
-import com.example.demo.service.UserService;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
-    private final UserService userService;
-    private final JwtUtil jwtUtil;
     private final UserRepository repo;
-    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+    private final JwtUtil jwtUtil;
 
-    public AuthController(UserService userService, JwtUtil jwtUtil, UserRepository repo) {
-        this.userService = userService;
-        this.jwtUtil = jwtUtil;
+    public AuthController(UserRepository repo, JwtUtil jwtUtil) {
         this.repo = repo;
+        this.jwtUtil = jwtUtil;
     }
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
 
-        User user = repo.findByEmail(request.getEmail()).orElseThrow();
+        User user = repo.findByEmail(request.email).orElseThrow();
 
-        if (!encoder.matches(request.getPassword(), user.getPassword())) {
+        if (!user.getPassword().equals("HASH_" + request.password)) {
             throw new RuntimeException("Invalid credentials");
         }
 
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("email", user.getEmail());
-        claims.put("role", user.getRole());
-        claims.put("userId", user.getId());
+        String token = jwtUtil.generateToken(new HashMap<>(), user.getEmail());
 
-        String token = jwtUtil.generateToken(claims, user.getEmail());
+        AuthResponse res = new AuthResponse();
+        res.token = token;
+        res.email = user.getEmail();
+        res.role = user.getRole();
 
-        return ResponseEntity.ok(
-                new AuthResponse(token, user.getEmail(), user.getRole())
-        );
+        return ResponseEntity.ok(res);
     }
 }
