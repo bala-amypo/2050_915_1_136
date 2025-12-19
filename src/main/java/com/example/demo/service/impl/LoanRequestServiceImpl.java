@@ -1,51 +1,46 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.entity.*;
+import com.example.demo.entity.LoanRequest;
+import com.example.demo.entity.User;
 import com.example.demo.exception.BadRequestException;
-import com.example.demo.repository.*;
-import com.example.demo.service.LoanEligibilityService;
+import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.repository.LoanRequestRepository;
+import com.example.demo.repository.UserRepository;
+import com.example.demo.service.LoanRequestService;
 
-import org.springframework.stereotype.Service;
+import java.util.List;
 
-@Service  // 🔥 THIS WAS MISSING
-public class LoanEligibilityServiceImpl implements LoanEligibilityService {
+public class LoanRequestServiceImpl implements LoanRequestService {
 
-    private final LoanRequestRepository loanRequestRepository;
-    private final FinancialProfileRepository financialProfileRepository;
-    private final EligibilityResultRepository eligibilityResultRepository;
+    private final LoanRequestRepository repo;
+    private final UserRepository userRepo;
 
-    public LoanEligibilityServiceImpl(
-            LoanRequestRepository loanRequestRepository,
-            FinancialProfileRepository financialProfileRepository,
-            EligibilityResultRepository eligibilityResultRepository) {
-
-        this.loanRequestRepository = loanRequestRepository;
-        this.financialProfileRepository = financialProfileRepository;
-        this.eligibilityResultRepository = eligibilityResultRepository;
+    public LoanRequestServiceImpl(LoanRequestRepository repo, UserRepository userRepo) {
+        this.repo = repo;
+        this.userRepo = userRepo;
     }
 
     @Override
-    public EligibilityResult checkEligibility(Long loanRequestId) {
+    public LoanRequest submitRequest(LoanRequest request) {
 
-        LoanRequest loanRequest = loanRequestRepository.findById(loanRequestId)
-                .orElseThrow(() -> new BadRequestException("Loan request not found"));
+        if (request.getRequestedAmount() == null || request.getRequestedAmount() <= 0) {
+            throw new BadRequestException("Invalid amount");
+        }
 
-        FinancialProfile profile = financialProfileRepository
-                .findByUserId(loanRequest.getUser().getId())
-                .orElseThrow(() -> new BadRequestException("Financial profile not found"));
+        User user = userRepo.findById(request.getUser().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        double disposableIncome =
-                profile.getMonthlyIncome()
-              - profile.getMonthlyExpenses()
-              - profile.getExistingLoanEmi();
+        request.setUser(user);
+        return repo.save(request);
+    }
 
-        boolean eligible = disposableIncome > 0;
+    @Override
+    public LoanRequest getById(Long id) {
+        return repo.findById(id).orElse(null);
+    }
 
-        EligibilityResult result = new EligibilityResult();
-        result.setLoanRequestId(loanRequestId);
-        result.setEligible(eligible);
-        result.setDisposableIncome(disposableIncome);
-
-        return eligibilityResultRepository.save(result);
+    @Override
+    public List<LoanRequest> getRequestsByUser(Long userId) {
+        return repo.findByUserId(userId);
     }
 }
