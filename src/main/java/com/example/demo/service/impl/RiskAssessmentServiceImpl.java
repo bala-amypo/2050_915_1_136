@@ -1,31 +1,53 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.entity.RiskAssessmentLog;
-import com.example.demo.repository.RiskAssessmentLogRepository;
-import com.example.demo.service.RiskAssessmentLogService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.example.demo.entity.*;
+import com.example.demo.exception.BadRequestException;
+import com.example.demo.repository.*;
+import com.example.demo.service.RiskAssessmentService;
 
-import java.util.List;
-import java.util.Optional;
+public class RiskAssessmentServiceImpl implements RiskAssessmentService {
 
-@Service
-public class RiskAssessmentLogServiceImpl implements RiskAssessmentLogService {
+    private final LoanRequestRepository loanRepo;
+    private final FinancialProfileRepository profileRepo;
+    private final RiskAssessmentRepository riskRepo;
 
-    @Autowired
-    private RiskAssessmentLogRepository repository;
-
-    @Override
-    public RiskAssessmentLog createLog(RiskAssessmentLog log) {
-        return repository.save(log);
+    public RiskAssessmentServiceImpl(
+            LoanRequestRepository loanRepo,
+            FinancialProfileRepository profileRepo,
+            RiskAssessmentRepository riskRepo) {
+        this.loanRepo = loanRepo;
+        this.profileRepo = profileRepo;
+        this.riskRepo = riskRepo;
     }
 
-   
-
     @Override
-    public List<RiskAssessmentLog> getAllLogs() {
-        return repository.findAll();
+    public RiskAssessment assessRisk(Long loanRequestId) {
+
+        if (riskRepo.findByLoanRequestId(loanRequestId).isPresent()) {
+            throw new BadRequestException("Risk already assessed");
+        }
+
+        LoanRequest request = loanRepo.findById(loanRequestId)
+                .orElseThrow(() -> new BadRequestException("Loan not found"));
+
+        FinancialProfile profile = profileRepo.findByUserId(request.getUser().getId())
+                .orElseThrow(() -> new BadRequestException("Profile not found"));
+
+        double income = profile.getMonthlyIncome();
+        double emi = profile.getExistingLoanEmi();
+
+        double dti = income == 0 ? 0.0 : emi / income;
+
+        RiskAssessment ra = new RiskAssessment();
+        ra.setLoanRequestId(loanRequestId);
+        ra.setDtiRatio(dti);
+        ra.setRiskScore(Math.min(100.0, dti * 100));
+
+        return riskRepo.save(ra);
     }
 
-   
+    @Override
+    public RiskAssessment getByLoanRequestId(Long loanRequestId) {
+        return riskRepo.findByLoanRequestId(loanRequestId).orElse(null);
+    }
 }

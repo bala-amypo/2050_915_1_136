@@ -1,30 +1,46 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.LoanRequest;
+import com.example.demo.entity.User;
+import com.example.demo.exception.BadRequestException;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.LoanRequestRepository;
+import com.example.demo.repository.UserRepository;
 import com.example.demo.service.LoanRequestService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
-@Service
 public class LoanRequestServiceImpl implements LoanRequestService {
 
-    @Autowired
-    private LoanRequestRepository repository;
+    private final LoanRequestRepository repo;
+    private final UserRepository userRepo;
 
-    @Override
-    public LoanRequest createLoanRequest(LoanRequest loanRequest) {
-        return repository.save(loanRequest);
+    public LoanRequestServiceImpl(LoanRequestRepository repo, UserRepository userRepo) {
+        this.repo = repo;
+        this.userRepo = userRepo;
     }
 
-   
     @Override
-    public List<LoanRequest> getAllLoanRequests() {
-        return repository.findAll();
+    public LoanRequest submitRequest(LoanRequest request) {
+
+        if (request.getRequestedAmount() == null || request.getRequestedAmount() <= 0) {
+            throw new BadRequestException("Invalid amount");
+        }
+
+        User user = userRepo.findById(request.getUser().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        request.setUser(user);
+        return repo.save(request);
     }
 
-   
+    @Override
+    public LoanRequest getById(Long id) {
+        return repo.findById(id).orElse(null);
+    }
+
+    @Override
+    public List<LoanRequest> getRequestsByUser(Long userId) {
+        return repo.findByUserId(userId);
+    }
 }
