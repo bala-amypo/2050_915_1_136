@@ -14,6 +14,10 @@ public class EligibilityResult {
     private Boolean eligible;
 
     private Double disposableIncome;
+    private double maxEligibleAmount;
+    public double getMaxEligibleAmount() {
+    return maxEligibleAmount;
+    }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
