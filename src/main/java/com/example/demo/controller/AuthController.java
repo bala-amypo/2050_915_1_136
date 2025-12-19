@@ -28,14 +28,16 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
 
-        if (request == null || request.email == null || request.password == null) {
+        if (request == null ||
+            request.getEmail() == null ||
+            request.getPassword() == null) {
             throw new BadRequestException("Email and password required");
         }
 
-        User user = userRepository.findByEmail(request.email)
+        User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new BadRequestException("Invalid credentials"));
 
-        if (!user.getPassword().equals("HASH_" + request.password)) {
+        if (!user.getPassword().equals("HASH_" + request.getPassword())) {
             throw new BadRequestException("Invalid credentials");
         }
 
@@ -49,21 +51,23 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
-    // ✅ REGISTER (REQUIRED BY HIDDEN TESTS)
+    // ✅ REGISTER
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@RequestBody AuthRequest request) {
 
-        if (request == null || request.email == null || request.password == null) {
+        if (request == null ||
+            request.getEmail() == null ||
+            request.getPassword() == null) {
             throw new BadRequestException("Email and password required");
         }
 
-        if (userRepository.findByEmail(request.email).isPresent()) {
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new BadRequestException("Email already exists");
         }
 
         User user = new User();
-        user.setEmail(request.email);
-        user.setPassword("HASH_" + request.password);
+        user.setEmail(request.getEmail());
+        user.setPassword("HASH_" + request.getPassword());
         user.setRole("CUSTOMER");
 
         userRepository.save(user);
