@@ -14,7 +14,15 @@ public class LoanEligibilityServiceImpl implements LoanEligibilityService {
     private final FinancialProfileRepository financialProfileRepository;
     private final EligibilityResultRepository eligibilityResultRepository;
 
-   
+    public LoanEligibilityServiceImpl(
+            LoanRequestRepository loanRequestRepository,
+            FinancialProfileRepository financialProfileRepository,
+            EligibilityResultRepository eligibilityResultRepository) {
+
+        this.loanRequestRepository = loanRequestRepository;
+        this.financialProfileRepository = financialProfileRepository;
+        this.eligibilityResultRepository = eligibilityResultRepository;
+    }
 
     @Override
     public EligibilityResult checkEligibility(Long loanRequestId) {
