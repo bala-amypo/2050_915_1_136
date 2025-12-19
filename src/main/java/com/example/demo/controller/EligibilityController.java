@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.EligibilityResult;
-import com.example.demo.service.LoanEligibilityService;
+import com.example.demo.service.EligibilityService;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/eligibility")
 public class EligibilityController {
 
-    private final LoanEligibilityService service;
+    private final EligibilityService service;
 
-    public EligibilityController(LoanEligibilityService service) {
+    public EligibilityController(EligibilityService service) {
         this.service = service;
     }
 
