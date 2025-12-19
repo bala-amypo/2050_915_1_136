@@ -23,8 +23,9 @@ public class EligibilityServiceImpl implements EligibilityService {
         this.resultRepo = resultRepo;
     }
 
+    // ✅ METHOD NAME MUST MATCH INTERFACE
     @Override
-    public EligibilityResult evaluateEligibility(Long loanRequestId) {
+    public EligibilityResult checkEligibility(Long loanRequestId) {
 
         LoanRequest lr = loanRepo.findById(loanRequestId)
                 .orElseThrow(() -> new BadRequestException("Loan not found"));
