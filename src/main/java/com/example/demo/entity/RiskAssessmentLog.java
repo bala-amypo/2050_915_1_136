@@ -1,78 +1,28 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import java.sql.Timestamp;
 
 @Entity
-@Table(name = "risk_assessment_log")
-public class RiskAssessmentLog {
+public class RiskAssessment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
     private Long loanRequestId;
+    private Double riskScore;
+    private Double dtiRatio;
 
-    @Column(nullable = false)
-    private Double dtiRatio; 
+    // getters & setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    private String creditCheckStatus;
+    public Long getLoanRequestId() { return loanRequestId; }
+    public void setLoanRequestId(Long loanRequestId) { this.loanRequestId = loanRequestId; }
 
-    @Column(nullable = false, updatable = false)
-    private Timestamp timestamp;
+    public Double getRiskScore() { return riskScore; }
+    public void setRiskScore(Double riskScore) { this.riskScore = riskScore; }
 
-    public RiskAssessmentLog() {
-    }
-    public RiskAssessmentLog(Long loanRequestId,
-                             Double totalMonthlyObligations,
-                             Double monthlyIncome,
-                             String creditCheckStatus) {
-
-        if (monthlyIncome == null || monthlyIncome <= 0) {
-            throw new IllegalArgumentException("Monthly income must be greater than 0");
-        }
-
-        this.loanRequestId = loanRequestId;
-        this.dtiRatio = totalMonthlyObligations / monthlyIncome;
-        this.creditCheckStatus = creditCheckStatus;
-    }
-
-    @PrePersist
-    protected void onCreate() {
-        this.timestamp = new Timestamp(System.currentTimeMillis());
-    }
-
-
-    public Long getId() {
-        return id;
-    }
-
-    public Long getLoanRequestId() {
-        return loanRequestId;
-    }
-
-    public void setLoanRequestId(Long loanRequestId) {
-        this.loanRequestId = loanRequestId;
-    }
-
-    public Double getDtiRatio() {
-        return dtiRatio;
-    }
-
-    public void setDtiRatio(Double dtiRatio) {
-        this.dtiRatio = dtiRatio;
-    }
-
-    public String getCreditCheckStatus() {
-        return creditCheckStatus;
-    }
-
-    public void setCreditCheckStatus(String creditCheckStatus) {
-        this.creditCheckStatus = creditCheckStatus;
-    }
-
-    public Timestamp getTimestamp() {
-        return timestamp;
-    }
+    public Double getDtiRatio() { return dtiRatio; }
+    public void setDtiRatio(Double dtiRatio) { this.dtiRatio = dtiRatio; }
 }

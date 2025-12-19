@@ -1,172 +1,24 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import java.sql.Timestamp;
 
 @Entity
-@Table(name = "eligibility_result")
 public class EligibilityResult {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "loan_request_id", nullable = false, unique = true)
-    private LoanRequest loanRequest;
-
-    @Column(nullable = false)
-    private Boolean isEligible;
-
+    private Long loanRequestId;
     private Double maxEligibleAmount;
 
-    private Double estimatedEmi;
+    // getters & setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    @Column(nullable = false)
-    private String riskLevel; // LOW / MEDIUM / HIGH
+    public Long getLoanRequestId() { return loanRequestId; }
+    public void setLoanRequestId(Long loanRequestId) { this.loanRequestId = loanRequestId; }
 
-    private String rejectionReason;
-
-    @Column(nullable = false, updatable = false)
-    private Timestamp calculatedAt;
-
-    // ===== Constructors =====
-
-    // No-args constructor (required by JPA)
-    public EligibilityResult() {
-    }
-
-    // Parameterized constructor
-    public EligibilityResult(LoanRequest loanRequest,
-                             Boolean isEligible,
-                             Double maxEligibleAmount,
-                             Double estimatedEmi,
-                             String riskLevel,
-                             String rejectionReason) {
-        this.loanRequest = loanRequest;
-        this.isEligible = isEligible;
-        this.maxEligibleAmount = maxEligibleAmount;
-        this.estimatedEmi = estimatedEmi;
-        this.riskLevel = riskLevel;
-        this.rejectionReason = rejectionReason;
-    }
-
-    // ===== Auto timestamp =====
-    @PrePersist
-    protected void onCreate() {
-        this.calculatedAt = new Timestamp(System.currentTimeMillis());
-    }
-
-    // ===== Getters and Setters =====
-
-    public Long getId() {
-        return id;
-    }
-
-    public LoanRequest getLoanRequest() {
-        return loanRequest;
-    }
-
-    public void setLoanRequest(LoanRequest loanRequest) {
-        this.loanRequest = loanRequest;
-    }
-
-    public Boolean getIsEligible() {
-        return isEligible;
-    }
-
-    public void setIsEligible(Boolean isEligible) {
-        this.isEligible = isEligible;
-    }
-
-    public Double getMaxEligibleAmount() {
-        return maxEligibleAmount;
-    }
-
-    public void setMaxEligibleAmount(Double maxEligibleAmount) {
-        this.maxEligibleAmount = maxEligibleAmount;
-    }
-
-    public Double getEstimatedEmi() {
-        return estimatedEmi;
-    }
-
-    public void setEstimatedEmi(Double estimatedEmi) {
-        this.estimatedEmi = estimatedEmi;
-    }
-
-    public String getRiskLevel() {
-        return riskLevel;
-    }
-
-    public void setRiskLevel(String riskLevel) {
-        this.riskLevel = riskLevel;
-    }
-
-    public String getRejectionReason() {
-        return rejectionReason;
-    }
-
-    public void setRejectionReason(String rejectionReason) {
-        this.rejectionReason = rejectionReason;
-    }
-
-    public Timestamp getCalculatedAt() {
-        return calculatedAt;
-    }
-
-    public Object getDtiRatio() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getDtiRatio'");
-    }
-
-    public void setDtiRatio(Object dtiRatio) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setDtiRatio'");
-    }
-
-    public Object getCreditCheckStatus() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getCreditCheckStatus'");
-    }
-
-    public void setUpdatedAt(Timestamp calculatedAt2) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setUpdatedAt'");
-    }
-
-    public Object getTenureMonths() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getTenureMonths'");
-    }
-
-    public void setTenureMonths(Object tenureMonths) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setTenureMonths'");
-    }
-
-    public Object getInterestRate() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getInterestRate'");
-    }
-
-    public void setInterestRate(Object interestRate) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setInterestRate'");
-    }
-
-    public Object getTimestamp() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getTimestamp'");
-    }
-
-    public void setTimestamp(Object timestamp) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setTimestamp'");
-    }
-
-    public void setCreditCheckStatus(Object creditCheckStatus) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setCreditCheckStatus'");
-    }
+    public Double getMaxEligibleAmount() { return maxEligibleAmount; }
+    public void setMaxEligibleAmount(Double maxEligibleAmount) { this.maxEligibleAmount = maxEligibleAmount; }
 }
