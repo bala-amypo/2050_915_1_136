@@ -4,7 +4,7 @@ import com.example.demo.entity.*;
 import com.example.demo.exception.BadRequestException;
 import com.example.demo.repository.*;
 import com.example.demo.service.RiskAssessmentService;
-
+@S
 public class RiskAssessmentServiceImpl implements RiskAssessmentService {
 
     private final LoanRequestRepository loanRepo;
