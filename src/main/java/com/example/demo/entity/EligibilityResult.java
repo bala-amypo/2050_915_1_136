@@ -14,10 +14,16 @@ public class EligibilityResult {
     private Boolean eligible;
 
     private Double disposableIncome;
-    private double maxEligibleAmount;
-    public double getMaxEligibleAmount() {
+    private Double maxEligibleAmount;
+
+public Double getMaxEligibleAmount() {
     return maxEligibleAmount;
-    }
+}
+
+public void setMaxEligibleAmount(Double maxEligibleAmount) {
+    this.maxEligibleAmount = maxEligibleAmount;
+}
+
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }

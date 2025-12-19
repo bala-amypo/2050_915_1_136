@@ -19,10 +19,16 @@ public class AuthController {
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
 
-    public AuthController(UserRepository userRepository, JwtUtil jwtUtil) {
-        this.userRepository = userRepository;
-        this.jwtUtil = jwtUtil;
-    }
+    import com.example.demo.service.impl.UserServiceImpl;
+    public AuthController(
+        UserServiceImpl userService,
+        JwtUtil jwtUtil,
+        UserRepository userRepository) {
+
+    this.userRepository = userRepository;
+    this.jwtUtil = jwtUtil;
+}
+
 
     // ✅ LOGIN
     @PostMapping("/login")

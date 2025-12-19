@@ -1,3 +1,4 @@
+
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
@@ -10,9 +11,9 @@ public class RiskAssessment {
     private Long id;
 
     private Long loanRequestId;
-    private Double riskScore;
-    private Double dtiRatio;
+    private String riskLevel;
 
+    // getters & setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -21,9 +22,8 @@ public class RiskAssessment {
         this.loanRequestId = loanRequestId;
     }
 
-    public Double getRiskScore() { return riskScore; }
-    public void setRiskScore(Double riskScore) { this.riskScore = riskScore; }
-
-    public Double getDtiRatio() { return dtiRatio; }
-    public void setDtiRatio(Double dtiRatio) { this.dtiRatio = dtiRatio; }
+    public String getRiskLevel() { return riskLevel; }
+    public void setRiskLevel(String riskLevel) {
+        this.riskLevel = riskLevel;
+    }
 }
