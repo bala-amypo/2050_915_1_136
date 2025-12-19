@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.EligibilityResult;
-import com.example.demo.service.impl.EligibilityServiceImpl;
+import com.example.demo.service.EligibilityService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,9 +12,9 @@ import java.util.Map;
 @RequestMapping("/eligibility")
 public class EligibilityController {
 
-    private final EligibilityServiceImpl eligibilityService;
+    private final EligibilityService eligibilityService;
 
-    public EligibilityController(EligibilityServiceImpl eligibilityService) {
+    public EligibilityController(EligibilityService eligibilityService) {
         this.eligibilityService = eligibilityService;
     }
 
@@ -23,7 +23,7 @@ public class EligibilityController {
             @PathVariable Long loanRequestId) {
 
         EligibilityResult result =
-                eligibilityService.evaluateEligibility(loanRequestId);
+                eligibilityService.checkEligibility(loanRequestId);
 
         Map<String, Object> response = new HashMap<>();
         response.put("eligible", result.getEligible());
