@@ -44,7 +44,7 @@ public EligibilityResult evaluateEligibility(long loanRequestId) {
               - fp.getExistingEmis();
 
         EligibilityResult result = new EligibilityResult();
-        result.setLoanRequestId(loanRequestId);
+        result.setLoanRequest(loanRequest);
         result.setEligible(disposable > 0);
         result.setDisposableIncome(disposable);
 
