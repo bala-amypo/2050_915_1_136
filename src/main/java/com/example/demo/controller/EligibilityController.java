@@ -14,11 +14,7 @@ public class EligibilityController {
 
     @PostMapping("/check")
     public String checkEligibility(@RequestBody LoanRequest loanRequest) {
-        // Correct setter usage
-        loanRequest.setRequestedAmount(loanRequest.getRequestedAmount());
-        loanRequest.setTenureMonths(loanRequest.getTenureMonths());
-
-        boolean eligible = eligibilityService.isEligible(loanRequest);
+        boolean eligible = eligibilityService.checkEligibility(loanRequest); // use interface method
         return eligible ? "Eligible" : "Not Eligible";
     }
 }
