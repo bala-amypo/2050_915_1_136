@@ -11,6 +11,15 @@ public class JwtUtil {
     private String secret = "your_secret_key"; 
     private int expiration = 3600000; 
 
+    // REQUIRED: Default constructor for Spring
+    public JwtUtil() {}
+
+    // REQUIRED: Constructor for the Test Suite (Fixes "cannot be applied to given types")
+    public JwtUtil(String secret, int expiration) {
+        this.secret = secret;
+        this.expiration = expiration;
+    }
+
     public String generateToken(User user) {
         return Jwts.builder()
                 .setSubject(user.getEmail())
