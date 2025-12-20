@@ -13,11 +13,15 @@ public class FinancialProfile {
     @ManyToOne(optional = false)
     private User user;
 
-    private Double monthlyIncome;
-    private Double monthlyExpenses;
-    private Double existingEmis;
+    // Inside FinancialProfile.java
+private Double monthlyIncome = 0.0;
+private Double monthlyExpenses = 0.0;
+private Double existingEmis = 0.0; // Ensure this matches the test's expectation
 
-    // ✅ Fields expected by tests
+// If you keep the name existingLoanEmi, add this getter:
+public Double getExistingEmis() { 
+    return existingEmis != null ? existingEmis : 0.0; 
+}
     private Double existingEmi;
     private Integer creditScore;
     private Double savingsBalance;
