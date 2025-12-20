@@ -19,6 +19,7 @@ public class FinancialProfile {
 
     private LocalDateTime createdAt;
 
+    // ✅ Automatically set createdAt before persisting
     @PrePersist
     public void prePersist() {
         if (this.createdAt == null) {
@@ -26,21 +27,53 @@ public class FinancialProfile {
         }
     }
 
-    // ---------- Getters & Setters ----------
+    /* ---------- Getters & Setters ---------- */
 
-    public Long getId() { return id; }
+    public Long getId() {
+        return id;
+    }
 
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
+    public void setId(Long id) {  // ✅ add setter for ID for tests
+        this.id = id;
+    }
 
-    public Double getMonthlyIncome() { return monthlyIncome; }
-    public void setMonthlyIncome(Double monthlyIncome) { this.monthlyIncome = monthlyIncome; }
+    public User getUser() {
+        return user;
+    }
 
-    public Double getMonthlyExpenses() { return monthlyExpenses; }
-    public void setMonthlyExpenses(Double monthlyExpenses) { this.monthlyExpenses = monthlyExpenses; }
+    public void setUser(User user) {
+        this.user = user;
+    }
 
-    public Double getExistingEmis() { return existingEmis; }
-    public void setExistingEmis(Double existingEmis) { this.existingEmis = existingEmis; }
+    public Double getMonthlyIncome() {
+        return monthlyIncome;
+    }
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setMonthlyIncome(Double monthlyIncome) {
+        this.monthlyIncome = monthlyIncome;
+    }
+
+    public Double getMonthlyExpenses() {
+        return monthlyExpenses;
+    }
+
+    public void setMonthlyExpenses(Double monthlyExpenses) {
+        this.monthlyExpenses = monthlyExpenses;
+    }
+
+    public Double getExistingEmis() {
+        return existingEmis;
+    }
+
+    public void setExistingEmis(Double existingEmis) {
+        this.existingEmis = existingEmis;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {  // ✅ add setter for tests
+        this.createdAt = createdAt;
+    }
 }

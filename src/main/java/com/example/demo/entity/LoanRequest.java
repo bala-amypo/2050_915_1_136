@@ -25,6 +25,7 @@ public class LoanRequest {
 
     private LocalDateTime submittedAt;
 
+    // ✅ Automatically set defaults before persisting
     @PrePersist
     public void prePersist() {
         if (this.status == null) {
@@ -39,6 +40,10 @@ public class LoanRequest {
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) { // ✅ Add setter for tests
+        this.id = id;
     }
 
     public User getUser() {
@@ -75,5 +80,9 @@ public class LoanRequest {
 
     public LocalDateTime getSubmittedAt() {
         return submittedAt;
+    }
+
+    public void setSubmittedAt(LocalDateTime submittedAt) { // ✅ Add setter for tests
+        this.submittedAt = submittedAt;
     }
 }

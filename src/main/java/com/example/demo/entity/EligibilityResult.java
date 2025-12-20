@@ -24,6 +24,7 @@ public class EligibilityResult {
 
     private LocalDateTime createdAt;
 
+    // ✅ Automatically set defaults before persisting
     @PrePersist
     public void prePersist() {
         if (this.eligible == null) {
@@ -44,6 +45,10 @@ public class EligibilityResult {
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) { // ✅ Added for test compatibility
+        this.id = id;
     }
 
     public LoanRequest getLoanRequest() {
@@ -88,5 +93,9 @@ public class EligibilityResult {
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) { // ✅ Added for test compatibility
+        this.createdAt = createdAt;
     }
 }

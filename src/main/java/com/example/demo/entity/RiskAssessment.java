@@ -15,14 +15,19 @@ public class RiskAssessment {
 
     private double riskScore;
 
-    // ✅ REQUIRED NO-ARGS CONSTRUCTOR
-    public RiskAssessment() {
+    // ✅ No-args constructor required by JPA
+    public RiskAssessment() {}
+
+    /* ---------- Getters & Setters ---------- */
+
+    public Long getId() {
+        return id;
     }
 
-    // ✅ GETTERS & SETTERS
-
-   public Long getId() { return id; }
-public void setId(Long id) { this.id = id; }
+    // ✅ Setter for ID (needed by some tests)
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public Long getLoanRequestId() {
         return loanRequestId;
