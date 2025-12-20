@@ -18,7 +18,7 @@ public class FinancialProfile {
     private Double existingEmis;
 
     // ✅ Fields expected by tests
-    private Double existingLoanEmi;
+    private Double existingEmi;
     private Integer creditScore;
     private Double savingsBalance;
     private LocalDateTime lastUpdatedAt;
@@ -69,13 +69,7 @@ public class FinancialProfile {
         this.existingEmis = existingEmis;
     }
 
-    public Double getExistingLoanEmi() {
-        return existingLoanEmi;
-    }
-    public void setExistingLoanEmi(Double existingLoanEmi) {
-        this.existingLoanEmi = existingLoanEmi;
-    }
-
+   
     public Integer getCreditScore() {
         return creditScore;
     }
