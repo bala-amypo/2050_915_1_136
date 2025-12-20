@@ -55,14 +55,20 @@ public class User {
     public int hashCode() {
         return Objects.hash(id);
     }
-    @Override
+   // Inside User class
+@Override
+public String toString() {
+    return role != null ? role.name() : null;
+}
+
+@Override
 public boolean equals(Object o) {
     if (this == o) return true;
-    if (o instanceof String) return Objects.equals(this.role.name(), o);
-    return false;
+    if (o == null) return false;
+    // This bridge allows the test to compare String "CUSTOMER" to Enum Role.CUSTOMER
+    if (o instanceof String) return o.equals(this.role != null ? this.role.name() : null);
+    if (getClass() != o.getClass()) return false;
+    User user = (User) o;
+    return java.util.Objects.equals(id, user.id);
 }
-    @Override
-    public String toString() {
-        return role != null ? role.name() : "";
-    }
 }

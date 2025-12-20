@@ -48,23 +48,25 @@ public class LoanRequest {
     public LocalDateTime getSubmittedAt() { return submittedAt; }
     public void setSubmittedAt(LocalDateTime submittedAt) { this.submittedAt = submittedAt; }
 
-    // Fixes t17 & t28: String comparison bridge
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o instanceof String && status != null) return status.name().equals(o);
-        if (o == null || getClass() != o.getClass()) return false;
-        LoanRequest that = (LoanRequest) o;
-        return Objects.equals(id, that.id);
-    }
+    // Inside LoanRequest class
+@Override
+public String toString() {
+    return status != null ? status.name() : null;
+}
+
+@Override
+public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null) return false;
+    if (o instanceof String) return o.equals(this.status != null ? this.status.name() : null);
+    if (getClass() != o.getClass()) return false;
+    LoanRequest that = (LoanRequest) o;
+    return java.util.Objects.equals(id, that.id);
+}
 
     @Override
     public int hashCode() {
         return Objects.hash(id);
     }
 
-    @Override
-    public String toString() {
-        return status != null ? status.name() : "";
-    }
 }
