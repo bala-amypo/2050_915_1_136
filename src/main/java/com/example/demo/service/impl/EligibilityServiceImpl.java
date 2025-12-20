@@ -5,7 +5,6 @@ import com.example.demo.repository.*;
 import com.example.demo.service.EligibilityService;
 import com.example.demo.exception.BadRequestException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class EligibilityServiceImpl implements EligibilityService {
@@ -20,9 +19,7 @@ public class EligibilityServiceImpl implements EligibilityService {
     }
 
     @Override
-    @Transactional
     public EligibilityResult evaluateEligibility(long requestId) {
-        // Fix t53: check if already exists
         if (repo.findByLoanRequestId(requestId).isPresent()) throw new BadRequestException("Eligibility already exists");
 
         LoanRequest loanRequest = loanRepo.findById(requestId).orElseThrow(() -> new BadRequestException("Loan request not found"));
