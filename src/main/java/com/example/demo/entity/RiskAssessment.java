@@ -4,27 +4,16 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-public class RiskAssessment{
+public class RiskAssessment {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long id;
 
-    private Double riskScore;
-    private String riskLevel;
-    private LocalDateTime assessedAt = LocalDateTime.now();
+    private double dtiRatio;
 
-    @ManyToOne
-    private LoanRequest loanRequest;
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public Double getRiskScore() { return riskScore; }
-    public void setRiskScore(Double riskScore) { this.riskScore = riskScore; }
-
-    public String getRiskLevel() { return riskLevel; }
-    public void setRiskLevel(String riskLevel) { this.riskLevel = riskLevel; }
-
-    public LocalDateTime getAssessedAt() { return assessedAt; }
-
-    public LoanRequest getLoanRequest() { return loanRequest; }
-    public void setLoanRequest(LoanRequest loanRequest) { this.loanRequest = loanRequest; }
+    public double getDtiRatio() { return dtiRatio; }
 }

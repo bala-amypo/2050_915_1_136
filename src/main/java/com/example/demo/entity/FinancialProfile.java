@@ -6,23 +6,33 @@ import jakarta.persistence.*;
 public class FinancialProfile {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long id;
 
-    private Double monthlyIncome;
-    private Integer creditScore;
+    private double monthlyExpenses;
+    private double existingLoanEmi;
+    private double savingsBalance;
 
-    @OneToOne
-    private User user;
+    private LocalDateTime lastUpdatedAt;
 
+    // ✅ REQUIRED getters & setters
     public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public Double getMonthlyIncome() { return monthlyIncome; }
-    public void setMonthlyIncome(Double monthlyIncome) { this.monthlyIncome = monthlyIncome; }
+    public double getMonthlyExpenses() { return monthlyExpenses; }
+    public void setMonthlyExpenses(double monthlyExpenses) {
+        this.monthlyExpenses = monthlyExpenses;
+    }
 
-    public Integer getCreditScore() { return creditScore; }
-    public void setCreditScore(Integer creditScore) { this.creditScore = creditScore; }
+    public double getExistingLoanEmi() { return existingLoanEmi; }
+    public void setExistingLoanEmi(double existingLoanEmi) {
+        this.existingLoanEmi = existingLoanEmi;
+    }
 
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
+    public double getSavingsBalance() { return savingsBalance; }
+    public void setSavingsBalance(double savingsBalance) {
+        this.savingsBalance = savingsBalance;
+    }
+
+    public LocalDateTime getLastUpdatedAt() { return lastUpdatedAt; }
 }

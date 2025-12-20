@@ -9,29 +9,19 @@ import com.example.demo.service.EligibilityService;
 import org.springframework.stereotype.Service;
 
 @Service
-public class EligibilityServiceImpl implements EligibilityService {
+public class EligibilityServiceImpl {
 
-    private final LoanRequestRepository loanRepo;
+    private final LoanRequestRepository loanRequestRepo;
+    private final FinancialProfileRepository financialProfileRepo;
     private final EligibilityResultRepository eligibilityRepo;
 
-    public EligibilityServiceImpl(LoanRequestRepository loanRepo,
-                                      EligibilityResultRepository eligibilityRepo) {
-        this.loanRepo = loanRepo;
+    public EligibilityServiceImpl(
+            LoanRequestRepository loanRequestRepo,
+            FinancialProfileRepository financialProfileRepo,
+            EligibilityResultRepository eligibilityRepo) {
+
+        this.loanRequestRepo = loanRequestRepo;
+        this.financialProfileRepo = financialProfileRepo;
         this.eligibilityRepo = eligibilityRepo;
-    }
-
-    @Override
-    public EligibilityResult checkEligibility(Long loanRequestId) {
-        LoanRequest lr = loanRepo.findById(loanRequestId)
-                .orElseThrow(() -> new ResourceNotFoundException("Loan request not found"));
-
-        EligibilityResult result = new EligibilityResult();
-        result.setLoanRequest(lr);
-
-        // Simple logic (exam-friendly)
-        result.setEligible(lr.getRequestedAmount() <= 100000);
-        result.setMaxEligibleAmount(100000.0);
-
-        return eligibilityRepo.save(result);
     }
 }
