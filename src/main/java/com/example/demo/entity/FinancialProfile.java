@@ -3,23 +3,46 @@ package com.example.demo.entity;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "financial_profiles")
 public class FinancialProfile {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @OneToOne
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
     private double monthlyIncome;
-    private double monthlyExpenses;
-    private double existingLoanEmi;
+
+    private double existingDebt;
+
     private int creditScore;
-    private double savingsBalance;
 
-    // Add getters and setters for all fields
-    public void setUser(User user) { this.user = user; }
+    // Constructors
+    public FinancialProfile() {}
+
+    public FinancialProfile(User user, double monthlyIncome, double existingDebt, int creditScore) {
+        this.user = user;
+        this.monthlyIncome = monthlyIncome;
+        this.existingDebt = existingDebt;
+        this.creditScore = creditScore;
+    }
+
+    // Getters and Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
     public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
 
-    public void setMonthlyIncome(double income) { this.monthlyIncome = income; }
     public double getMonthlyIncome() { return monthlyIncome; }
+    public void setMonthlyIncome(double monthlyIncome) { this.monthlyIncome = monthlyIncome; }
 
-    public void setMonthlyExpenses(double expenses) { this.monthlyExpenses = expenses; }
-    public double getMonthlyExpenses() { return monthlyExpenses; }
+    public double getExistingDebt() { return existingDebt; }
+    public void setExistingDebt(double existingDebt) { this.existingDebt = existingDebt; }
 
-    // Do the same for existingLoanEmi, creditScore, savingsBalance
+    public int getCreditScore() { return creditScore; }
+    public void setCreditScore(int creditScore) { this.creditScore = creditScore; }
 }
