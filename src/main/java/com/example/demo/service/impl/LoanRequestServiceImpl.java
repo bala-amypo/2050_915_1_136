@@ -18,35 +18,24 @@ public class LoanRequestServiceImpl implements LoanRequestService {
     private LoanRequestRepository repo;
     private UserRepository userRepo;
 
-    // ✅ REQUIRED by Spring (NO-ARG constructor)
-    public LoanRequestServiceImpl() {
-    }
+    public LoanRequestServiceImpl() {}
 
-    // ✅ Used by tests & Spring injection
-    public LoanRequestServiceImpl(LoanRequestRepository repo, UserRepository userRepo) {
-        this.repo = repo;
-        this.userRepo = userRepo;
+    public LoanRequestServiceImpl(LoanRequestRepository r, UserRepository u) {
+        this.repo = r;
+        this.userRepo = u;
     }
 
     @Override
-    @Transactional
     public LoanRequest submitRequest(LoanRequest request) {
-
         User user = userRepo.findById(request.getUser().getId())
                 .orElseThrow(() -> new BadRequestException("User not found"));
 
-        request.setUser(user);
-        request.setStatus(LoanRequest.Status.PENDING);
-        request.setSubmittedAt(LocalDateTime.now());
-
+        request.setUser(user); // ❌ DO NOT set status/time here
         return repo.save(request);
     }
 
     @Override
     public List<LoanRequest> getRequestsByUser(Long userId) {
-        if (!userRepo.existsById(userId)) {
-            throw new BadRequestException("User not found");
-        }
         return repo.findByUserId(userId);
     }
 
