@@ -13,7 +13,6 @@ public class EligibilityServiceImpl implements EligibilityService {
     private final FinancialProfileRepository profileRepo;
     private final EligibilityResultRepository resultRepo;
 
-    // ✅ REQUIRED BY TESTS
     public EligibilityServiceImpl(
             LoanRequestRepository loanRepo,
             FinancialProfileRepository profileRepo,
@@ -22,13 +21,12 @@ public class EligibilityServiceImpl implements EligibilityService {
         this.profileRepo = profileRepo;
         this.resultRepo = resultRepo;
     }
+
     // REQUIRED BY TESTS — DO NOT CHANGE NAME OR PARAM TYPE
-public EligibilityResult evaluateEligibility(long loanRequestId) {
-    return checkEligibility(loanRequestId);
-}
+    public EligibilityResult evaluateEligibility(long loanRequestId) {
+        return checkEligibility(loanRequestId);
+    }
 
-
-    // ✅ METHOD NAME MUST MATCH INTERFACE
     @Override
     public EligibilityResult checkEligibility(Long loanRequestId) {
 
@@ -40,20 +38,20 @@ public EligibilityResult evaluateEligibility(long loanRequestId) {
 
         double disposable =
                 fp.getMonthlyIncome()
-              - fp.getMonthlyExpenses()
-              - fp.getExistingEmis();
+                - fp.getMonthlyExpenses()
+                - fp.getExistingEmis();
 
         EligibilityResult result = new EligibilityResult();
-        result.setLoanRequest(loanRequest);
+        result.setLoanRequest(lr);        // ✅ use LoanRequest entity
+        result.setUser(lr.getUser());     // ✅ set user
         result.setEligible(disposable > 0);
         result.setDisposableIncome(disposable);
 
         return resultRepo.save(result);
     }
 
-   public EligibilityResult getByLoanRequestId(Long loanRequestId) {
-    return resultRepo.findByLoanRequestId(loanRequestId)
-            .orElseThrow(() -> new BadRequestException("Eligibility result not found"));
-}
-
+    public EligibilityResult getByLoanRequestId(Long loanRequestId) {
+        return resultRepo.findByLoanRequestId(loanRequestId)
+                .orElseThrow(() -> new BadRequestException("Eligibility result not found"));
+    }
 }
