@@ -63,15 +63,15 @@ public class User {
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof User)) return false;
-        User user = (User) o;
-        return Objects.equals(id, user.id);
-    }
+public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof User)) return false;
+    User user = (User) o;
+    return email != null && email.equals(user.email);
+}
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
+@Override
+public int hashCode() {
+    return email != null ? email.hashCode() : 0;
+}
 }
