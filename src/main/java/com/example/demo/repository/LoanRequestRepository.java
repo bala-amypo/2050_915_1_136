@@ -8,6 +8,6 @@ import java.util.List;
 @Repository
 public interface LoanRequestRepository extends JpaRepository<LoanRequest, Long> {
 
-    // Corrected method: reference User entity's id
+    // Notice the underscore: findByUser_Id
     List<LoanRequest> findByUser_Id(Long userId);
 }

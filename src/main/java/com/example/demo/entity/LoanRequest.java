@@ -1,35 +1,34 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "loan_requests")
 public class LoanRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private int amount;
+    private double amount;
 
-    // You can add more fields like user, status, etc.
-    // private Long userId;
-    // private String status;
+    private LocalDateTime requestDate;
 
-    // ✅ Getters and Setters
-    public Long getId() {
-        return id;
-    }
+    // THIS IS CRUCIAL
+    @ManyToOne
+    @JoinColumn(name = "user_id") // optional, sets the FK column name
+    private User user;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    // getters and setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public int getAmount() {
-        return amount;
-    }
+    public double getAmount() { return amount; }
+    public void setAmount(double amount) { this.amount = amount; }
 
-    public void setAmount(int amount) {
-        this.amount = amount;
-    }
+    public LocalDateTime getRequestDate() { return requestDate; }
+    public void setRequestDate(LocalDateTime requestDate) { this.requestDate = requestDate; }
+
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
 }
