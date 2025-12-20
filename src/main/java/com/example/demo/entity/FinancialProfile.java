@@ -13,20 +13,12 @@ public class FinancialProfile {
     @ManyToOne(optional = false)
     private User user;
 
-    // Inside FinancialProfile.java
-private Double monthlyIncome = 0.0;
-private Double monthlyExpenses = 0.0;
-private Double existingEmis = 0.0; // Ensure this matches the test's expectation
-
-// If you keep the name existingLoanEmi, add this getter:
-public Double getExistingEmis() { 
-    return existingEmis != null ? existingEmis : 0.0; 
-}
-    private Double existingEmi;
+    private Double monthlyIncome = 0.0;
+    private Double monthlyExpenses = 0.0;
+    private Double existingEmis = 0.0; // The name the tests expect
     private Integer creditScore;
     private Double savingsBalance;
     private LocalDateTime lastUpdatedAt;
-
     private LocalDateTime createdAt;
 
     @PrePersist
@@ -34,71 +26,45 @@ public Double getExistingEmis() {
         if (this.createdAt == null) {
             this.createdAt = LocalDateTime.now();
         }
+        if (this.lastUpdatedAt == null) {
+            this.lastUpdatedAt = LocalDateTime.now();
+        }
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.lastUpdatedAt = LocalDateTime.now();
     }
 
     /* ---------- Getters & Setters ---------- */
 
-    public Long getId() {
-        return id;
-    }
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public User getUser() {
-        return user;
-    }
-    public void setUser(User user) {
-        this.user = user;
-    }
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
 
-    public Double getMonthlyIncome() {
-        return monthlyIncome;
-    }
-    public void setMonthlyIncome(Double monthlyIncome) {
-        this.monthlyIncome = monthlyIncome;
-    }
+    public Double getMonthlyIncome() { return monthlyIncome; }
+    public void setMonthlyIncome(Double monthlyIncome) { this.monthlyIncome = monthlyIncome; }
 
-    public Double getMonthlyExpenses() {
-        return monthlyExpenses;
-    }
-    public void setMonthlyExpenses(Double monthlyExpenses) {
-        this.monthlyExpenses = monthlyExpenses;
-    }
+    public Double getMonthlyExpenses() { return monthlyExpenses; }
+    public void setMonthlyExpenses(Double monthlyExpenses) { this.monthlyExpenses = monthlyExpenses; }
 
-    public Double getExistingEmis() {
-        return existingEmis;
+    // Use only ONE version of this
+    public Double getExistingEmis() { 
+        return existingEmis != null ? existingEmis : 0.0; 
     }
-    public void setExistingEmis(Double existingEmis) {
-        this.existingEmis = existingEmis;
-    }
+    public void setExistingEmis(Double existingEmis) { this.existingEmis = existingEmis; }
 
-   
-    public Integer getCreditScore() {
-        return creditScore;
-    }
-    public void setCreditScore(Integer creditScore) {
-        this.creditScore = creditScore;
-    }
+    public Integer getCreditScore() { return creditScore; }
+    public void setCreditScore(Integer creditScore) { this.creditScore = creditScore; }
 
-    public Double getSavingsBalance() {
-        return savingsBalance;
-    }
-    public void setSavingsBalance(Double savingsBalance) {
-        this.savingsBalance = savingsBalance;
-    }
+    public Double getSavingsBalance() { return savingsBalance; }
+    public void setSavingsBalance(Double savingsBalance) { this.savingsBalance = savingsBalance; }
 
-    public LocalDateTime getLastUpdatedAt() {
-        return lastUpdatedAt;
-    }
-    public void setLastUpdatedAt(LocalDateTime lastUpdatedAt) {
-        this.lastUpdatedAt = lastUpdatedAt;
-    }
+    public LocalDateTime getLastUpdatedAt() { return lastUpdatedAt; }
+    public void setLastUpdatedAt(LocalDateTime lastUpdatedAt) { this.lastUpdatedAt = lastUpdatedAt; }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 }
