@@ -1,68 +1,30 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
+@Table(name = "users") // 'user' is a reserved keyword in some DBs
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = false)
-    private User user;
+    @Column(unique = true, nullable = false)
+    private String email;
 
-    private Double monthlyIncome;
-    private Double monthlyExpenses;
-    private Double existingLoanEmi;  // renamed to match test
-    private Integer creditScore;      // added
-    private Double savingsBalance;    // added
+    private String password;
 
-    private LocalDateTime createdAt;
-    private LocalDateTime lastUpdatedAt;
+    private String role; // Ensure this matches your JwtUtil/UserService logic
 
-    @PrePersist
-    public void prePersist() {
-        if (this.createdAt == null) {
-            this.createdAt = LocalDateTime.now();
-        }
-        if (this.lastUpdatedAt == null) {
-            this.lastUpdatedAt = LocalDateTime.now();
-        }
-    }
-
-    @PreUpdate
-    public void preUpdate() {
-        this.lastUpdatedAt = LocalDateTime.now();
-    }
-
-    /* ---------- Getters & Setters ---------- */
-
+    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
-
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
-
-    public Double getMonthlyIncome() { return monthlyIncome; }
-    public void setMonthlyIncome(Double monthlyIncome) { this.monthlyIncome = monthlyIncome; }
-
-    public Double getMonthlyExpenses() { return monthlyExpenses; }
-    public void setMonthlyExpenses(Double monthlyExpenses) { this.monthlyExpenses = monthlyExpenses; }
-
-    public Double getExistingLoanEmi() { return existingLoanEmi; }
-    public void setExistingLoanEmi(Double existingLoanEmi) { this.existingLoanEmi = existingLoanEmi; }
-
-    public Integer getCreditScore() { return creditScore; }
-    public void setCreditScore(Integer creditScore) { this.creditScore = creditScore; }
-
-    public Double getSavingsBalance() { return savingsBalance; }
-    public void setSavingsBalance(Double savingsBalance) { this.savingsBalance = savingsBalance; }
-
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
-
-    public LocalDateTime getLastUpdatedAt() { return lastUpdatedAt; }
-    public void setLastUpdatedAt(LocalDateTime lastUpdatedAt) { this.lastUpdatedAt = lastUpdatedAt; }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
 }
