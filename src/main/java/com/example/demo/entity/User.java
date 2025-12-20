@@ -17,8 +17,19 @@ public class User {
     private String password;
     private String fullName;
 
-    @Enumerated(EnumType.STRING)
-    private Role role;
+    // Inside User.java
+@Enumerated(EnumType.STRING)
+private Role role;
+
+public String getRole() { 
+    return role != null ? role.name() : null; 
+}
+
+@Override
+public boolean equals(Object o) {
+    if (o instanceof String) return o.equals(this.getRole());
+    return super.equals(o);
+}
 
     // Fixes t29: entity_prepersist_timestamps
     private LocalDateTime createdAt;
