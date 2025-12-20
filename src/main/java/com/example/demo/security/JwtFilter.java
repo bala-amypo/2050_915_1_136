@@ -1,34 +1,38 @@
 package com.example.demo.security;
 
-import jakarta.servlet.*;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.SignatureException;
+import org.springframework.stereotype.Component;
 
-import java.io.IOException;
+import java.util.Date;
 
-public class JwtFilter implements Filter {
+@Component
+public class JwtUtil {
 
-    private final JwtUtil jwtUtil;
+    private final String secret = "your-secret-key"; // replace with your actual secret
 
-    public JwtFilter(JwtUtil jwtUtil) {
-        this.jwtUtil = jwtUtil;
+    public Claims extractAllClaims(String token) {
+        try {
+            return Jwts.parser()
+                    .setSigningKey(secret)
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (JwtException e) {
+            throw new JwtException("Invalid token", e);
+        }
     }
 
-    @Override
-    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
-            throws IOException, ServletException {
+    public void validateToken(String token) {
+        try {
+            Claims claims = extractAllClaims(token);
 
-        HttpServletRequest request = (HttpServletRequest) req;
-        String header = request.getHeader("Authorization");
-
-        if (header != null && header.startsWith("Bearer ")) {
-            String token = header.substring(7);
-            try {
-                jwtUtil.getAllClaims(token);
-            } catch (Exception e) {
-                // swallow exception (tests expect filter to continue)
+            if (claims.getExpiration() == null || claims.getExpiration().before(new Date())) {
+                throw new JwtException("Token expired");
             }
+        } catch (JwtException e) {
+            throw new JwtException("Token validation failed: " + e.getMessage(), e);
         }
-        chain.doFilter(req, res);
     }
 }
