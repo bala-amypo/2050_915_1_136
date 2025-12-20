@@ -5,9 +5,9 @@ import com.example.demo.repository.LoanRequestRepository;
 import com.example.demo.service.LoanRequestService;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.List;
 
-@Service  // <- This makes it a Spring Bean
+@Service
 public class LoanRequestServiceImpl implements LoanRequestService {
 
     private final LoanRequestRepository loanRequestRepository;
@@ -17,13 +17,12 @@ public class LoanRequestServiceImpl implements LoanRequestService {
     }
 
     @Override
-    public LoanRequest saveLoanRequest(LoanRequest request) {
-        return loanRequestRepository.save(request);
+    public LoanRequest saveLoanRequest(LoanRequest loanRequest) {
+        return loanRequestRepository.save(loanRequest);
     }
 
     @Override
-    public LoanRequest getLoanRequestById(Long id) {
-        Optional<LoanRequest> opt = loanRequestRepository.findById(id);
-        return opt.orElse(null);
+    public List<LoanRequest> getLoanRequestsByUserId(Long userId) {
+        return loanRequestRepository.findByUser_Id(userId);
     }
 }
