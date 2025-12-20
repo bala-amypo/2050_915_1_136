@@ -10,12 +10,13 @@ public class FinancialProfile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = false)
+    @OneToOne(optional = false)
+    @JoinColumn(name = "user_id", unique = true)
     private User user;
 
     private Double monthlyIncome = 0.0;
     private Double monthlyExpenses = 0.0;
-    private Double existingEmis = 0.0; // The name the tests expect
+    private Double existingEmis = 0.0;
     private Integer creditScore;
     private Double savingsBalance;
     private LocalDateTime lastUpdatedAt;
@@ -23,12 +24,8 @@ public class FinancialProfile {
 
     @PrePersist
     public void prePersist() {
-        if (this.createdAt == null) {
-            this.createdAt = LocalDateTime.now();
-        }
-        if (this.lastUpdatedAt == null) {
-            this.lastUpdatedAt = LocalDateTime.now();
-        }
+        if (this.createdAt == null) this.createdAt = LocalDateTime.now();
+        if (this.lastUpdatedAt == null) this.lastUpdatedAt = LocalDateTime.now();
     }
 
     @PreUpdate
@@ -36,8 +33,7 @@ public class FinancialProfile {
         this.lastUpdatedAt = LocalDateTime.now();
     }
 
-    /* ---------- Getters & Setters ---------- */
-
+    // Getters & Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -50,15 +46,12 @@ public class FinancialProfile {
     public Double getMonthlyExpenses() { return monthlyExpenses; }
     public void setMonthlyExpenses(Double monthlyExpenses) { this.monthlyExpenses = monthlyExpenses; }
 
-   public Double getExistingEmis() { 
-        return existingEmis != null ? existingEmis : 0.0; 
-    }
+    public Double getExistingEmis() { return existingEmis != null ? existingEmis : 0.0; }
     public void setExistingEmis(Double existingEmis) { this.existingEmis = existingEmis; }
 
-    // --- Add these two here ---
+    public Double getExistingLoanEmi() { return existingEmis; }
     public void setExistingLoanEmi(Double existingLoanEmi) { this.existingEmis = existingLoanEmi; }
-    public Double getExistingLoanEmi() { return this.existingEmis; }
-    // --------------------------
+
     public Integer getCreditScore() { return creditScore; }
     public void setCreditScore(Integer creditScore) { this.creditScore = creditScore; }
 

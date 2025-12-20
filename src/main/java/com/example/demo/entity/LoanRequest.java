@@ -24,6 +24,7 @@ public class LoanRequest {
 
     public enum Status { PENDING, APPROVED, REJECTED }
 
+    // Getters & Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -46,12 +47,13 @@ public class LoanRequest {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o instanceof String) return status != null && status.name().equals(o);
         if (o == null || getClass() != o.getClass()) return false;
         LoanRequest that = (LoanRequest) o;
         return Objects.equals(id, that.id);
     }
 
     @Override
-    public int hashCode() { return Objects.hash(id); }
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }
