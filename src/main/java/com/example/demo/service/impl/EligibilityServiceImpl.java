@@ -41,7 +41,7 @@ public EligibilityResult evaluateEligibility(long loanRequestId) {
         double disposable =
                 fp.getMonthlyIncome()
               - fp.getMonthlyExpenses()
-              - fp.getExistingLoanEmi();
+              - fp.getExistingEmi();
 
         EligibilityResult result = new EligibilityResult();
         result.setLoanRequestId(loanRequestId);
