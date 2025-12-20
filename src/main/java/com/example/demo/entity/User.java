@@ -1,80 +1,68 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "users")
 public class User {
-
-    public enum Role {
-        ADMIN, CUSTOMER
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
-    private String email;
+    @ManyToOne(optional = false)
+    private User user;
 
-    @Column(nullable = false)
-    private String password;
+    private Double monthlyIncome;
+    private Double monthlyExpenses;
+    private Double existingLoanEmi;  // renamed to match test
+    private Integer creditScore;      // added
+    private Double savingsBalance;    // added
 
-    private String fullName;
-
-    @Enumerated(EnumType.STRING)
-    private Role role;
-
-    // ✅ No-args constructor required by Spring/JPA
-    public User() {}
+    private LocalDateTime createdAt;
+    private LocalDateTime lastUpdatedAt;
 
     @PrePersist
     public void prePersist() {
-        if (this.role == null) {
-            this.role = Role.CUSTOMER; // default role for tests
+        if (this.createdAt == null) {
+            this.createdAt = LocalDateTime.now();
         }
+        if (this.lastUpdatedAt == null) {
+            this.lastUpdatedAt = LocalDateTime.now();
+        }
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.lastUpdatedAt = LocalDateTime.now();
     }
 
     /* ---------- Getters & Setters ---------- */
 
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    // ✅ Add setter for id (required by some tests)
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
 
-    public String getEmail() {
-        return email;
-    }
+    public Double getMonthlyIncome() { return monthlyIncome; }
+    public void setMonthlyIncome(Double monthlyIncome) { this.monthlyIncome = monthlyIncome; }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    public Double getMonthlyExpenses() { return monthlyExpenses; }
+    public void setMonthlyExpenses(Double monthlyExpenses) { this.monthlyExpenses = monthlyExpenses; }
 
-    public String getPassword() {
-        return password;
-    }
+    public Double getExistingLoanEmi() { return existingLoanEmi; }
+    public void setExistingLoanEmi(Double existingLoanEmi) { this.existingLoanEmi = existingLoanEmi; }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    public Integer getCreditScore() { return creditScore; }
+    public void setCreditScore(Integer creditScore) { this.creditScore = creditScore; }
 
-    public String getFullName() {
-        return fullName;
-    }
+    public Double getSavingsBalance() { return savingsBalance; }
+    public void setSavingsBalance(Double savingsBalance) { this.savingsBalance = savingsBalance; }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
+    public LocalDateTime getLastUpdatedAt() { return lastUpdatedAt; }
+    public void setLastUpdatedAt(LocalDateTime lastUpdatedAt) { this.lastUpdatedAt = lastUpdatedAt; }
 }
