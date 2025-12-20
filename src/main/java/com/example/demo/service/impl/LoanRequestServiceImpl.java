@@ -15,35 +15,27 @@ import java.util.List;
 @Service
 public class LoanRequestServiceImpl implements LoanRequestService {
 
-    private final LoanRequestRepository repo;
-    private final UserRepository userRepo;
+    private LoanRequestRepository repo;
+    private UserRepository userRepo;
 
-    // 1️⃣ Primary constructor (Spring Boot)
+    // ✅ REQUIRED by Spring (NO-ARG constructor)
+    public LoanRequestServiceImpl() {
+    }
+
+    // ✅ Used by tests & Spring injection
     public LoanRequestServiceImpl(LoanRequestRepository repo, UserRepository userRepo) {
         this.repo = repo;
         this.userRepo = userRepo;
-    }
-
-    // 2️⃣ Fallback constructor (Hidden test cases)
-    public LoanRequestServiceImpl(LoanRequestRepository repo) {
-        this.repo = repo;
-        this.userRepo = null; // tests mock behavior, not DB
     }
 
     @Override
     @Transactional
     public LoanRequest submitRequest(LoanRequest request) {
 
-        if (request == null || request.getUser() == null) {
-            throw new BadRequestException("Invalid loan request");
-        }
+        User user = userRepo.findById(request.getUser().getId())
+                .orElseThrow(() -> new BadRequestException("User not found"));
 
-        if (userRepo != null) {
-            User user = userRepo.findById(request.getUser().getId())
-                    .orElseThrow(() -> new BadRequestException("User not found"));
-            request.setUser(user);
-        }
-
+        request.setUser(user);
         request.setStatus(LoanRequest.Status.PENDING);
         request.setSubmittedAt(LocalDateTime.now());
 
@@ -52,7 +44,7 @@ public class LoanRequestServiceImpl implements LoanRequestService {
 
     @Override
     public List<LoanRequest> getRequestsByUser(Long userId) {
-        if (userRepo != null && !userRepo.existsById(userId)) {
+        if (!userRepo.existsById(userId)) {
             throw new BadRequestException("User not found");
         }
         return repo.findByUserId(userId);
