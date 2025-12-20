@@ -1,38 +1,34 @@
 package com.example.demo.service.impl;
-import com.example.demo.repository.FinancialProfileRepository;
 
 import com.example.demo.entity.EligibilityResult;
-import com.example.demo.entity.LoanRequest;
-import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.entity.FinancialProfile;
 import com.example.demo.repository.EligibilityResultRepository;
-import com.example.demo.repository.LoanRequestRepository;
+import com.example.demo.repository.FinancialProfileRepository;
 import com.example.demo.service.EligibilityService;
 import org.springframework.stereotype.Service;
 
-@Service
-public class EligibilityServiceImpl {
+@Service   // ✅ THIS IS THE KEY
+public class EligibilityServiceImpl implements EligibilityService {
 
-    private final LoanRequestRepository loanRequestRepo;
-    private final FinancialProfileRepository financialProfileRepo;
-    private final EligibilityResultRepository eligibilityRepo;
+    private final FinancialProfileRepository profileRepo;
+    private final EligibilityResultRepository resultRepo;
 
-    public EligibilityServiceImpl(
-            LoanRequestRepository loanRequestRepo,
-            FinancialProfileRepository financialProfileRepo,
-            EligibilityResultRepository eligibilityRepo) {
-
-        this.loanRequestRepo = loanRequestRepo;
-        this.financialProfileRepo = financialProfileRepo;
-        this.eligibilityRepo = eligibilityRepo;
+    public EligibilityServiceImpl(FinancialProfileRepository profileRepo,
+                                  EligibilityResultRepository resultRepo) {
+        this.profileRepo = profileRepo;
+        this.resultRepo = resultRepo;
     }
-    public EligibilityResult evaluateEligibility(long loanRequestId) {
-    return eligibilityRepo.findByLoanRequestId(loanRequestId)
-            .orElseThrow();
-}
 
-public EligibilityResult getByLoanRequestId(long id) {
-    return eligibilityRepo.findByLoanRequestId(id)
-            .orElseThrow();
-}
+    @Override
+    public EligibilityResult checkEligibility(Long userId) {
 
+        FinancialProfile profile = profileRepo.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("Financial profile not found"));
+
+        EligibilityResult result = new EligibilityResult();
+        result.setUser(profile.getUser());
+        result.setEligible(profile.getIncome() > 30000);
+
+        return resultRepo.save(result);
+    }
 }
