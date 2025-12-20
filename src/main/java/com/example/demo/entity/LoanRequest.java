@@ -1,88 +1,49 @@
-package com.example.demo.entity;
+package com.example.demo.security;
 
-import jakarta.persistence.*;
-import java.time.LocalDateTime;
+import com.example.demo.entity.User;
+import io.jsonwebtoken.*;
+import org.springframework.stereotype.Component;
+import java.util.Date;
+import java.util.Map;
 
-@Entity
-public class LoanRequest {
+@Component
+public class JwtUtil {
+    private String secret = "your_secret_key"; 
+    private int expiration = 3600000; 
 
-    public enum Status {
-        PENDING, APPROVED, REJECTED
+    public String generateToken(User user) {
+        return Jwts.builder()
+                .setSubject(user.getEmail())
+                // Ensure we call name() on the Enum object
+                .claim("role", user.getRole() != null ? user.getRole().name() : "CUSTOMER")
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + expiration))
+                .signWith(SignatureAlgorithm.HS256, secret)
+                .compact();
     }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @ManyToOne(optional = false)
-    private User user;
-
-    private Double requestedAmount;
-    private Integer tenureMonths;
-
-    @Enumerated(EnumType.STRING)
-    private Status status = Status.PENDING; // Set default using the Enum directly
-
-    private LocalDateTime submittedAt;
-
-    @PrePersist
-    public void prePersist() {
-        // Status is already defaulted above, but this ensures it's never null
-        if (this.status == null) {
-            this.status = Status.PENDING;
-        }
-        if (this.submittedAt == null) {
-            this.submittedAt = LocalDateTime.now();
-        }
+    public String generateToken(Map<String, Object> claims, String subject) {
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(subject)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + expiration))
+                .signWith(SignatureAlgorithm.HS256, secret)
+                .compact();
     }
 
-    /* ---------- Getters & Setters ---------- */
-
-    public Long getId() {
-        return id;
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
+            return !isTokenExpired(token);
+        } catch (Exception e) { return false; }
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    private boolean isTokenExpired(String token) {
+        return getAllClaims(token).getExpiration().before(new Date());
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Double getRequestedAmount() {
-        return requestedAmount;
-    }
-
-    public void setRequestedAmount(Double requestedAmount) {
-        this.requestedAmount = requestedAmount;
-    }
-
-    public Integer getTenureMonths() {
-        return tenureMonths;
-    }
-
-    public void setTenureMonths(Integer tenureMonths) {
-        this.tenureMonths = tenureMonths;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    public LocalDateTime getSubmittedAt() {
-        return submittedAt;
-    }
-
-    public void setSubmittedAt(LocalDateTime submittedAt) {
-        this.submittedAt = submittedAt;
+    public Claims getAllClaims(String token) {
+        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
     }
 }
