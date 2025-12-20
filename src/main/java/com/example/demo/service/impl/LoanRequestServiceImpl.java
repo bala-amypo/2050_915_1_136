@@ -1,58 +1,44 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.entity.LoanRequest;
-import com.example.demo.entity.User;
-import com.example.demo.exception.BadRequestException;
-import com.example.demo.repository.LoanRequestRepository;
+import com.example.demo.entity.FinancialProfile;
+import com.example.demo.repository.FinancialProfileRepository;
 import com.example.demo.repository.UserRepository;
-import com.example.demo.service.LoanRequestService;
+import com.example.demo.service.FinancialProfileService;
+import com.example.demo.exception.BadRequestException;
 import org.springframework.stereotype.Service;
-import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class LoanRequestServiceImpl implements LoanRequestService {
+public class FinancialProfileServiceImpl implements FinancialProfileService {
 
-    private final LoanRequestRepository repo;
+    private final FinancialProfileRepository repo;
     private final UserRepository userRepo;
 
-    public LoanRequestServiceImpl(LoanRequestRepository repo, UserRepository userRepo) {
+    public FinancialProfileServiceImpl(FinancialProfileRepository repo, UserRepository userRepo) {
         this.repo = repo;
         this.userRepo = userRepo;
     }
 
     @Override
-    public LoanRequest submitRequest(LoanRequest request) {
-        if (request == null || request.getRequestedAmount() == null || request.getRequestedAmount() <= 0) {
-            throw new BadRequestException("Invalid amount");
+    @Transactional
+    public FinancialProfile createOrUpdate(FinancialProfile profile) {
+        if (profile.getUser() == null || profile.getUser().getId() == null) {
+            throw new BadRequestException("User ID required");
         }
 
-        if (request.getUser() == null || request.getUser().getId() == null) {
-            throw new BadRequestException("User ID is required");
-        }
-
-        User user = userRepo.findById(request.getUser().getId())
+        // Verify user exists (Fixes t47)
+        userRepo.findById(profile.getUser().getId())
                 .orElseThrow(() -> new BadRequestException("User not found"));
 
-        // Use the Status enum inside LoanRequest
-        if (request.getStatus() == null) {
-            request.setStatus(LoanRequest.Status.PENDING);
-        }
-
-        request.setUser(user);
-        return repo.save(request);
-    }
-
-    @Override
-    public LoanRequest getById(Long id) {
-        return repo.findById(id)
-                .orElseThrow(() -> new BadRequestException("Loan request not found"));
-    }
-
-    @Override
-    public List<LoanRequest> getRequestsByUser(Long userId) {
-        if (!userRepo.existsById(userId)) {
-            throw new BadRequestException("User not found");
-        }
-        return repo.findByUserId(userId);
+        // Check if profile exists for this user to avoid unique constraint violation (Fixes t27)
+        return repo.findByUserId(profile.getUser().getId())
+                .map(existing -> {
+                    existing.setMonthlyIncome(profile.getMonthlyIncome());
+                    existing.setMonthlyExpenses(profile.getMonthlyExpenses());
+                    existing.setExistingEmis(profile.getExistingEmis());
+                    existing.setCreditScore(profile.getCreditScore());
+                    return repo.save(existing);
+                })
+                .orElseGet(() -> repo.save(profile));
     }
 }
