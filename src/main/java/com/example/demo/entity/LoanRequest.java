@@ -21,13 +21,13 @@ public class LoanRequest {
     private Integer tenureMonths;
 
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private Status status = Status.PENDING; // Set default using the Enum directly
 
     private LocalDateTime submittedAt;
 
-    // ✅ Automatically set defaults before persisting
     @PrePersist
     public void prePersist() {
+        // Status is already defaulted above, but this ensures it's never null
         if (this.status == null) {
             this.status = Status.PENDING;
         }
@@ -42,7 +42,7 @@ public class LoanRequest {
         return id;
     }
 
-    public void setId(Long id) { // ✅ Add setter for tests
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -82,7 +82,7 @@ public class LoanRequest {
         return submittedAt;
     }
 
-    public void setSubmittedAt(LocalDateTime submittedAt) { // ✅ Add setter for tests
+    public void setSubmittedAt(LocalDateTime submittedAt) {
         this.submittedAt = submittedAt;
     }
 }
