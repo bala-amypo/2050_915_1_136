@@ -6,7 +6,11 @@ import jakarta.persistence.*;
 @Table(name = "users")
 public class User {
 
-    public enum Role { CUSTOMER, ADMIN }
+public enum Role {
+    ADMIN,
+    CUSTOMER
+}
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

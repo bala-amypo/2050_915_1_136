@@ -24,4 +24,9 @@ public class RiskAssessmentServiceImpl {
         this.financialProfileRepo = financialProfileRepo;
         this.riskRepo = riskRepo;
     }
+    public RiskAssessment getByLoanRequestId(long id) {
+    return riskRepo.findByLoanRequestId(id)
+            .orElseThrow();
+}
+
 }

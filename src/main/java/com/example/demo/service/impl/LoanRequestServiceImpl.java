@@ -10,26 +10,19 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class LoanRequestServiceImpl implements LoanRequestService {
+public class LoanRequestServiceImpl {
 
-    private final LoanRequestRepository loanRepo;
-    private final UserRepository userRepo;
+    private final LoanRequestRepository repo;
 
-    public LoanRequestServiceImpl(LoanRequestRepository loanRepo,
-                                  UserRepository userRepo) {
-        this.loanRepo = loanRepo;
-        this.userRepo = userRepo;
+    public LoanRequestServiceImpl(LoanRequestRepository repo) {
+        this.repo = repo;
     }
 
-    @Override
-    public LoanRequest submitRequest(LoanRequest request) {
-        userRepo.findById(request.getUser().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        return loanRepo.save(request);
+    public List<LoanRequest> getRequestsByUser(long userId) {
+        return repo.findByUserId(userId);
     }
 
-    @Override
-    public List<LoanRequest> getByUserId(Long userId) {
-        return loanRepo.findByUserId(userId);
+    public LoanRequest getById(long id) {
+        return repo.findById(id).orElseThrow();
     }
 }

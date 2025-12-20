@@ -24,4 +24,14 @@ public class EligibilityServiceImpl {
         this.financialProfileRepo = financialProfileRepo;
         this.eligibilityRepo = eligibilityRepo;
     }
+    public EligibilityResult evaluateEligibility(long loanRequestId) {
+    return eligibilityRepo.findByLoanRequestId(loanRequestId)
+            .orElseThrow();
+}
+
+public EligibilityResult getByLoanRequestId(long id) {
+    return eligibilityRepo.findByLoanRequestId(id)
+            .orElseThrow();
+}
+
 }

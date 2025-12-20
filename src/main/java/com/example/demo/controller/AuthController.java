@@ -30,13 +30,9 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public AuthResponse login(@RequestBody AuthRequest request) {
-        User user = userRepo.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("Invalid credentials"));
+public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest req) {
+    AuthResponse response = authService.login(req);
+    return ResponseEntity.ok(response);
+}
 
-        // ✅ FIX IS HERE
-        String token = jwtUtil.generateToken(user);
-
-        return new AuthResponse(token, user.getEmail(), user.getRole().name());
-    }
 }
