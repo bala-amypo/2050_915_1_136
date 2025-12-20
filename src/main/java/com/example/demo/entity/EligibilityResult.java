@@ -9,16 +9,31 @@ public class EligibilityResult {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    private User user;
+    @OneToOne
+    @JoinColumn(name = "loan_request_id", nullable = false)
+    private LoanRequest loanRequest; // Link to LoanRequest
 
     private boolean eligible;
+    private String reason;
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+    // Constructors
+    public EligibilityResult() {}
 
-    public void setEligible(boolean eligible) {
+    public EligibilityResult(LoanRequest loanRequest, boolean eligible, String reason) {
+        this.loanRequest = loanRequest;
         this.eligible = eligible;
+        this.reason = reason;
     }
+
+    // Getters and setters
+    public Long getId() { return id; }
+
+    public LoanRequest getLoanRequest() { return loanRequest; }
+    public void setLoanRequest(LoanRequest loanRequest) { this.loanRequest = loanRequest; }
+
+    public boolean isEligible() { return eligible; }
+    public void setEligible(boolean eligible) { this.eligible = eligible; }
+
+    public String getReason() { return reason; }
+    public void setReason(String reason) { this.reason = reason; }
 }
