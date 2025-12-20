@@ -7,18 +7,13 @@ import com.example.demo.repository.LoanRequestRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.LoanRequestService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 public class LoanRequestServiceImpl implements LoanRequestService {
 
-    private LoanRequestRepository repo;
-    private UserRepository userRepo;
-
-    public LoanRequestServiceImpl() {}
+    private final LoanRequestRepository repo;
+    private final UserRepository userRepo;
 
     public LoanRequestServiceImpl(LoanRequestRepository r, UserRepository u) {
         this.repo = r;
@@ -30,7 +25,7 @@ public class LoanRequestServiceImpl implements LoanRequestService {
         User user = userRepo.findById(request.getUser().getId())
                 .orElseThrow(() -> new BadRequestException("User not found"));
 
-        request.setUser(user); // ❌ DO NOT set status/time here
+        request.setUser(user);
         return repo.save(request);
     }
 

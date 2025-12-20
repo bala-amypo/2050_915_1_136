@@ -1,65 +1,43 @@
-package com.example.demo.entity;
+package com.example.demo.service.impl;
 
-import jakarta.persistence.*;
-import java.time.LocalDateTime;
-import java.util.Objects;
+import com.example.demo.entity.User;
+import com.example.demo.exception.BadRequestException;
+import com.example.demo.repository.UserRepository;
+import com.example.demo.service.UserService;
+import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
-@Entity
-@Table(name = "users")
-public class User {
+@Service
+public class UserServiceImpl implements UserService {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private final UserRepository userRepo;
+    private final PasswordEncoder encoder = new BCryptPasswordEncoder();
 
-    private String fullName;
-
-    @Column(unique = true, nullable = false)
-    private String email;
-
-    private String password;
-
-    @Enumerated(EnumType.STRING)
-    private Role role;
-
-    private LocalDateTime createdAt = LocalDateTime.now();
-
-    public enum Role { CUSTOMER, ADMIN }
-
-    // Getters and setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public String getFullName() { return fullName; }
-    public void setFullName(String fullName) { this.fullName = fullName; }
-
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
-
-    public Role getRole() { return role; }
-    public void setRole(Role role) { this.role = role; }
-    public void setRole(String r) { 
-        if (r != null) this.role = Role.valueOf(r.toUpperCase()); 
-    }
-
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o instanceof String) return role != null && role.name().equals(o);
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(id, user.id);
+    public UserServiceImpl(UserRepository userRepo) {
+        this.userRepo = userRepo;
     }
 
     @Override
-    public int hashCode() { return Objects.hash(id); }
+    public User register(User user) {
+        if (user == null) throw new BadRequestException("Invalid user");
+
+        if (userRepo.findByEmail(user.getEmail()).isPresent())
+            throw new BadRequestException("Email already exists");
+
+        user.setPassword(encoder.encode(user.getPassword()));
+        return userRepo.save(user);
+    }
 
     @Override
-    public String toString() { return role != null ? role.name() : ""; }
+    public User findByEmail(String email) {
+        return userRepo.findByEmail(email)
+                .orElseThrow(() -> new BadRequestException("User not found"));
+    }
+
+    @Override
+    public User getById(Long id) {
+        return userRepo.findById(id)
+                .orElseThrow(() -> new BadRequestException("User not found"));
+    }
 }

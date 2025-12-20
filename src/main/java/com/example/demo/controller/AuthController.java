@@ -1,12 +1,12 @@
 package com.example.demo.controller;
 
-import com.example.demo.service.UserService;
-import com.example.demo.security.JwtUtil;
-import com.example.demo.repository.UserRepository;
 import com.example.demo.entity.User;
 import com.example.demo.dto.AuthRequest;
 import com.example.demo.dto.AuthResponse;
 import com.example.demo.exception.BadRequestException;
+import com.example.demo.repository.UserRepository;
+import com.example.demo.security.JwtUtil;
+import com.example.demo.service.UserService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 
@@ -32,16 +32,16 @@ public class AuthController {
         String token = jwtUtil.generateToken(user);
 
         AuthResponse response = new AuthResponse(
-            token,
-            user.getEmail(),
-            user.getRole() != null ? user.getRole().name() : "CUSTOMER" // enum.name()
+                token,
+                user.getEmail(),
+                user.getRole() != null ? user.getRole().name() : "CUSTOMER"
         );
 
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody User user) {
+    public ResponseEntity<?> register(@RequestBody User user) {
         return ResponseEntity.ok(userService.register(user));
     }
 }

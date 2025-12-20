@@ -20,7 +20,7 @@ public class User {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private Role role = Role.CUSTOMER;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -53,7 +53,7 @@ public class User {
 
     public Role getRole() { return role; }
     public void setRole(Role role) { this.role = role; }
-    public void setRole(String role) { if(role != null) this.role = Role.valueOf(role.toUpperCase()); }
+    public void setRole(String r) { if(r != null) this.role = Role.valueOf(r.toUpperCase()); }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
@@ -61,7 +61,6 @@ public class User {
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
 
-    // equals/hashCode (needed for tests)
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -73,7 +72,4 @@ public class User {
 
     @Override
     public int hashCode() { return Objects.hash(id); }
-
-    @Override
-    public String toString() { return role != null ? role.name() : ""; }
 }
