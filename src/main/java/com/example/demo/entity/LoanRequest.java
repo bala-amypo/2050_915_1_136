@@ -16,7 +16,14 @@ public class LoanRequest {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+    private String status;
+    private java.time.LocalDateTime submittedAt;
 
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
+
+    public java.time.LocalDateTime getSubmittedAt() { return submittedAt; }
+    public void setSubmittedAt(java.time.LocalDateTime submittedAt) { this.submittedAt = submittedAt; }
     // Getters and Setters
     public Long getId() {
         return id;

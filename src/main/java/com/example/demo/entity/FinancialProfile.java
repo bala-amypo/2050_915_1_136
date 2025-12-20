@@ -20,29 +20,22 @@ public class FinancialProfile {
 
     private int creditScore;
 
-    // Constructors
-    public FinancialProfile() {}
+    
 
-    public FinancialProfile(User user, double monthlyIncome, double existingDebt, int creditScore) {
-        this.user = user;
-        this.monthlyIncome = monthlyIncome;
-        this.existingDebt = existingDebt;
-        this.creditScore = creditScore;
-    }
+    private double monthlyExpenses;
+    private double existingLoanEmi;
+    private double savingsBalance;
+    private java.time.LocalDateTime lastUpdatedAt;
 
-    // Getters and Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    // Add these to your Getters/Setters section
+    public double getMonthlyExpenses() { return monthlyExpenses; }
+    public void setMonthlyExpenses(double monthlyExpenses) { this.monthlyExpenses = monthlyExpenses; }
 
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
+    public double getExistingLoanEmi() { return existingLoanEmi; }
+    public void setExistingLoanEmi(double existingLoanEmi) { this.existingLoanEmi = existingLoanEmi; }
 
-    public double getMonthlyIncome() { return monthlyIncome; }
-    public void setMonthlyIncome(double monthlyIncome) { this.monthlyIncome = monthlyIncome; }
+    public double getSavingsBalance() { return savingsBalance; }
+    public void setSavingsBalance(double savingsBalance) { this.savingsBalance = savingsBalance; }
 
-    public double getExistingDebt() { return existingDebt; }
-    public void setExistingDebt(double existingDebt) { this.existingDebt = existingDebt; }
-
-    public int getCreditScore() { return creditScore; }
-    public void setCreditScore(int creditScore) { this.creditScore = creditScore; }
-}
+    public java.time.LocalDateTime getLastUpdatedAt() { return lastUpdatedAt; }
+    public void setLastUpdatedAt(java.time.LocalDateTime lastUpdatedAt) { this.lastUpdatedAt = lastUpdatedAt; }
