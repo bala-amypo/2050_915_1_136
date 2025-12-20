@@ -1,4 +1,5 @@
 package com.example.demo.service.impl;
+import com.example.demo.repository.FinancialProfileRepository;
 
 import com.example.demo.entity.RiskAssessment;
 import com.example.demo.entity.LoanRequest;

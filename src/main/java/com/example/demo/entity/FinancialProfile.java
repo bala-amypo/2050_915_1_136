@@ -1,5 +1,7 @@
 package com.example.demo.entity;
 import java.time.LocalDateTime;
+import com.example.demo.entity.User;
+import jakarta.persistence.ManyToOne;
 
 import jakarta.persistence.*;
 
@@ -15,6 +17,12 @@ public class FinancialProfile {
     private double savingsBalance;
 
     private LocalDateTime lastUpdatedAt;
+@ManyToOne
+private User user;
+
+public User getUser() {
+    return user;
+}
 
     // ✅ REQUIRED getters & setters
     public Long getId() { return id; }
