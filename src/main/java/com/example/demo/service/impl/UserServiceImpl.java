@@ -15,23 +15,28 @@ public class UserServiceImpl implements UserService {
         this.userRepo = userRepo;
     }
 
+    // Implements the abstract method from the interface
     @Override
-    public User createCustomer(User user) {
+    public User register(User user) {
         if (user == null) throw new BadRequestException("Invalid user");
-        user.setRole(User.Role.CUSTOMER); // set enum, not string
-        return userRepo.save(user);
-    }
 
-    @Override
-    public User createAdmin(User user) {
-        if (user == null) throw new BadRequestException("Invalid user");
-        user.setRole(User.Role.ADMIN); // set enum, not string
+        // Default role logic
+        if (user.getRole() == null) {
+            user.setRole(User.Role.CUSTOMER); // default
+        }
+
         return userRepo.save(user);
     }
 
     @Override
     public User findByEmail(String email) {
         return userRepo.findByEmail(email)
+                .orElseThrow(() -> new BadRequestException("User not found"));
+    }
+
+    @Override
+    public User getById(Long id) {
+        return userRepo.findById(id)
                 .orElseThrow(() -> new BadRequestException("User not found"));
     }
 }

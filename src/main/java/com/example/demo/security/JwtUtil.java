@@ -31,7 +31,14 @@ public class JwtUtil {
         return extractAllClaims(token);
     }
 
-    public String generateToken(Map<String, Object> claims, String subject) {
-        return "TOKEN_" + subject;
-    }
+    public String generateToken(User user) {
+    return Jwts.builder()
+        .setSubject(user.getEmail())
+        .claim("role", user.getRole().name())
+        .setIssuedAt(new Date())
+        .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
+        .signWith(key, SignatureAlgorithm.HS256)
+        .compact();
+}
+
 }
