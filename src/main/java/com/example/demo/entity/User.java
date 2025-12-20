@@ -25,10 +25,13 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    // ✅ No-args constructor required by Spring/JPA
+    public User() {}
+
     @PrePersist
     public void prePersist() {
         if (this.role == null) {
-            this.role = Role.CUSTOMER; // 🔥 default required by tests
+            this.role = Role.CUSTOMER; // default role for tests
         }
     }
 
@@ -36,6 +39,11 @@ public class User {
 
     public Long getId() {
         return id;
+    }
+
+    // ✅ Add setter for id (required by some tests)
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getEmail() {
