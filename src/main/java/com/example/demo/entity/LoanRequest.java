@@ -17,12 +17,23 @@ public class LoanRequest {
     @Enumerated(EnumType.STRING)
     private Status status = Status.PENDING;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     private User user;
 
-    private LocalDateTime submittedAt = LocalDateTime.now();
+    private LocalDateTime submittedAt;
 
     public enum Status { PENDING, APPROVED, REJECTED }
+
+    @PrePersist
+    protected void prePersist() {
+        if (status == null) status = Status.PENDING;
+        if (submittedAt == null) submittedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void preUpdate() {
+        if (submittedAt == null) submittedAt = LocalDateTime.now();
+    }
 
     // Getters & Setters
     public Long getId() { return id; }
@@ -47,7 +58,7 @@ public class LoanRequest {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof LoanRequest)) return false;
         LoanRequest that = (LoanRequest) o;
         return Objects.equals(id, that.id);
     }

@@ -29,6 +29,7 @@ public class User {
 
     @PrePersist
     protected void onCreate() {
+        if (role == null) role = Role.CUSTOMER;
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
     }
@@ -64,7 +65,7 @@ public class User {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof User)) return false;
         User user = (User) o;
         return Objects.equals(id, user.id);
     }
