@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 
 @RestController
-@RequestMapping("/api/auth") // Ensure the path matches your project requirements
+@RequestMapping("/api/auth")
 public class AuthController {
 
     private final UserService userService;
@@ -26,26 +26,25 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest authRequest) { 
-        // 1. Fetch the actual user from the database
+        // Fetch user from DB
         User user = userRepository.findByEmail(authRequest.getEmail())
                 .orElseThrow(() -> new BadRequestException("User not found"));
 
-        // 2. Generate a real token based on that user
+        // Generate token
         String token = jwtUtil.generateToken(user);
 
-        // 3. Return the ACTUAL database email and role (fixes t45)
+        // Return actual email and role from DB
         AuthResponse response = new AuthResponse(
             token, 
             user.getEmail(), 
-            user.getRole() != null ? user.getRole().name() : "CUSTOMER"
+            user.getRole() != null ? user.getRole() : "CUSTOMER"  // FIX: role is String
         );
         
         return ResponseEntity.ok(response); 
     }
+
     @PostMapping("/register")
-public ResponseEntity<?> register(@RequestBody User user) {
-    // If your service uses 'register', use that. 
-    // If the error persists, check UserService.java for the correct method name.
-    return ResponseEntity.ok(userService.register(user)); 
-}
+    public ResponseEntity<User> register(@RequestBody User user) {
+        return ResponseEntity.ok(userService.register(user)); 
+    }
 }
