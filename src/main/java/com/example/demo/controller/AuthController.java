@@ -42,9 +42,10 @@ public class AuthController {
         
         return ResponseEntity.ok(response); 
     }
-
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody User user) {
-        return ResponseEntity.ok(userService.registerUser(user));
-    }
+public ResponseEntity<?> register(@RequestBody User user) {
+    // If your service uses 'register', use that. 
+    // If the error persists, check UserService.java for the correct method name.
+    return ResponseEntity.ok(userService.register(user)); 
+}
 }
