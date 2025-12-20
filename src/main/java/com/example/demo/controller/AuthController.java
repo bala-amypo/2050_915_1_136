@@ -25,26 +25,23 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest authRequest) { 
-        // Fetch user from DB
+    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest authRequest) {
         User user = userRepository.findByEmail(authRequest.getEmail())
                 .orElseThrow(() -> new BadRequestException("User not found"));
 
-        // Generate token
         String token = jwtUtil.generateToken(user);
 
-        // Return actual email and role from DB
         AuthResponse response = new AuthResponse(
-            token, 
-            user.getEmail(), 
-            user.getRole() != null ? user.getRole() : "CUSTOMER"  // FIX: role is String
+            token,
+            user.getEmail(),
+            user.getRole() != null ? user.getRole().name() : "CUSTOMER" // enum.name()
         );
-        
-        return ResponseEntity.ok(response); 
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/register")
     public ResponseEntity<User> register(@RequestBody User user) {
-        return ResponseEntity.ok(userService.register(user)); 
+        return ResponseEntity.ok(userService.register(user));
     }
 }
