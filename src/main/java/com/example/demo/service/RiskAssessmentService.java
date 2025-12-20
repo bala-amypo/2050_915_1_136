@@ -1,7 +1,10 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.RiskAssessment;
-
 public interface RiskAssessmentService {
-    RiskAssessment assessRisk(Long loanRequestId);
+    
+    /**
+     * Example method to assess risk.
+     * Replace with your actual logic.
+     */
+    String assessRisk(String userId);
 }
