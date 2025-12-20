@@ -22,6 +22,7 @@ public class EligibilityServiceImpl implements EligibilityService {
     @Override
     @Transactional
     public EligibilityResult evaluateEligibility(long requestId) {
+        // Fix t53: check if already exists
         if (repo.findByLoanRequestId(requestId).isPresent()) throw new BadRequestException("Eligibility already exists");
 
         LoanRequest loanRequest = loanRepo.findById(requestId).orElseThrow(() -> new BadRequestException("Loan request not found"));
@@ -35,10 +36,10 @@ public class EligibilityServiceImpl implements EligibilityService {
         result.setLoanRequest(loanRequest);
         result.setEligible(isEligible);
         result.setDisposableIncome(disposableIncome);
-        result.setMaxEmiPossible(disposableIncome / 1.5); // Bridge method in Entity
+        result.setMaxEmiPossible(disposableIncome / 1.5);
         return repo.save(result);
     }
-
+    
     public EligibilityResult getByLoanRequestId(long requestId) {
         return repo.findByLoanRequestId(requestId).orElseThrow(() -> new BadRequestException("Result not found"));
     }

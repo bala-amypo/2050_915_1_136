@@ -1,10 +1,8 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.entity.LoanRequest;
-import com.example.demo.entity.User;
+import com.example.demo.entity.*;
 import com.example.demo.exception.BadRequestException;
-import com.example.demo.repository.LoanRequestRepository;
-import com.example.demo.repository.UserRepository;
+import com.example.demo.repository.*;
 import com.example.demo.service.LoanRequestService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +25,7 @@ public class LoanRequestServiceImpl implements LoanRequestService {
         User user = userRepo.findById(request.getUser().getId())
                 .orElseThrow(() -> new BadRequestException("User not found"));
         
+        // Force defaults for simulation
         if (request.getStatus() == null) request.setStatus(LoanRequest.Status.PENDING);
         if (request.getSubmittedAt() == null) request.setSubmittedAt(LocalDateTime.now());
         
@@ -36,6 +35,7 @@ public class LoanRequestServiceImpl implements LoanRequestService {
 
     @Override
     public List<LoanRequest> getRequestsByUser(Long userId) {
+        // Manual check for simulation tests
         if (!userRepo.existsById(userId)) throw new BadRequestException("User not found");
         return repo.findByUserId(userId);
     }
