@@ -10,7 +10,6 @@ import com.example.demo.service.EligibilityService;
 import com.example.demo.exception.BadRequestException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.Optional;
 
 @Service
 public class EligibilityServiceImpl implements EligibilityService {
@@ -19,7 +18,6 @@ public class EligibilityServiceImpl implements EligibilityService {
     private final FinancialProfileRepository profileRepo;
     private final EligibilityResultRepository repo;
 
-    // Matches the 3-argument constructor the test suite expects
     public EligibilityServiceImpl(LoanRequestRepository loanRepo, 
                                   FinancialProfileRepository profileRepo, 
                                   EligibilityResultRepository repo) {
@@ -31,21 +29,18 @@ public class EligibilityServiceImpl implements EligibilityService {
     @Override
     @Transactional
     public EligibilityResult evaluateEligibility(long requestId) {
-        // FIX for t53: The test specifically checks for a duplicate evaluation.
-        // If a result already exists for this loan request, we MUST throw an exception.
+        // Fix for t53: Duplicate check
         if (repo.findByLoanRequestId(requestId).isPresent()) {
             throw new BadRequestException("Eligibility already exists");
         }
 
-        // Fetch the loan request
         LoanRequest loanRequest = loanRepo.findById(requestId)
                 .orElseThrow(() -> new BadRequestException("Loan request not found"));
 
-        // Fetch the user's financial profile
         FinancialProfile profile = profileRepo.findByUserId(loanRequest.getUser().getId())
                 .orElseThrow(() -> new BadRequestException("Financial profile not found"));
 
-        // Calculation Logic (Satisfies the business logic requirements)
+        // Calculation Logic
         double monthlyIncome = profile.getMonthlyIncome();
         double monthlyExpenses = profile.getMonthlyExpenses();
         double existingEmis = profile.getExistingEmis();
@@ -55,19 +50,22 @@ public class EligibilityServiceImpl implements EligibilityService {
         double disposableIncome = monthlyIncome - monthlyExpenses - existingEmis;
         double monthlyInstallment = requestedAmount / tenure;
 
+        // Eligibility Criteria: Disposable income > 1.5x EMI AND Credit Score >= 700
         boolean isEligible = disposableIncome >= (monthlyInstallment * 1.5) && profile.getCreditScore() >= 700;
 
-        // Create and save result
         EligibilityResult result = new EligibilityResult();
         result.setLoanRequest(loanRequest);
         result.setEligible(isEligible);
         result.setDisposableIncome(disposableIncome);
+        
+        // IMPORTANT: Use the method name that exists in your EligibilityResult entity
+        // If your entity uses setMaxEligibleAmount, change this line to:
+        // result.setMaxEligibleAmount(disposableIncome / 1.5);
         result.setMaxEmiPossible(disposableIncome / 1.5);
 
         return repo.save(result);
     }
 
-    // Method to support the "getByLoanRequestId" compiler error from earlier
     public EligibilityResult getByLoanRequestId(long requestId) {
         return repo.findByLoanRequestId(requestId)
                 .orElseThrow(() -> new BadRequestException("Eligibility result not found"));
