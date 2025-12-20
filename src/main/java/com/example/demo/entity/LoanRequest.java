@@ -1,70 +1,31 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
-import java.util.Objects;
 
 @Entity
 public class LoanRequest {
+
+    public enum Status { PENDING, APPROVED, REJECTED }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private Double requestedAmount;
-    private Integer tenureMonths;
 
-    @Enumerated(EnumType.STRING)
-    private Status status = Status.PENDING;
+    private String status = Status.PENDING.name();
 
-    @ManyToOne(optional = false)
+    @ManyToOne
     private User user;
 
-    private LocalDateTime submittedAt;
-
-    public enum Status { PENDING, APPROVED, REJECTED }
-
-    @PrePersist
-    protected void prePersist() {
-        if (status == null) status = Status.PENDING;
-        if (submittedAt == null) submittedAt = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    protected void preUpdate() {
-        if (submittedAt == null) submittedAt = LocalDateTime.now();
-    }
-
-    // Getters & Setters
     public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
 
     public Double getRequestedAmount() { return requestedAmount; }
     public void setRequestedAmount(Double requestedAmount) { this.requestedAmount = requestedAmount; }
 
-    public Integer getTenureMonths() { return tenureMonths; }
-    public void setTenureMonths(Integer tenureMonths) { this.tenureMonths = tenureMonths; }
-
-    public Status getStatus() { return status; }
-    public void setStatus(Status status) { this.status = status; }
-    public void setStatus(String status) { if(status != null) this.status = Status.valueOf(status.toUpperCase()); }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 
     public User getUser() { return user; }
     public void setUser(User user) { this.user = user; }
-
-    public LocalDateTime getSubmittedAt() { return submittedAt; }
-    public void setSubmittedAt(LocalDateTime submittedAt) { this.submittedAt = submittedAt; }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof LoanRequest)) return false;
-        LoanRequest that = (LoanRequest) o;
-        return Objects.equals(id, that.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
 }

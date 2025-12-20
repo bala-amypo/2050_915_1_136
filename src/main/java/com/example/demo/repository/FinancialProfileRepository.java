@@ -3,13 +3,8 @@ package com.example.demo.repository;
 import com.example.demo.entity.FinancialProfile;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
+import java.util.*;
 
-public interface FinancialProfileRepository
-        extends JpaRepository<FinancialProfile, Long> {
-
+public interface FinancialProfileRepository extends JpaRepository<FinancialProfile, Long> {
     Optional<FinancialProfile> findByUserId(Long userId);
-
-    // 🔥 REQUIRED for tests
-    Optional<FinancialProfile> findTopByUserIdOrderByCreatedAtDesc(Long userId);
 }
