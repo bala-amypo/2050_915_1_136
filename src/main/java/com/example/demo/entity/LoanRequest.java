@@ -1,49 +1,47 @@
-package com.example.demo.security;
+package com.example.demo.entity;
 
-import com.example.demo.entity.User;
-import io.jsonwebtoken.*;
-import org.springframework.stereotype.Component;
-import java.util.Date;
-import java.util.Map;
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
-@Component
-public class JwtUtil {
-    private String secret = "your_secret_key"; 
-    private int expiration = 3600000; 
+@Entity
+public class LoanRequest {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    public String generateToken(User user) {
-        return Jwts.builder()
-                .setSubject(user.getEmail())
-                // Ensure we call name() on the Enum object
-                .claim("role", user.getRole() != null ? user.getRole().name() : "CUSTOMER")
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + expiration))
-                .signWith(SignatureAlgorithm.HS256, secret)
-                .compact();
+    private Double requestedAmount;
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
+    @ManyToOne
+    private User user;
+
+    private LocalDateTime createdAt;
+
+    public enum Status { PENDING, APPROVED, REJECTED }
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
     }
 
-    public String generateToken(Map<String, Object> claims, String subject) {
-        return Jwts.builder()
-                .setClaims(claims)
-                .setSubject(subject)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + expiration))
-                .signWith(SignatureAlgorithm.HS256, secret)
-                .compact();
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    
+    public Double getRequestedAmount() { return requestedAmount; }
+    public void setRequestedAmount(Double amount) { this.requestedAmount = amount; }
+    
+    public Status getStatus() { return status; }
+    public void setStatus(Status status) { this.status = status; }
+    
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
 
-    public boolean validateToken(String token) {
-        try {
-            Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
-            return !isTokenExpired(token);
-        } catch (Exception e) { return false; }
-    }
+    public LocalDateTime getCreatedAt() { return createdAt; }
 
-    private boolean isTokenExpired(String token) {
-        return getAllClaims(token).getExpiration().before(new Date());
-    }
-
-    public Claims getAllClaims(String token) {
-        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+    @Override
+    public String toString() {
+        return status != null ? status.name() : "";
     }
 }

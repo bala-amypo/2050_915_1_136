@@ -14,7 +14,6 @@ public class JwtUtil {
     public String generateToken(User user) {
         return Jwts.builder()
                 .setSubject(user.getEmail())
-                // Ensure we call name() on the Enum object
                 .claim("role", user.getRole() != null ? user.getRole().name() : "CUSTOMER")
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
@@ -35,12 +34,8 @@ public class JwtUtil {
     public boolean validateToken(String token) {
         try {
             Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
-            return !isTokenExpired(token);
+            return true;
         } catch (Exception e) { return false; }
-    }
-
-    private boolean isTokenExpired(String token) {
-        return getAllClaims(token).getExpiration().before(new Date());
     }
 
     public Claims getAllClaims(String token) {
