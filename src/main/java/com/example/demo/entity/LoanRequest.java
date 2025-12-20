@@ -1,3 +1,4 @@
+// src/main/java/com/example/demo/entity/LoanRequest.java
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
@@ -22,29 +23,28 @@ public class LoanRequest {
 
     public enum Status { PENDING, APPROVED, REJECTED }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public Double getRequestedAmount() { return requestedAmount; }
-    public void setRequestedAmount(Double a) { this.requestedAmount = a; }
-    public Integer getTenureMonths() { return tenureMonths; }
-    public void setTenureMonths(Integer t) { this.tenureMonths = t; }
+    // GETTERS AND SETTERS
+    // src/main/java/com/example/demo/entity/LoanRequest.java
+
+public Double getRequestedAmount() {
+    return requestedAmount;
+}
+
+public Integer getTenureMonths() {
+    return tenureMonths;
+}
     public Status getStatus() { return status; }
-    public void setStatus(Status s) { this.status = s; }
-
-    // Overloaded for tests
-    public void setStatus(String s) {
-        if (s != null) this.status = Status.valueOf(s.toUpperCase());
-    }
-
+    public void setStatus(Status status) { this.status = status; }
+    public void setStatus(String s) { if (s != null) this.status = Status.valueOf(s.toUpperCase()); }
     public User getUser() { return user; }
-    public void setUser(User u) { this.user = u; }
+    public void setUser(User user) { this.user = user; }
     public LocalDateTime getSubmittedAt() { return submittedAt; }
     public void setSubmittedAt(LocalDateTime s) { this.submittedAt = s; }
 
+    // CRITICAL: Bridge for Enum vs String comparison
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        // Allows comparison against "PENDING" string
         if (o instanceof String) return status != null && status.name().equals(o);
         if (o == null || getClass() != o.getClass()) return false;
         LoanRequest that = (LoanRequest) o;

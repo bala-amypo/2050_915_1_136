@@ -23,6 +23,15 @@ public class User {
     public enum Role { CUSTOMER, ADMIN }
 
     // GETTERS AND SETTERS
+    // src/main/java/com/example/demo/entity/User.java
+
+public String getEmail() {
+    return email;
+}
+
+public String getPassword() {
+    return password;
+}
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public Role getRole() { return role; }
