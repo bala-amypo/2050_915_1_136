@@ -3,29 +3,33 @@ package com.example.demo.entity;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "loan_requests")
 public class LoanRequest {
-
-    public enum Status { PENDING, APPROVED, REJECTED }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Double requestedAmount;
+    private int amount;
 
-    private String status = Status.PENDING.name();
+    // You can add more fields like user, status, etc.
+    // private Long userId;
+    // private String status;
 
-    @ManyToOne
-    private User user;
+    // ✅ Getters and Setters
+    public Long getId() {
+        return id;
+    }
 
-    public Long getId() { return id; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public Double getRequestedAmount() { return requestedAmount; }
-    public void setRequestedAmount(Double requestedAmount) { this.requestedAmount = requestedAmount; }
+    public int getAmount() {
+        return amount;
+    }
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
-
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
+    public void setAmount(int amount) {
+        this.amount = amount;
+    }
 }

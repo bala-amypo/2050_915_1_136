@@ -4,25 +4,18 @@ import com.example.demo.entity.LoanRequest;
 import com.example.demo.service.LoanRequestService;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("/loan-request")
+@RequestMapping("/loan")
 public class LoanRequestController {
 
-    private final LoanRequestService service;
+    private final LoanRequestService loanRequestService;
 
-    public LoanRequestController(LoanRequestService service) {
-        this.service = service;
+    public LoanRequestController(LoanRequestService loanRequestService) {
+        this.loanRequestService = loanRequestService;
     }
 
-    @PostMapping
-    public LoanRequest submit(@RequestBody LoanRequest request) {
-        return service.submitRequest(request);
-    }
-
-    @GetMapping("/user/{userId}")
-    public List<LoanRequest> getByUser(@PathVariable Long userId) {
-        return service.getByUserId(userId);
+    @PostMapping("/create")
+    public LoanRequest createLoan(@RequestBody LoanRequest request) {
+        return loanRequestService.saveLoanRequest(request);
     }
 }
