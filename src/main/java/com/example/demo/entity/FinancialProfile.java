@@ -15,8 +15,6 @@ public class FinancialProfile {
 
     private Double monthlyIncome;
     private Double monthlyExpenses;
-
-    // REQUIRED BY TESTS
     private Double existingEmis;
 
     private LocalDateTime createdAt;
@@ -28,45 +26,21 @@ public class FinancialProfile {
         }
     }
 
-    /* ---------- Getters & Setters ---------- */
+    // ---------- Getters & Setters ----------
 
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
 
-    public User getUser() {
-        return user;
-    }
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+    public Double getMonthlyIncome() { return monthlyIncome; }
+    public void setMonthlyIncome(Double monthlyIncome) { this.monthlyIncome = monthlyIncome; }
 
-    public Double getMonthlyIncome() {
-        return monthlyIncome;
-    }
+    public Double getMonthlyExpenses() { return monthlyExpenses; }
+    public void setMonthlyExpenses(Double monthlyExpenses) { this.monthlyExpenses = monthlyExpenses; }
 
-    public void setMonthlyIncome(Double monthlyIncome) {
-        this.monthlyIncome = monthlyIncome;
-    }
+    public Double getExistingEmis() { return existingEmis; }
+    public void setExistingEmis(Double existingEmis) { this.existingEmis = existingEmis; }
 
-    public Double getMonthlyExpenses() {
-        return monthlyExpenses;
-    }
-
-    public void setMonthlyExpenses(Double monthlyExpenses) {
-        this.monthlyExpenses = monthlyExpenses;
-    }
-
-    public Double getExistingEmis() {
-        return existingEmis;
-    }
-
-    public void setExistingEmis(Double existingEmis) {
-        this.existingEmis = existingEmis;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
+    public LocalDateTime getCreatedAt() { return createdAt; }
 }
