@@ -1,7 +1,6 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "loan_requests")
@@ -11,31 +10,12 @@ public class LoanRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
-    @Column(nullable = false)
-    private double requestedAmount;
-
-    @Column(nullable = false)
+    private double requestedAmount;  // use this name consistently
     private int tenureMonths;
 
-    @Enumerated(EnumType.STRING)
-    private Status status = Status.PENDING;
-
-    private LocalDateTime submittedAt = LocalDateTime.now();
-
-    // Constructors
-    public LoanRequest() {}
-
-    public LoanRequest(User user, double requestedAmount, int tenureMonths) {
-        this.user = user;
-        this.requestedAmount = requestedAmount;
-        this.tenureMonths = tenureMonths;
-        this.status = Status.PENDING;
-        this.submittedAt = LocalDateTime.now();
-    }
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     // Getters and Setters
     public Long getId() {
@@ -44,14 +24,6 @@ public class LoanRequest {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 
     public double getRequestedAmount() {
@@ -70,26 +42,11 @@ public class LoanRequest {
         this.tenureMonths = tenureMonths;
     }
 
-    public Status getStatus() {
-        return status;
+    public User getUser() {
+        return user;
     }
 
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    public LocalDateTime getSubmittedAt() {
-        return submittedAt;
-    }
-
-    public void setSubmittedAt(LocalDateTime submittedAt) {
-        this.submittedAt = submittedAt;
-    }
-
-    // Enum for loan status
-    public enum Status {
-        PENDING,
-        APPROVED,
-        REJECTED
+    public void setUser(User user) {
+        this.user = user;
     }
 }

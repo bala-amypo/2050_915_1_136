@@ -1,28 +1,24 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.EligibilityResult;
 import com.example.demo.entity.LoanRequest;
 import com.example.demo.service.EligibilityService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/eligibility")
+@RequestMapping("/eligibility")
 public class EligibilityController {
 
-    private final EligibilityService eligibilityService;
+    @Autowired
+    private EligibilityService eligibilityService;
 
-    public EligibilityController(EligibilityService eligibilityService) {
-        this.eligibilityService = eligibilityService;
-    }
+    @PostMapping("/check")
+    public String checkEligibility(@RequestBody LoanRequest loanRequest) {
+        // Correct setter usage
+        loanRequest.setRequestedAmount(loanRequest.getRequestedAmount());
+        loanRequest.setTenureMonths(loanRequest.getTenureMonths());
 
-    @GetMapping("/check/{loanRequestId}")
-    public EligibilityResult checkEligibility(@PathVariable Long loanRequestId) {
-        // For demo, creating a dummy LoanRequest.
-        // In real app, fetch from LoanRequestRepository
-        LoanRequest loanRequest = new LoanRequest();
-        loanRequest.setId(loanRequestId);
-        loanRequest.setAmount(50000); // example value
-
-        return eligibilityService.checkEligibility(loanRequest);
+        boolean eligible = eligibilityService.isEligible(loanRequest);
+        return eligible ? "Eligible" : "Not Eligible";
     }
 }
