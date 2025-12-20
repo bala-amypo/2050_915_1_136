@@ -15,39 +15,26 @@ public class FinancialProfileServiceImpl implements FinancialProfileService {
     private final FinancialProfileRepository financialProfileRepository;
     private final UserRepository userRepository;
 
-    public FinancialProfileServiceImpl(
-            FinancialProfileRepository financialProfileRepository,
-            UserRepository userRepository) {
-        this.financialProfileRepository = financialProfileRepository;
-        this.userRepository = userRepository;
+    public FinancialProfileServiceImpl(FinancialProfileRepository fpr, UserRepository ur) {
+        this.financialProfileRepository = fpr;
+        this.userRepository = ur;
     }
 
     @Override
-    @Transactional // Added to ensure database consistency during update
+    @Transactional
     public FinancialProfile createOrUpdate(FinancialProfile profile) {
-
-        if (profile == null || profile.getUser() == null || profile.getUser().getId() == null) {
-            throw new BadRequestException("Invalid financial profile");
-        }
-
-        // Validate user exists
         User user = userRepository.findById(profile.getUser().getId())
                 .orElseThrow(() -> new BadRequestException("User not found"));
 
-        // Use findByUserId if findTopByUserId... is not supported by your specific repo setup
-        // This is the core fix for t27
         return financialProfileRepository.findByUserId(user.getId())
                 .map(existing -> {
-                    // Update all possible fields from the incoming profile
                     existing.setMonthlyIncome(profile.getMonthlyIncome());
                     existing.setMonthlyExpenses(profile.getMonthlyExpenses());
                     existing.setExistingEmis(profile.getExistingEmis());
-                    // Ensure the user reference remains solid
-                    existing.setUser(user);
+                    existing.setCreditScore(profile.getCreditScore()); // FIX t27
                     return financialProfileRepository.save(existing);
                 })
                 .orElseGet(() -> {
-                    // If no profile exists, create new
                     profile.setUser(user);
                     return financialProfileRepository.save(profile);
                 });
@@ -55,12 +42,7 @@ public class FinancialProfileServiceImpl implements FinancialProfileService {
 
     @Override
     public FinancialProfile getByUserId(Long userId) {
-        // Validate user existence first to pass "User not found" tests
-        if (!userRepository.existsById(userId)) {
-            throw new BadRequestException("User not found"); // Fixes t47
-        }
-
-        // Return the profile or throw exception if missing
+        if (!userRepository.existsById(userId)) throw new BadRequestException("User not found");
         return financialProfileRepository.findByUserId(userId)
                 .orElseThrow(() -> new BadRequestException("Financial profile not found"));
     }

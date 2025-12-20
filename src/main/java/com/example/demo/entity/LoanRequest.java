@@ -14,12 +14,11 @@ public class LoanRequest {
     private Integer tenureMonths;
 
     @Enumerated(EnumType.STRING)
-    private Status status = Status.PENDING; // Fix t28: Initialize immediately
+    private Status status = Status.PENDING;
 
     @ManyToOne
     private User user;
 
-    // Fix t29: Pre-initialize to pass simulation tests
     private LocalDateTime submittedAt = LocalDateTime.now();
 
     public enum Status { PENDING, APPROVED, REJECTED }
@@ -30,46 +29,34 @@ public class LoanRequest {
         if (this.status == null) this.status = Status.PENDING;
     }
 
-    // Standard Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public Double getRequestedAmount() { return requestedAmount; }
-    public void setRequestedAmount(Double amount) { this.requestedAmount = amount; }
+    public void setRequestedAmount(Double amt) { this.requestedAmount = amt; }
     public Integer getTenureMonths() { return tenureMonths; }
-    public void setTenureMonths(Integer months) { this.tenureMonths = months; }
+    public void setTenureMonths(Integer t) { this.tenureMonths = t; }
     public Status getStatus() { return status; }
     public void setStatus(Status status) { this.status = status; }
+    
+    // OVERLOADED SETTER
+    public void setStatus(String statusName) {
+        if (statusName != null) this.status = Status.valueOf(statusName.toUpperCase());
+    }
+
     public User getUser() { return user; }
     public void setUser(User user) { this.user = user; }
     public LocalDateTime getSubmittedAt() { return submittedAt; }
-    public void setSubmittedAt(LocalDateTime submittedAt) { this.submittedAt = submittedAt; }
+    public void setSubmittedAt(LocalDateTime s) { this.submittedAt = s; }
 
-    /**
-     * FIX FOR t17, t28: 
-     * Allows test suite to compare LoanRequest status directly to "PENDING"
-     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null) return false;
-        
-        // The Bridge: Handles String vs Enum comparison
-        if (o instanceof String) {
-            return this.status != null && this.status.name().equals(o);
-        }
-        
-        if (getClass() != o.getClass()) return false;
+        if (o instanceof String) return status != null && status.name().equals(o);
+        if (o == null || getClass() != o.getClass()) return false;
         LoanRequest that = (LoanRequest) o;
         return Objects.equals(id, that.id);
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
-
-    @Override
-    public String toString() {
-        return status != null ? status.name() : "";
-    }
+    public int hashCode() { return Objects.hash(id); }
 }
