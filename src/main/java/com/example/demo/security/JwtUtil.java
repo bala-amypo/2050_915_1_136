@@ -11,18 +11,30 @@ import java.util.Map;
 @Component
 public class JwtUtil {
 
-    private String secret = "your_secret_key"; // Test wants to be able to set this
-    private int expiration = 3600000; // 1 hour
+    private String secret = "your_secret_key"; 
+    private int expiration = 3600000; 
 
     public JwtUtil() {}
 
-    // Constructor required by the test
     public JwtUtil(String secret, int expiration) {
         this.secret = secret;
         this.expiration = expiration;
     }
 
-    // Method required by the service
+    // --- Add this method to fix the current error ---
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
+            return !isTokenExpired(token);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private boolean isTokenExpired(String token) {
+        return getAllClaims(token).getExpiration().before(new Date());
+    }
+
     public String generateToken(User user) {
         return Jwts.builder()
                 .setSubject(user.getEmail())
@@ -33,18 +45,6 @@ public class JwtUtil {
                 .compact();
     }
 
-    // Overloaded method required by the test
-    public String generateToken(Map<String, Object> claims, String subject) {
-        return Jwts.builder()
-                .setClaims(claims)
-                .setSubject(subject)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + expiration))
-                .signWith(SignatureAlgorithm.HS256, secret)
-                .compact();
-    }
-
-    // Method required by the test
     public Claims getAllClaims(String token) {
         return Jwts.parser()
                 .setSigningKey(secret)
