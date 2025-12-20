@@ -1,10 +1,12 @@
 package com.example.demo.service;
 
+import com.example.demo.entity.RiskAssessment;
+
+import java.util.Optional;
+
 public interface RiskAssessmentService {
-    
-    /**
-     * Example method to assess risk.
-     * Replace with your actual logic.
-     */
-    String assessRisk(String userId);
+
+    RiskAssessment saveRiskAssessment(RiskAssessment riskAssessment);
+
+    Optional<RiskAssessment> getRiskAssessmentByLoanRequestId(Long loanRequestId);
 }
