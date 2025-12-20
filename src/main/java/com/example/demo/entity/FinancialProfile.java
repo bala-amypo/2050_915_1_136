@@ -50,12 +50,15 @@ public class FinancialProfile {
     public Double getMonthlyExpenses() { return monthlyExpenses; }
     public void setMonthlyExpenses(Double monthlyExpenses) { this.monthlyExpenses = monthlyExpenses; }
 
-    // Use only ONE version of this
-    public Double getExistingEmis() { 
+   public Double getExistingEmis() { 
         return existingEmis != null ? existingEmis : 0.0; 
     }
     public void setExistingEmis(Double existingEmis) { this.existingEmis = existingEmis; }
 
+    // --- Add these two here ---
+    public void setExistingLoanEmi(Double existingLoanEmi) { this.existingEmis = existingLoanEmi; }
+    public Double getExistingLoanEmi() { return this.existingEmis; }
+    // --------------------------
     public Integer getCreditScore() { return creditScore; }
     public void setCreditScore(Integer creditScore) { this.creditScore = creditScore; }
 
