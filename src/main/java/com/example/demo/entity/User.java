@@ -2,7 +2,6 @@ package com.example.demo.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 @Entity
 @Table(name = "users")
@@ -20,12 +19,11 @@ public class User {
     private String password;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Role role = Role.CUSTOMER;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-
-    public enum Role { CUSTOMER, ADMIN }
 
     @PrePersist
     protected void onCreate() {
@@ -39,7 +37,8 @@ public class User {
         updatedAt = LocalDateTime.now();
     }
 
-    // Getters and Setters
+    // ===== Getters & Setters =====
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -54,24 +53,7 @@ public class User {
 
     public Role getRole() { return role; }
     public void setRole(Role role) { this.role = role; }
-    public void setRole(String r) { if(r != null) this.role = Role.valueOf(r.toUpperCase()); }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
-
     public LocalDateTime getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
-
-    @Override
-public boolean equals(Object o) {
-    if (this == o) return true;
-    if (!(o instanceof User)) return false;
-    User user = (User) o;
-    return email != null && email.equals(user.email);
-}
-
-@Override
-public int hashCode() {
-    return email != null ? email.hashCode() : 0;
-}
 }
