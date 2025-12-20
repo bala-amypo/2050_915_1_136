@@ -32,6 +32,19 @@ public class FinancialProfileServiceImpl implements FinancialProfileService {
         User user = userRepository.findById(profile.getUser().getId())
                 .orElseThrow(() -> new BadRequestException("User not found"));
 
+        // 🔥 FIX: update existing profile instead of creating duplicate
+        FinancialProfile existing =
+                financialProfileRepository
+                        .findTopByUserIdOrderByCreatedAtDesc(user.getId())
+                        .orElse(null);
+
+        if (existing != null) {
+            existing.setMonthlyIncome(profile.getMonthlyIncome());
+            existing.setMonthlyExpenses(profile.getMonthlyExpenses());
+            existing.setExistingEmis(profile.getExistingEmis());
+            return financialProfileRepository.save(existing);
+        }
+
         profile.setUser(user);
         return financialProfileRepository.save(profile);
     }
@@ -42,7 +55,9 @@ public class FinancialProfileServiceImpl implements FinancialProfileService {
         userRepository.findById(userId)
                 .orElseThrow(() -> new BadRequestException("User not found"));
 
-        return financialProfileRepository.findByUserId(userId)
+        // 🔥 FIX: return LATEST financial profile
+        return financialProfileRepository
+                .findTopByUserIdOrderByCreatedAtDesc(userId)
                 .orElseThrow(() -> new BadRequestException("Financial profile not found"));
     }
 }

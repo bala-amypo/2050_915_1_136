@@ -14,33 +14,66 @@ public class LoanRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     private User user;
 
     private Double requestedAmount;
     private Integer tenureMonths;
-    private String status;
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
     private LocalDateTime submittedAt;
 
     @PrePersist
     public void prePersist() {
-        this.status = Status.PENDING.name();
-        this.submittedAt = LocalDateTime.now();
+        if (this.status == null) {
+            this.status = Status.PENDING;
+        }
+        if (this.submittedAt == null) {
+            this.submittedAt = LocalDateTime.now();
+        }
     }
 
-    // getters & setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    /* ---------- Getters & Setters ---------- */
 
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
+    public Long getId() {
+        return id;
+    }
 
-    public Double getRequestedAmount() { return requestedAmount; }
-    public void setRequestedAmount(Double requestedAmount) { this.requestedAmount = requestedAmount; }
+    public User getUser() {
+        return user;
+    }
 
-    public Integer getTenureMonths() { return tenureMonths; }
-    public void setTenureMonths(Integer tenureMonths) { this.tenureMonths = tenureMonths; }
+    public void setUser(User user) {
+        this.user = user;
+    }
 
-    public String getStatus() { return status; }
-    public LocalDateTime getSubmittedAt() { return submittedAt; }
+    public Double getRequestedAmount() {
+        return requestedAmount;
+    }
+
+    public void setRequestedAmount(Double requestedAmount) {
+        this.requestedAmount = requestedAmount;
+    }
+
+    public Integer getTenureMonths() {
+        return tenureMonths;
+    }
+
+    public void setTenureMonths(Integer tenureMonths) {
+        this.tenureMonths = tenureMonths;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public LocalDateTime getSubmittedAt() {
+        return submittedAt;
+    }
 }
