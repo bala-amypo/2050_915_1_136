@@ -26,7 +26,7 @@ public class FinancialProfileServiceImpl implements FinancialProfileService {
                     existing.setMonthlyIncome(profile.getMonthlyIncome());
                     existing.setMonthlyExpenses(profile.getMonthlyExpenses());
                     existing.setExistingEmis(profile.getExistingEmis());
-                    existing.setCreditScore(profile.getCreditScore()); // Critical for t27
+                    existing.setCreditScore(profile.getCreditScore());
                     return repo.save(existing);
                 })
                 .orElseGet(() -> {

@@ -30,11 +30,7 @@ public class LoanRequest {
     public void setTenureMonths(Integer t) { this.tenureMonths = t; }
     public Status getStatus() { return status; }
     public void setStatus(Status s) { this.status = s; }
-    
-    public void setStatus(String s) {
-        if (s != null) this.status = Status.valueOf(s.toUpperCase());
-    }
-
+    public void setStatus(String s) { if(s != null) this.status = Status.valueOf(s.toUpperCase()); }
     public User getUser() { return user; }
     public void setUser(User u) { this.user = u; }
     public LocalDateTime getSubmittedAt() { return submittedAt; }

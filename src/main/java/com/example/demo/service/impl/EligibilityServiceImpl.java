@@ -22,19 +22,19 @@ public class EligibilityServiceImpl implements EligibilityService {
     public EligibilityResult evaluateEligibility(long requestId) {
         if (repo.findByLoanRequestId(requestId).isPresent()) throw new BadRequestException("Eligibility already exists");
 
-        LoanRequest loanRequest = loanRepo.findById(requestId).orElseThrow(() -> new BadRequestException("Loan request not found"));
-        FinancialProfile profile = profileRepo.findByUserId(loanRequest.getUser().getId()).orElseThrow(() -> new BadRequestException("Financial profile not found"));
+        LoanRequest lr = loanRepo.findById(requestId).orElseThrow(() -> new BadRequestException("Loan request not found"));
+        FinancialProfile fp = profileRepo.findByUserId(lr.getUser().getId()).orElseThrow(() -> new BadRequestException("Financial profile not found"));
 
-        double disposableIncome = profile.getMonthlyIncome() - profile.getMonthlyExpenses() - profile.getExistingEmis();
-        double monthlyInstallment = loanRequest.getRequestedAmount() / loanRequest.getTenureMonths();
-        boolean isEligible = disposableIncome >= (monthlyInstallment * 1.5) && profile.getCreditScore() >= 700;
+        double disposable = fp.getMonthlyIncome() - fp.getMonthlyExpenses() - fp.getExistingEmis();
+        double emi = lr.getRequestedAmount() / lr.getTenureMonths();
+        boolean eligible = disposable >= (emi * 1.5) && fp.getCreditScore() >= 700;
 
-        EligibilityResult result = new EligibilityResult();
-        result.setLoanRequest(loanRequest);
-        result.setEligible(isEligible);
-        result.setDisposableIncome(disposableIncome);
-        result.setMaxEmiPossible(disposableIncome / 1.5);
-        return repo.save(result);
+        EligibilityResult res = new EligibilityResult();
+        res.setLoanRequest(lr);
+        res.setEligible(eligible);
+        res.setDisposableIncome(disposable);
+        res.setMaxEmiPossible(disposable / 1.5);
+        return repo.save(res);
     }
     
     public EligibilityResult getByLoanRequestId(long requestId) {

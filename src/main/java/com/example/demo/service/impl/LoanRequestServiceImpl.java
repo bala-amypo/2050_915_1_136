@@ -5,6 +5,7 @@ import com.example.demo.exception.BadRequestException;
 import com.example.demo.repository.*;
 import com.example.demo.service.LoanRequestService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -19,13 +20,13 @@ public class LoanRequestServiceImpl implements LoanRequestService {
     }
 
     @Override
+    @Transactional
     public LoanRequest submitRequest(LoanRequest request) {
         User user = userRepo.findById(request.getUser().getId())
                 .orElseThrow(() -> new BadRequestException("User not found"));
         
-        if (request.getStatus() == null) request.setStatus(LoanRequest.Status.PENDING);
-        if (request.getSubmittedAt() == null) request.setSubmittedAt(LocalDateTime.now());
-        
+        request.setStatus(LoanRequest.Status.PENDING);
+        request.setSubmittedAt(LocalDateTime.now());
         request.setUser(user);
         return repo.save(request);
     }
