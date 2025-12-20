@@ -15,11 +15,10 @@ public class RiskAssessment {
 
     private LocalDateTime createdAt;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "loan_request_id", nullable = false)
-    private LoanRequest loanRequest; // link to LoanRequest entity
+    private LoanRequest loanRequest;
 
-    // Getters and setters
     public Long getId() {
         return id;
     }

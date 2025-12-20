@@ -39,3 +39,4 @@ public class FinancialProfile {
 
     public java.time.LocalDateTime getLastUpdatedAt() { return lastUpdatedAt; }
     public void setLastUpdatedAt(java.time.LocalDateTime lastUpdatedAt) { this.lastUpdatedAt = lastUpdatedAt; }
+    }
