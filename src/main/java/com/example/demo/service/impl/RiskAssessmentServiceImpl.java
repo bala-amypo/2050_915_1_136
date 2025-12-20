@@ -36,7 +36,7 @@ public class RiskAssessmentServiceImpl implements RiskAssessmentService {
                 .orElseThrow(() -> new BadRequestException("Profile not found"));
 
         double dti = fp.getMonthlyIncome() == 0 ? 0 :
-                fp.getExistingEmi() / fp.getMonthlyIncome();
+                fp.getExistingEmis() / fp.getMonthlyIncome();
 
         RiskAssessment log = new RiskAssessment();
         log.setLoanRequestId(loanRequestId);
