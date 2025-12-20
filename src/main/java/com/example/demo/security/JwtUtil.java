@@ -21,7 +21,28 @@ public class JwtUtil {
         this.expiration = expiration;
     }
 
-    // --- Add this method to fix the current error ---
+    // VERSION 1: Used by your application code
+    public String generateToken(User user) {
+        return Jwts.builder()
+                .setSubject(user.getEmail())
+                .claim("role", user.getRole().name())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + expiration))
+                .signWith(SignatureAlgorithm.HS256, secret)
+                .compact();
+    }
+
+    // VERSION 2: Required by the Test Suite (The missing piece!)
+    public String generateToken(Map<String, Object> claims, String subject) {
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(subject)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + expiration))
+                .signWith(SignatureAlgorithm.HS256, secret)
+                .compact();
+    }
+
     public boolean validateToken(String token) {
         try {
             Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
@@ -33,16 +54,6 @@ public class JwtUtil {
 
     private boolean isTokenExpired(String token) {
         return getAllClaims(token).getExpiration().before(new Date());
-    }
-
-    public String generateToken(User user) {
-        return Jwts.builder()
-                .setSubject(user.getEmail())
-                .claim("role", user.getRole().name())
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + expiration))
-                .signWith(SignatureAlgorithm.HS256, secret)
-                .compact();
     }
 
     public Claims getAllClaims(String token) {
