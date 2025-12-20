@@ -18,6 +18,8 @@ public class LoanRequest {
     @ManyToOne
     @JoinColumn(name = "user_id") // optional, sets the FK column name
     private User user;
+    public void setRequestedAmount(double amount) { this.requestedAmount = amount; }
+public void setTenureMonths(int months) { this.tenureMonths = months; }
 
     // getters and setters
     public Long getId() { return id; }
