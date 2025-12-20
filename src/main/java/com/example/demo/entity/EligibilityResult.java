@@ -2,7 +2,6 @@ package com.example.demo.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 @Entity
 public class EligibilityResult {
@@ -11,28 +10,25 @@ public class EligibilityResult {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(optional = false) // Usually OneToOne for a specific LoanRequest
+    @OneToOne(optional = false)
     private LoanRequest loanRequest;
 
     private Boolean eligible;
     private Double disposableIncome;
     
-    // RENAMED: To match what the Service is calling in the error log
-    private Double maxEmiPossible; 
+    // This is the actual database column
+    private Double maxEligibleAmount = 0.0;
 
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @PrePersist
     public void prePersist() {
-        if (this.createdAt == null) {
-            this.createdAt = LocalDateTime.now();
-        }
-        if (this.eligible == null) {
-            this.eligible = false;
-        }
+        if (this.createdAt == null) this.createdAt = LocalDateTime.now();
+        if (this.eligible == null) this.eligible = false;
+        if (this.maxEligibleAmount == null) this.maxEligibleAmount = 0.0;
     }
 
-    /* ---------- Getters & Setters ---------- */
+    /* ---------- Standard Getters & Setters ---------- */
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -46,10 +42,24 @@ public class EligibilityResult {
     public Double getDisposableIncome() { return disposableIncome; }
     public void setDisposableIncome(Double disposableIncome) { this.disposableIncome = disposableIncome; }
 
-    // FIX: Method name now matches the Service call
-    public Double getMaxEmiPossible() { return maxEmiPossible; }
-    public void setMaxEmiPossible(Double maxEmiPossible) { this.maxEmiPossible = maxEmiPossible; }
-
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    /* ---------- The "Bridge" Methods for Test and Service Compatibility ---------- */
+
+    // 1. Matches the TEST SUITE requirements (Fixes your current build error)
+    public Double getMaxEligibleAmount() { 
+        return maxEligibleAmount; 
+    }
+    public void setMaxEligibleAmount(Double maxEligibleAmount) { 
+        this.maxEligibleAmount = maxEligibleAmount; 
+    }
+
+    // 2. Matches the SERVICE IMPL requirements (Prevents the previous build error)
+    public void setMaxEmiPossible(Double maxEmiPossible) { 
+        this.maxEligibleAmount = maxEmiPossible; 
+    }
+    public Double getMaxEmiPossible() { 
+        return maxEligibleAmount; 
+    }
 }
