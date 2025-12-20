@@ -6,9 +6,19 @@ import jakarta.persistence.*;
 public class EligibilityResult {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    @ManyToOne
+    private User user;
+
+    private boolean eligible;
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setEligible(boolean eligible) {
+        this.eligible = eligible;
+    }
 }
