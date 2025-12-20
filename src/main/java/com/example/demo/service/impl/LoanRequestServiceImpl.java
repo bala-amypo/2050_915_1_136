@@ -1,4 +1,3 @@
-// src/main/java/com/example/demo/service/impl/LoanRequestServiceImpl.java
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.*;
@@ -14,9 +13,9 @@ public class LoanRequestServiceImpl implements LoanRequestService {
     private final LoanRequestRepository repo;
     private final UserRepository userRepo;
 
-    public LoanRequestServiceImpl(LoanRequestRepository repo, UserRepository userRepo) {
-        this.repo = repo;
-        this.userRepo = userRepo;
+    public LoanRequestServiceImpl(LoanRequestRepository r, UserRepository u) {
+        this.repo = r;
+        this.userRepo = u;
     }
 
     @Override
@@ -24,7 +23,6 @@ public class LoanRequestServiceImpl implements LoanRequestService {
         User user = userRepo.findById(request.getUser().getId())
                 .orElseThrow(() -> new BadRequestException("User not found"));
         
-        // Manual set for t28 and t29
         if (request.getStatus() == null) request.setStatus(LoanRequest.Status.PENDING);
         if (request.getSubmittedAt() == null) request.setSubmittedAt(LocalDateTime.now());
         
@@ -34,8 +32,12 @@ public class LoanRequestServiceImpl implements LoanRequestService {
 
     @Override
     public List<LoanRequest> getRequestsByUser(Long userId) {
-        // Explicit check for simulation tests t19, t46
         if (!userRepo.existsById(userId)) throw new BadRequestException("User not found");
         return repo.findByUserId(userId);
+    }
+
+    @Override
+    public LoanRequest getById(Long id) {
+        return repo.findById(id).orElseThrow(() -> new BadRequestException("Loan request not found"));
     }
 }
