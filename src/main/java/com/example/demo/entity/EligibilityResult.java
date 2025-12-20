@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 public class EligibilityResult {
@@ -9,37 +10,83 @@ public class EligibilityResult {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long loanRequestId;
+    @ManyToOne(optional = false)
+    private LoanRequest loanRequest;
+
+    @ManyToOne(optional = false)
+    private User user;
 
     private Boolean eligible;
 
     private Double disposableIncome;
+
     private Double maxEligibleAmount;
 
-public Double getMaxEligibleAmount() {
-    return maxEligibleAmount;
-}
+    private LocalDateTime createdAt;
 
-public void setMaxEligibleAmount(Double maxEligibleAmount) {
-    this.maxEligibleAmount = maxEligibleAmount;
-}
-
-
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public Long getLoanRequestId() { return loanRequestId; }
-    public void setLoanRequestId(Long loanRequestId) {
-        this.loanRequestId = loanRequestId;
+    @PrePersist
+    public void prePersist() {
+        if (this.eligible == null) {
+            this.eligible = false;
+        }
+        if (this.disposableIncome == null) {
+            this.disposableIncome = 0.0;
+        }
+        if (this.maxEligibleAmount == null) {
+            this.maxEligibleAmount = 0.0;
+        }
+        if (this.createdAt == null) {
+            this.createdAt = LocalDateTime.now();
+        }
     }
 
-    public Boolean getEligible() { return eligible; }
+    /* ---------- Getters & Setters ---------- */
+
+    public Long getId() {
+        return id;
+    }
+
+    public LoanRequest getLoanRequest() {
+        return loanRequest;
+    }
+
+    public void setLoanRequest(LoanRequest loanRequest) {
+        this.loanRequest = loanRequest;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Boolean getEligible() {
+        return eligible;
+    }
+
     public void setEligible(Boolean eligible) {
         this.eligible = eligible;
     }
 
-    public Double getDisposableIncome() { return disposableIncome; }
+    public Double getDisposableIncome() {
+        return disposableIncome;
+    }
+
     public void setDisposableIncome(Double disposableIncome) {
         this.disposableIncome = disposableIncome;
+    }
+
+    public Double getMaxEligibleAmount() {
+        return maxEligibleAmount;
+    }
+
+    public void setMaxEligibleAmount(Double maxEligibleAmount) {
+        this.maxEligibleAmount = maxEligibleAmount;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 }
