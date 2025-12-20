@@ -19,8 +19,9 @@ public class EligibilityResult {
     private Boolean eligible;
 
     private Double disposableIncome;
+    @Column(nullable = false)
+    private Double maxEligibleAmount = 0.0; // Initialize to avoid NPE
 
-    private Double maxEligibleAmount;
 
     private LocalDateTime createdAt;
 
