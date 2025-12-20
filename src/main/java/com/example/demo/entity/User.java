@@ -7,12 +7,6 @@ import java.time.LocalDateTime;
 @Table(name = "users")
 public class User {
 
-    // ===== COMPATIBILITY ENUM (FOR HIDDEN TESTS) =====
-    public enum Role {
-        CUSTOMER,
-        ADMIN
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,18 +18,22 @@ public class User {
 
     private String password;
 
-    // ===== REAL STORED ROLE =====
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private com.example.demo.entity.Role role = com.example.demo.entity.Role.CUSTOMER;
+    private Role role = Role.CUSTOMER;
 
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
+
+    @Column(nullable = false)
     private LocalDateTime updatedAt;
 
     // ===== LIFECYCLE =====
     @PrePersist
     protected void onCreate() {
-        if (role == null) role = com.example.demo.entity.Role.CUSTOMER;
+        if (role == null) {
+            role = Role.CUSTOMER;
+        }
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
     }
@@ -46,6 +44,7 @@ public class User {
     }
 
     // ===== GETTERS & SETTERS =====
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -58,29 +57,19 @@ public class User {
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
 
-    // ===== REQUIRED BY TESTS =====
-
-    // For assertEquals(Role.CUSTOMER, user.getRole())
-    public com.example.demo.entity.Role getRole() {
+    public Role getRole() {
         return role;
     }
 
     // For user.setRole(Role.CUSTOMER)
-    public void setRole(com.example.demo.entity.Role role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 
     // For user.setRole("CUSTOMER")
     public void setRole(String role) {
         if (role != null) {
-            this.role = com.example.demo.entity.Role.valueOf(role.toUpperCase());
-        }
-    }
-
-    // For User.Role.CUSTOMER usage
-    public void setRole(User.Role role) {
-        if (role != null) {
-            this.role = com.example.demo.entity.Role.valueOf(role.name());
+            this.role = Role.valueOf(role.toUpperCase());
         }
     }
 
