@@ -6,9 +6,9 @@ import com.example.demo.entity.User;
 import com.example.demo.repository.LoanRequestRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.LoanRequestService;
-
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -24,40 +24,33 @@ public class LoanRequestServiceImpl implements LoanRequestService {
         this.userRepository = userRepository;
     }
 
-    // ✅ POST – create loan request
     @Override
     public LoanRequest createLoanRequest(LoanDtos.LoanRequestDto dto) {
+
+        User user = userRepository.findById(dto.getUserId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
         LoanRequest loan = new LoanRequest();
         loan.setRequestedAmount(dto.getRequestedAmount());
         loan.setTenureMonths(dto.getTenureMonths());
-
-        loan.setUser(
-                userRepository.findById(dto.getUserId())
-                        .orElseThrow(() ->
-                                new RuntimeException("User not found"))
-        );
-
         loan.setStatus("PENDING");
+        loan.setSubmittedAt(LocalDateTime.now());
+        loan.setUser(user);
 
         return loanRequestRepository.save(loan);
     }
 
-    // ✅ GET – by user
     @Override
     public List<LoanRequest> getByUserId(Long userId) {
         return loanRequestRepository.findByUserId(userId);
     }
 
-    // ✅ GET – by id
     @Override
     public LoanRequest getById(Long id) {
         return loanRequestRepository.findById(id)
-                .orElseThrow(() ->
-                        new RuntimeException("Loan request not found"));
+                .orElseThrow(() -> new RuntimeException("Loan request not found"));
     }
 
-    // ✅ GET – all
     @Override
     public List<LoanRequest> getAll() {
         return loanRequestRepository.findAll();
