@@ -19,11 +19,11 @@ public class AuthController {
         this.userService = userService;
         this.jwtUtil = jwtUtil;
     }
-
     @PostMapping("/register")
-    public User register(@RequestBody User user) {
-        return userService.register(user);
-    }
+public User register(@RequestBody User user) {
+    return userService.register(user);
+}
+
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
