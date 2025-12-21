@@ -1,5 +1,5 @@
 package com.example.demo.entity;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
@@ -12,44 +12,33 @@ public class LoanRequest {
     private Long id;
 
     @Column(name = "requested_amount", nullable = false)
-    private double requestedAmount;
+    private Double requestedAmount;
 
     @Column(name = "tenure_months", nullable = false)
-    private int tenureMonths;
+    private Integer tenureMonths;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    @JsonIgnore
-    private User user;
-
-   // Inside LoanRequest.java
-@Column(nullable = false)
-private String status = "PENDING"; // This ensures it is never null
+    @Column(nullable = false)
+    private String status;
 
     @Column(name = "submitted_at", nullable = false)
     private LocalDateTime submittedAt;
-  
 
-@PrePersist
-protected void onCreate() {
-    this.submittedAt = LocalDateTime.now();
-}
+    // ✅ Critical: link back to User
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-    // 🔹 No-arg constructor (required by JPA)
-    public LoanRequest() {
-    }
+    // Constructors
+    public LoanRequest() {}
 
-    // 🔹 Optional constructor
-    public LoanRequest(double requestedAmount, int tenureMonths, User user, String status) {
+    public LoanRequest(Double requestedAmount, Integer tenureMonths, String status, LocalDateTime submittedAt) {
         this.requestedAmount = requestedAmount;
         this.tenureMonths = tenureMonths;
-        this.user = user;
         this.status = status;
-        this.submittedAt = LocalDateTime.now();
+        this.submittedAt = submittedAt;
     }
 
-    // 🔹 Getters and Setters
-
+    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -58,28 +47,20 @@ protected void onCreate() {
         this.id = id;
     }
 
-    public double getRequestedAmount() {
+    public Double getRequestedAmount() {
         return requestedAmount;
     }
 
-    public void setRequestedAmount(double requestedAmount) {
+    public void setRequestedAmount(Double requestedAmount) {
         this.requestedAmount = requestedAmount;
     }
 
-    public int getTenureMonths() {
+    public Integer getTenureMonths() {
         return tenureMonths;
     }
 
-    public void setTenureMonths(int tenureMonths) {
+    public void setTenureMonths(Integer tenureMonths) {
         this.tenureMonths = tenureMonths;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 
     public String getStatus() {
@@ -96,5 +77,13 @@ protected void onCreate() {
 
     public void setSubmittedAt(LocalDateTime submittedAt) {
         this.submittedAt = submittedAt;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
