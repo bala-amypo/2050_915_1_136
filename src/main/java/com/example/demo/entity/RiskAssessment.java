@@ -11,57 +11,43 @@ public class RiskAssessment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Audit reference only (no FK)
-    @Column(name = "loan_request_id", nullable = false)
-    private Long loanRequestId;
+    private String assessmentResult;
 
-    @Column(nullable = false)
-    private Double dtiRatio;
-
-    @Column(nullable = false)
-    private String creditCheckStatus;
-
-    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    public RiskAssessment() {}
-
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-    }
-
-    // ===== GETTERS & SETTERS =====
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "loan_request_id", nullable = false)
+    private LoanRequest loanRequest;
 
     public Long getId() {
         return id;
     }
 
-    public Long getLoanRequestId() {
-        return loanRequestId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public void setLoanRequestId(Long loanRequestId) {
-        this.loanRequestId = loanRequestId;
+    public String getAssessmentResult() {
+        return assessmentResult;
     }
 
-    public Double getDtiRatio() {
-        return dtiRatio;
-    }
-
-    public void setDtiRatio(Double dtiRatio) {
-        this.dtiRatio = dtiRatio;
-    }
-
-    public String getCreditCheckStatus() {
-        return creditCheckStatus;
-    }
-
-    public void setCreditCheckStatus(String creditCheckStatus) {
-        this.creditCheckStatus = creditCheckStatus;
+    public void setAssessmentResult(String assessmentResult) {
+        this.assessmentResult = assessmentResult;
     }
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LoanRequest getLoanRequest() {
+        return loanRequest;
+    }
+
+    public void setLoanRequest(LoanRequest loanRequest) {
+        this.loanRequest = loanRequest;
     }
 }

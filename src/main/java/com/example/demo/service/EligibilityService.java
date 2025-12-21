@@ -1,10 +1,15 @@
 package com.example.demo.service;
+import com.example.demo.service.EligibilityService;
 
-import com.example.demo.entity.EligibilityResult;
+import com.example.demo.entity.LoanRequest;
 
-public interface EligibilityService {
+// method name must match
+    public interface EligibilityService {
 
-    EligibilityResult evaluateEligibility(Long loanRequestId);
+    boolean checkEligibility(Long loanRequestId);
 
+    // ✅ ADD THIS
     String getEligibilityResult(Long loanRequestId);
 }
+
+

@@ -1,80 +1,39 @@
 package com.example.demo.service.impl;
-
-import com.example.demo.entity.*;
-import com.example.demo.exception.BadRequestException;
-import com.example.demo.exception.ResourceNotFoundException;
-import com.example.demo.repository.*;
+import com.example.demo.repository.LoanRequestRepository;
+import com.example.demo.entity.LoanRequest;
 import com.example.demo.service.EligibilityService;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
-
 @Service
 public class EligibilityServiceImpl implements EligibilityService {
 
-    private final LoanRequestRepository loanRequestRepo;
-    private final FinancialProfileRepository profileRepo;
-    private final EligibilityResultRepository resultRepo;
+    private final LoanRequestRepository loanRequestRepository;
 
-    public EligibilityServiceImpl(
-            LoanRequestRepository loanRequestRepo,
-            FinancialProfileRepository profileRepo,
-            EligibilityResultRepository resultRepo) {
-        this.loanRequestRepo = loanRequestRepo;
-        this.profileRepo = profileRepo;
-        this.resultRepo = resultRepo;
+    public EligibilityServiceImpl(LoanRequestRepository loanRequestRepository) {
+        this.loanRequestRepository = loanRequestRepository;
     }
 
     @Override
-    public EligibilityResult evaluateEligibility(Long loanRequestId) {
+    public boolean checkEligibility(Long loanRequestId) {
 
-        if (resultRepo.findByLoanRequestId(loanRequestId).isPresent()) {
-            throw new BadRequestException("Eligibility already evaluated");
-        }
+        LoanRequest loan = loanRequestRepository.findById(loanRequestId)
+                .orElseThrow(() -> new RuntimeException("Loan Request not found"));
 
-        LoanRequest loanRequest = loanRequestRepo.findById(loanRequestId)
-                .orElseThrow(() -> new ResourceNotFoundException("Loan request not found"));
+        boolean eligible = loan.getRequestedAmount() <= 500000
+                && loan.getTenureMonths() <= 60;
 
-        FinancialProfile profile = profileRepo.findByUserId(
-                loanRequest.getUser().getId()
-        ).orElseThrow(() -> new ResourceNotFoundException("Financial profile not found"));
+        loan.setEligibilityResult(eligible ? "Eligible" : "Not Eligible");
+        loanRequestRepository.save(loan);
 
-        double obligations = profile.getMonthlyExpenses()
-                + (profile.getExistingLoanEmi() != null ? profile.getExistingLoanEmi() : 0);
-
-        double dti = obligations / profile.getMonthlyIncome();
-
-        boolean eligible = dti <= 0.5 && profile.getCreditScore() >= 650;
-
-        double maxEligibleAmount = eligible ? profile.getMonthlyIncome() * 20 : 0;
-        double estimatedEmi = eligible
-                ? maxEligibleAmount / loanRequest.getTenureMonths()
-                : 0;
-
-        String riskLevel =
-                dti < 0.3 ? "LOW" :
-                dti < 0.5 ? "MEDIUM" : "HIGH";
-
-        EligibilityResult result = new EligibilityResult();
-        result.setLoanRequest(loanRequest);
-        result.setUser(loanRequest.getUser()); // ⭐ FIX FOR user_id ERROR
-        result.setEligible(eligible);
-        result.setMaxEligibleAmount(maxEligibleAmount);
-        result.setEstimatedEmi(estimatedEmi);
-        result.setRiskLevel(riskLevel);
-        result.setRejectionReason(eligible ? null : "High DTI or Low Credit Score");
-        result.setCalculatedAt(LocalDateTime.now());
-
-        return resultRepo.save(result); // ✅ SAVES TO DB
+        return eligible;
     }
 
+    // ✅ ADD THIS METHOD
     @Override
     public String getEligibilityResult(Long loanRequestId) {
-        EligibilityResult result = resultRepo.findByLoanRequestId(loanRequestId)
-                .orElseThrow(() -> new ResourceNotFoundException("Eligibility result not found"));
 
-        return result.isEligible()
-                ? "ELIGIBLE | Max Amount: " + result.getMaxEligibleAmount()
-                : "NOT ELIGIBLE | Reason: " + result.getRejectionReason();
+        LoanRequest loan = loanRequestRepository.findById(loanRequestId)
+                .orElseThrow(() -> new RuntimeException("Loan Request not found"));
+
+        return loan.getEligibilityResult();
     }
 }
