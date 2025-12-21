@@ -4,20 +4,34 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "risk_assessments")
-public class RiskAssessment {
+@Table(name = "risk_assessment_logs")
+public class RiskAssessmentLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String assessmentResult;
+    @Column(name = "loan_request_id", nullable = false)
+    private Long loanRequestId;
 
-    private LocalDateTime createdAt;
+    @Column(nullable = false)
+    private Double dtiRatio;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "loan_request_id", nullable = false)
-    private LoanRequest loanRequest;
+    @Column(nullable = false)
+    private String creditCheckStatus;
+
+    @Column(nullable = false)
+    private LocalDateTime timestamp;
+
+    @PrePersist
+    public void onCreate() {
+        this.timestamp = LocalDateTime.now();
+    }
+
+    public RiskAssessmentLog() {}
+
+    // getters and setters
+}
 
     public Long getId() {
         return id;

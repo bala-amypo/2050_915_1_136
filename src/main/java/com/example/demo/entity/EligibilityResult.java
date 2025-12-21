@@ -1,8 +1,10 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "eligibility_results")
 public class EligibilityResult {
 
     @Id
@@ -10,14 +12,36 @@ public class EligibilityResult {
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "loan_request_id", nullable = false)
-    private LoanRequest loanRequest; // Link to LoanRequest
+    @JoinColumn(name = "loan_request_id", nullable = false, unique = true)
+    private LoanRequest loanRequest;
 
-    private boolean eligible;
-    private String reason;
+    @Column(nullable = false)
+    private Boolean isEligible;
 
-    // Constructors
+    @Column(nullable = false)
+    private Double maxEligibleAmount;
+
+    @Column(nullable = false)
+    private Double estimatedEmi;
+
+    @Column(nullable = false)
+    private String riskLevel;
+
+    private String rejectionReason;
+
+    @Column(nullable = false)
+    private LocalDateTime calculatedAt;
+
+    @PrePersist
+    public void onCreate() {
+        this.calculatedAt = LocalDateTime.now();
+    }
+
     public EligibilityResult() {}
+
+    // getters and setters
+}
+
 
     public EligibilityResult(LoanRequest loanRequest, boolean eligible, String reason) {
         this.loanRequest = loanRequest;
