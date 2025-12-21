@@ -11,43 +11,23 @@ public class RiskAssessment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String assessmentResult;
-
-    private LocalDateTime createdAt;
-
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @OneToOne
     @JoinColumn(name = "loan_request_id", nullable = false)
     private LoanRequest loanRequest;
 
-    public Long getId() {
-        return id;
+    @Column(name = "risk_score")
+    private int riskScore;
+
+    @Column(name = "risk_level")
+    private String riskLevel;
+
+    @Column(name = "assessed_at", nullable = false)
+    private LocalDateTime assessedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        this.assessedAt = LocalDateTime.now();
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getAssessmentResult() {
-        return assessmentResult;
-    }
-
-    public void setAssessmentResult(String assessmentResult) {
-        this.assessmentResult = assessmentResult;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LoanRequest getLoanRequest() {
-        return loanRequest;
-    }
-
-    public void setLoanRequest(LoanRequest loanRequest) {
-        this.loanRequest = loanRequest;
-    }
+    // Getters and Setters ...
 }
