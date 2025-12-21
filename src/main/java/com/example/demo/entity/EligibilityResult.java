@@ -4,76 +4,40 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "eligibility_results")
+@Table(name = "eligibility_result")
 public class EligibilityResult {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /**
-     * One eligibility result per loan request
-     */
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(
-        name = "loan_request_id",
-        nullable = false,
-        unique = true
-    )
+    // One EligibilityResult per LoanRequest
+    @OneToOne
+    @JoinColumn(name = "loan_request_id", nullable = false, unique = true)
     private LoanRequest loanRequest;
 
-    @Column(nullable = false)
-    private Boolean isEligible;
+    @Column(name = "is_eligible", nullable = false)
+    private boolean eligible;
 
-    @Column(nullable = false)
+    @Column(name = "max_eligible_amount", nullable = false)
     private Double maxEligibleAmount;
 
-    @Column(nullable = false)
+    @Column(name = "estimated_emi", nullable = false)
     private Double estimatedEmi;
 
-    @Column(nullable = false)
+    @Column(name = "risk_level", nullable = false)
     private String riskLevel;
 
-    @Column(length = 255)
+    @Column(name = "rejection_reason")
     private String rejectionReason;
 
-    @Column(nullable = false, updatable = false)
+    @Column(name = "calculated_at", nullable = false)
     private LocalDateTime calculatedAt;
 
-    // ===============================
-    // Constructors
-    // ===============================
+    // 🔹 No-args constructor
+    public EligibilityResult() {}
 
-    public EligibilityResult() {
-    }
-
-    public EligibilityResult(
-            LoanRequest loanRequest,
-            Boolean isEligible,
-            Double maxEligibleAmount,
-            Double estimatedEmi,
-            String riskLevel,
-            String rejectionReason) {
-        this.loanRequest = loanRequest;
-        this.isEligible = isEligible;
-        this.maxEligibleAmount = maxEligibleAmount;
-        this.estimatedEmi = estimatedEmi;
-        this.riskLevel = riskLevel;
-        this.rejectionReason = rejectionReason;
-    }
-
-    // ===============================
-    // JPA Lifecycle
-    // ===============================
-
-    @PrePersist
-    protected void onCreate() {
-        this.calculatedAt = LocalDateTime.now();
-    }
-
-    // ===============================
-    // Getters & Setters
-    // ===============================
+    // 🔹 Getters & Setters
 
     public Long getId() {
         return id;
@@ -87,12 +51,12 @@ public class EligibilityResult {
         this.loanRequest = loanRequest;
     }
 
-    public Boolean getIsEligible() {
-        return isEligible;
+    public boolean isEligible() {
+        return eligible;
     }
 
-    public void setIsEligible(Boolean eligible) {
-        isEligible = eligible;
+    public void setEligible(boolean eligible) {
+        this.eligible = eligible;
     }
 
     public Double getMaxEligibleAmount() {
@@ -129,5 +93,9 @@ public class EligibilityResult {
 
     public LocalDateTime getCalculatedAt() {
         return calculatedAt;
+    }
+
+    public void setCalculatedAt(LocalDateTime calculatedAt) {
+        this.calculatedAt = calculatedAt;
     }
 }
