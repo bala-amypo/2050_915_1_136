@@ -1,5 +1,5 @@
 package com.example.demo.controller;
-im
+
 import com.example.demo.dto.LoanDtos;
 import com.example.demo.entity.LoanRequest;
 import com.example.demo.service.LoanRequestService;
@@ -20,21 +20,13 @@ public class LoanRequestController {
     }
 
     // POST /api/loan-requests
-    @PostMapping("/loan-requests")
-public ResponseEntity<LoanRequest> createLoanRequest(
-        @RequestBody LoanRequest loanRequest) {
+    @PostMapping
+    public ResponseEntity<LoanRequest> createLoan(
+            @RequestBody LoanDtos.LoanRequestDto dto) {
 
-    LoanRequest savedLoan = loanRequestRepository.save(loanRequest);
-
-    // 🔥 ADD THIS LINE (ELIGIBILITY CALCULATION)
-    String eligibility = eligibilityService.checkEligibility(savedLoan.getId());
-
-    savedLoan.setEligibilityResult(eligibility);
-    loanRequestRepository.save(savedLoan);
-
-    return ResponseEntity.ok(savedLoan);
-}
-
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(loanRequestService.createLoanRequest(dto));
+    }
 
     // GET /api/loan-requests/user/{userId}
     @GetMapping("/user/{userId}")
