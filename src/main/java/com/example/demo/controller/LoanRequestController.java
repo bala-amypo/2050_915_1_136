@@ -20,13 +20,21 @@ public class LoanRequestController {
     }
 
     // POST /api/loan-requests
-    @PostMapping
-    public ResponseEntity<LoanRequest> createLoan(
-            @RequestBody LoanDtos.LoanRequestDto dto) {
+    @PostMapping("/loan-requests")
+public ResponseEntity<LoanRequest> createLoanRequest(
+        @RequestBody LoanRequest loanRequest) {
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(loanRequestService.createLoanRequest(dto));
-    }
+    LoanRequest savedLoan = loanRequestRepository.save(loanRequest);
+
+    // 🔥 ADD THIS LINE (ELIGIBILITY CALCULATION)
+    String eligibility = eligibilityService.checkEligibility(savedLoan.getId());
+
+    savedLoan.setEligibilityResult(eligibility);
+    loanRequestRepository.save(savedLoan);
+
+    return ResponseEntity.ok(savedLoan);
+}
+
 
     // GET /api/loan-requests/user/{userId}
     @GetMapping("/user/{userId}")
