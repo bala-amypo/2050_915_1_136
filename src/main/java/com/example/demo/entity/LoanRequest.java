@@ -10,50 +10,21 @@ public class LoanRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private double requestedAmount;  // use this name consistently
+    @Column(name = "requested_amount", nullable = false)
+    private double requestedAmount;
+
+    @Column(name = "tenure_months", nullable = false)
     private int tenureMonths;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @Column(nullable = false)
     private String status;
+
+    @Column(name = "submitted_at", nullable = false)
     private java.time.LocalDateTime submittedAt;
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
-
-    public java.time.LocalDateTime getSubmittedAt() { return submittedAt; }
-    public void setSubmittedAt(java.time.LocalDateTime submittedAt) { this.submittedAt = submittedAt; }
-    // Getters and Setters
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public double getRequestedAmount() {
-        return requestedAmount;
-    }
-
-    public void setRequestedAmount(double requestedAmount) {
-        this.requestedAmount = requestedAmount;
-    }
-
-    public int getTenureMonths() {
-        return tenureMonths;
-    }
-
-    public void setTenureMonths(int tenureMonths) {
-        this.tenureMonths = tenureMonths;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
+    // getters & setters (same as you already have)
 }
