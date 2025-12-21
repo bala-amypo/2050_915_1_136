@@ -1,8 +1,10 @@
 package com.example.demo.entity;
-import java.time.LocalDateTime;
+
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "eligibility_result") // Ensures it maps to your MariaDB table
 public class EligibilityResult {
 
     @Id
@@ -11,7 +13,7 @@ public class EligibilityResult {
 
     @OneToOne
     @JoinColumn(name = "loan_request_id", nullable = false)
-    private LoanRequest loanRequest; // Link to LoanRequest
+    private LoanRequest loanRequest;
 
     private boolean eligible;
     private String reason;
@@ -19,13 +21,12 @@ public class EligibilityResult {
     @Column(name = "calculated_at", nullable = false)
     private LocalDateTime calculatedAt;
 
+    // Automatically sets the timestamp before saving to database
     @PrePersist
     protected void onCreate() {
         this.calculatedAt = LocalDateTime.now();
     }
 
-    // Add Getter and Setter for calculatedAt
-}
     // Constructors
     public EligibilityResult() {}
 
@@ -35,7 +36,7 @@ public class EligibilityResult {
         this.reason = reason;
     }
 
-    // Getters and setters
+    // Getters and Setters
     public Long getId() { return id; }
 
     public LoanRequest getLoanRequest() { return loanRequest; }
@@ -46,4 +47,7 @@ public class EligibilityResult {
 
     public String getReason() { return reason; }
     public void setReason(String reason) { this.reason = reason; }
+
+    public LocalDateTime getCalculatedAt() { return calculatedAt; }
+    public void setCalculatedAt(LocalDateTime calculatedAt) { this.calculatedAt = calculatedAt; }
 }
