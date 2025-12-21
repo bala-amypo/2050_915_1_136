@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.RiskAssessment;
+import com.example.demo.entity.LoanRequest;
 import com.example.demo.service.RiskAssessmentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,16 +16,14 @@ public class RiskLogController {
         this.riskAssessmentService = riskAssessmentService;
     }
 
-    @PostMapping("/save")
-    public ResponseEntity<RiskAssessment> saveRiskAssessment(@RequestBody RiskAssessment riskAssessment) {
-        RiskAssessment saved = riskAssessmentService.saveRiskAssessment(riskAssessment);
-        return ResponseEntity.ok(saved);
-    }
+    @PostMapping("/save/{loanRequestId}")
+    public ResponseEntity<RiskAssessment> saveRiskAssessment(
+            @PathVariable Long loanRequestId,
+            @RequestBody RiskAssessment riskAssessment) {
 
-    @GetMapping("/loan/{loanRequestId}")
-    public ResponseEntity<RiskAssessment> getRiskByLoanRequest(@PathVariable Long loanRequestId) {
-        return riskAssessmentService.getRiskAssessmentByLoanRequestId(loanRequestId)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        RiskAssessment saved =
+                riskAssessmentService.saveRiskAssessment(loanRequestId, riskAssessment);
+
+        return ResponseEntity.ok(saved);
     }
 }
