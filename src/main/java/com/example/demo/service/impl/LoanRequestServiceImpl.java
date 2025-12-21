@@ -17,28 +17,49 @@ public class LoanRequestServiceImpl implements LoanRequestService {
     private final LoanRequestRepository loanRequestRepository;
     private final UserRepository userRepository;
 
-    public LoanRequestServiceImpl(LoanRequestRepository loanRequestRepository,
-                                  UserRepository userRepository) {
+    public LoanRequestServiceImpl(
+            LoanRequestRepository loanRequestRepository,
+            UserRepository userRepository) {
         this.loanRequestRepository = loanRequestRepository;
         this.userRepository = userRepository;
     }
 
+    // ✅ POST – create loan request
     @Override
     public LoanRequest createLoanRequest(LoanDtos.LoanRequestDto dto) {
-
-        User user = userRepository.findById(dto.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
 
         LoanRequest loan = new LoanRequest();
         loan.setRequestedAmount(dto.getRequestedAmount());
         loan.setTenureMonths(dto.getTenureMonths());
-        loan.setUser(user);
+
+        loan.setUser(
+                userRepository.findById(dto.getUserId())
+                        .orElseThrow(() ->
+                                new RuntimeException("User not found"))
+        );
+
+        loan.setStatus("PENDING");
 
         return loanRequestRepository.save(loan);
     }
 
+    // ✅ GET – by user
     @Override
-    public List<LoanRequest> getLoanRequestsByUserId(Long userId) {
-        return loanRequestRepository.findByUser_Id(userId);
+    public List<LoanRequest> getByUserId(Long userId) {
+        return loanRequestRepository.findByUserId(userId);
+    }
+
+    // ✅ GET – by id
+    @Override
+    public LoanRequest getById(Long id) {
+        return loanRequestRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Loan request not found"));
+    }
+
+    // ✅ GET – all
+    @Override
+    public List<LoanRequest> getAll() {
+        return loanRequestRepository.findAll();
     }
 }
