@@ -32,9 +32,9 @@ public class FinancialProfileController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // GET ALL
-    @GetMapping
-    public List<FinancialProfile> getAllProfiles() {
-        return financialProfileRepository.findAll();
-    }
+    // // GET ALL
+    // @GetMapping
+    // public List<FinancialProfile> getAllProfiles() {
+    //     return financialProfileRepository.findAll();
+    // }
 }
