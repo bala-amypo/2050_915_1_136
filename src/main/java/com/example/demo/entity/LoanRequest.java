@@ -26,6 +26,12 @@ public class LoanRequest {
 
     @Column(name = "submitted_at", nullable = false)
     private LocalDateTime submittedAt;
+  
+
+@PrePersist
+protected void onCreate() {
+    this.submittedAt = LocalDateTime.now();
+}
 
     // 🔹 No-arg constructor (required by JPA)
     public LoanRequest() {
