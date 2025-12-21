@@ -50,6 +50,13 @@ private String eligibilityResult;
     public void setId(Long id) {
         this.id = id;
     }
+    public String getEligibilityResult() {
+    return eligibilityResult;
+}
+
+public void setEligibilityResult(String eligibilityResult) {
+    this.eligibilityResult = eligibilityResult;
+}
 
     public Double getRequestedAmount() {
         return requestedAmount;

@@ -1,5 +1,5 @@
 package com.example.demo.service;
-import com.example.demo.service.EligibilityService
+import com.example.demo.service.EligibilityService;
 
 import com.example.demo.entity.LoanRequest;
 
@@ -12,4 +12,4 @@ import com.example.demo.entity.LoanRequest;
     String getEligibilityResult(Long loanRequestId);
 }
 
-}
+

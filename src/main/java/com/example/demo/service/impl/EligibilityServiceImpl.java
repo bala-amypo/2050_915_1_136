@@ -1,5 +1,5 @@
 package com.example.demo.service.impl;
-
+import com.example.demo.repository.LoanRequestRepository;
 import com.example.demo.entity.LoanRequest;
 import com.example.demo.service.EligibilityService;
 import org.springframework.stereotype.Service;
