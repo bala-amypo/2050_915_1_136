@@ -1,28 +1,38 @@
-package com.example.demo.entity;
+    package com.example.demo.entity;
 
-import jakarta.persistence.*;
-import java.time.LocalDateTime;
+    import com.fasterxml.jackson.annotation.JsonBackReference;
+    import jakarta.persistence.*;
+    import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "risk_assessments")
-public class RiskAssessment {
+    @Entity
+    @Table(name = "loan_requests")
+    public class LoanRequest {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Long id;
 
-    @Column(name = "assessment_result", nullable = false)
-    private String assessmentResult;
+        @Column(name = "requested_amount", nullable = false)
+        private Double requestedAmount;
 
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
+        @Column(name = "tenure_months", nullable = false)
+        private Integer tenureMonths;
 
-    @ManyToOne
-    @JoinColumn(name = "loan_request_id", nullable = false)
-    private LoanRequest loanRequest;
+        @Column(nullable = false)
+        private String status;
 
-    // getters & setters
-}
+        @Column(name = "eligibility_result")
+        private String eligibilityResult;
+
+        @Column(name = "submitted_at", nullable = false)
+        private LocalDateTime submittedAt;
+
+        @ManyToOne
+        @JoinColumn(name = "user_id", nullable = false)
+        @JsonBackReference
+        private User user;
+
+        public LoanRequest() {}
 
         // getters & setters
         public Long getId() { return id; }
