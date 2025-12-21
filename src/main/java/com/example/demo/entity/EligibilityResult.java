@@ -1,5 +1,5 @@
 package com.example.demo.entity;
-
+import java.time.LocalDateTime;
 import jakarta.persistence.*;
 
 @Entity
@@ -16,6 +16,16 @@ public class EligibilityResult {
     private boolean eligible;
     private String reason;
 
+    @Column(name = "calculated_at", nullable = false)
+    private LocalDateTime calculatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        this.calculatedAt = LocalDateTime.now();
+    }
+
+    // Add Getter and Setter for calculatedAt
+}
     // Constructors
     public EligibilityResult() {}
 
