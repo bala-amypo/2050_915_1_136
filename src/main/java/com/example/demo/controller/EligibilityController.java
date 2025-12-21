@@ -1,20 +1,33 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.LoanRequest;
 import com.example.demo.service.EligibilityService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/eligibility")
+@RequestMapping("/api/eligibility")
 public class EligibilityController {
 
-    @Autowired
-    private EligibilityService eligibilityService;
+    private final EligibilityService eligibilityService;
 
+    public EligibilityController(EligibilityService eligibilityService) {
+        this.eligibilityService = eligibilityService;
+    }
+
+    // POST /api/eligibility/check
     @PostMapping("/check")
-    public String checkEligibility(@RequestBody LoanRequest loanRequest) {
-        boolean eligible = eligibilityService.checkEligibility(loanRequest); // use interface method
-        return eligible ? "Eligible" : "Not Eligible";
+    public ResponseEntity<String> checkEligibility(@RequestBody Long loanRequestId) {
+        boolean eligible = eligibilityService.checkEligibility(loanRequestId);
+        return ResponseEntity.ok(eligible ? "Eligible" : "Not Eligible");
+    }
+
+    // ✅ ADD THIS METHOD
+    // GET /api/eligibility/result/{loanRequestId}
+    @GetMapping("/result/{loanRequestId}")
+    public ResponseEntity<String> getEligibilityResult(
+            @PathVariable Long loanRequestId) {
+
+        String result = eligibilityService.getEligibilityResult(loanRequestId);
+        return ResponseEntity.ok(result);
     }
 }

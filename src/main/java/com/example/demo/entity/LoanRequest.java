@@ -20,6 +20,8 @@ public class LoanRequest {
 
     @Column(nullable = false)
     private String status;
+    @Column(name = "eligibility_result")
+private String eligibilityResult;
 
     @Column(name = "submitted_at", nullable = false)
     private LocalDateTime submittedAt;
