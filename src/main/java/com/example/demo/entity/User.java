@@ -1,7 +1,7 @@
 package com.example.demo.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,7 +20,8 @@ public class User {
     @Column(unique = true, nullable = false)
     private String email;
 
-    @JsonIgnore // 🔒 DO NOT expose password in JSON
+    // ✅ ACCEPT password in request, HIDE in response
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(nullable = false)
     private String password;
 
@@ -31,7 +32,7 @@ public class User {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    // ✅ FIX infinite recursion
+    // ✅ Prevent infinite JSON recursion
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<LoanRequest> loanRequests;
