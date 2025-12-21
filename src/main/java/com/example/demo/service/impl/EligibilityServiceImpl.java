@@ -13,19 +13,23 @@ public class EligibilityServiceImpl implements EligibilityService {
     }
 
     @Override
-    public boolean checkEligibility(Long loanRequestId) {
+public String checkEligibility(Long loanRequestId) {
 
-        LoanRequest loan = loanRequestRepository.findById(loanRequestId)
-                .orElseThrow(() -> new RuntimeException("Loan Request not found"));
+    LoanRequest loanRequest = loanRequestRepository.findById(loanRequestId)
+            .orElseThrow(() -> new RuntimeException("Loan not found"));
 
-        boolean eligible = loan.getRequestedAmount() <= 500000
-                && loan.getTenureMonths() <= 60;
+    FinancialProfile profile = financialProfileRepository
+            .findByUserId(loanRequest.getUser().getId())
+            .orElseThrow(() -> new RuntimeException("Financial profile not found"));
 
-        loan.setEligibilityResult(eligible ? "Eligible" : "Not Eligible");
-        loanRequestRepository.save(loan);
+    String result = profile.getCreditScore() >= 650 ? "Eligible" : "Not Eligible";
 
-        return eligible;
-    }
+    // 🔥 THIS LINE IS IMPORTANT
+    loanRequest.setEligibilityResult(result);
+    loanRequestRepository.save(loanRequest);
+
+    return result;
+}
 
     // ✅ ADD THIS METHOD
     @Override

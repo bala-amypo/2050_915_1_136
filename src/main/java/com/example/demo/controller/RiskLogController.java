@@ -11,32 +11,22 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 
 @RestController
-@RequestMapping("/api/risk-assessments")
+@RequestMapping("/api")
 public class RiskLogController {
 
     private final RiskAssessmentService riskAssessmentService;
-    private final LoanRequestRepository loanRequestRepository;
-    private final RiskAssessmentRepository riskAssessmentRepository;
 
-    public RiskLogController(RiskAssessmentService riskAssessmentService,
-                             LoanRequestRepository loanRequestRepository,
-                             RiskAssessmentRepository riskAssessmentRepository) {
+    public RiskLogController(RiskAssessmentService riskAssessmentService) {
         this.riskAssessmentService = riskAssessmentService;
-        this.loanRequestRepository = loanRequestRepository;
-        this.riskAssessmentRepository = riskAssessmentRepository;
     }
 
-    @PostMapping
-    public ResponseEntity<RiskAssessment> createRiskAssessment(@RequestBody RiskAssessment riskAssessment) {
-        Long loanRequestId = riskAssessment.getLoanRequest().getId();
+    @PostMapping("/risk/{loanRequestId}")
+    public ResponseEntity<RiskAssessment> calculateRisk(
+            @PathVariable Long loanRequestId,
+            @RequestBody RiskAssessment riskAssessment) {
 
-        LoanRequest loanRequest = loanRequestRepository.findById(loanRequestId)
-                .orElseThrow(() -> new ResourceNotFoundException("LoanRequest not found with id: " + loanRequestId));
-
-        riskAssessment.setLoanRequest(loanRequest);
-        riskAssessment.setCreatedAt(LocalDateTime.now());
-
-        RiskAssessment saved = riskAssessmentRepository.save(riskAssessment);
-        return ResponseEntity.ok(saved);
+        return ResponseEntity.ok(
+                riskAssessmentService.saveRiskAssessment(loanRequestId, riskAssessment)
+        );
     }
 }
