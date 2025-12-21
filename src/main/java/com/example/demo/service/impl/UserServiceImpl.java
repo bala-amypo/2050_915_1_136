@@ -8,31 +8,35 @@ import com.example.demo.service.UserService;
 import org.springframework.stereotype.Service;
 
 @Service
-public class RiskAssessmentServiceImpl implements RiskAssessmentService {
+public class UserServiceImpl implements UserService {
 
-    private final RiskAssessmentRepository riskAssessmentRepository;
-    private final LoanRequestRepository loanRequestRepository;
+    private final UserRepository userRepo;
 
-    public RiskAssessmentServiceImpl(
-            RiskAssessmentRepository riskAssessmentRepository,
-            LoanRequestRepository loanRequestRepository) {
-        this.riskAssessmentRepository = riskAssessmentRepository;
-        this.loanRequestRepository = loanRequestRepository;
+    public UserServiceImpl(UserRepository userRepo) {
+        this.userRepo = userRepo;
     }
 
     @Override
-    public RiskAssessment saveRiskAssessment(Long loanRequestId, RiskAssessment riskAssessment) {
-        LoanRequest loanRequest = loanRequestRepository.findById(loanRequestId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("LoanRequest not found with id " + loanRequestId));
+    public User register(User user) {
 
-        riskAssessment.setLoanRequest(loanRequest);
-        riskAssessment.setCreatedAt(LocalDateTime.now());
+        // ✅ CHECK duplicate email BEFORE saving
+        if (userRepo.findByEmail(user.getEmail()).isPresent()) {
+            throw new BadRequestException("Email already registered: " + user.getEmail());
+        }
 
-        return riskAssessmentRepository.save(riskAssessment);
+        // ✅ Link loan requests to user
+        if (user.getLoanRequests() != null) {
+            for (LoanRequest request : user.getLoanRequests()) {
+                request.setUser(user);
+            }
+        }
+
+        return userRepo.save(user);
     }
 
     @Override
-    public Optional<RiskAssessment> getRiskAssessmentByLoanRequestId(Long loanRequestId) {
-        return riskAssessmentRepository.findByLoanRequestId(loanRequestId);
-    } } // <--- Make sure this closing brace exists
+    public User findByEmail(String email) {
+        return userRepo.findByEmail(email)
+                .orElseThrow(() -> new BadRequestException("User not found with email: " + email));
+    }
+}

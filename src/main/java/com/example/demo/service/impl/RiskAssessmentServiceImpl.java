@@ -40,3 +40,4 @@ public RiskAssessment saveRiskAssessment(Long loanRequestId, RiskAssessment risk
 public Optional<RiskAssessment> getRiskAssessmentByLoanRequestId(Long loanRequestId) {
     return riskAssessmentRepository.findByLoanRequestId(loanRequestId);
 }
+}
