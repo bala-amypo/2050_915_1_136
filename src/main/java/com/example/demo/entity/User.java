@@ -1,5 +1,7 @@
 package com.example.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,6 +20,7 @@ public class User {
     @Column(unique = true, nullable = false)
     private String email;
 
+    @JsonIgnore // 🔒 DO NOT expose password in JSON
     @Column(nullable = false)
     private String password;
 
@@ -25,17 +28,16 @@ public class User {
     @Column(nullable = false)
     private Role role = Role.CUSTOMER;
 
-    // ✅ FIX FOR created_at DB ERROR
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    // One-to-many relationship with LoanRequest
+    // ✅ FIX infinite recursion
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<LoanRequest> loanRequests;
 
     // Constructors
-    public User() {
-    }
+    public User() {}
 
     public User(String fullName, String email, String password, Role role) {
         this.fullName = fullName;
@@ -44,13 +46,13 @@ public class User {
         this.role = role;
     }
 
-    // ✅ Automatically set createdAt before insert
+    // Automatically set createdAt
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
     }
 
-    // Getters and Setters
+    // Getters & Setters
     public Long getId() {
         return id;
     }
@@ -103,7 +105,6 @@ public class User {
         this.loanRequests = loanRequests;
     }
 
-    // Enum for roles
     public enum Role {
         CUSTOMER,
         ADMIN

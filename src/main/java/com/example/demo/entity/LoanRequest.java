@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
@@ -23,9 +24,10 @@ public class LoanRequest {
     @Column(name = "submitted_at", nullable = false)
     private LocalDateTime submittedAt;
 
-    // ✅ Critical: link back to User
+    // ✅ STOP infinite JSON recursion
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonBackReference
     private User user;
 
     // Constructors
