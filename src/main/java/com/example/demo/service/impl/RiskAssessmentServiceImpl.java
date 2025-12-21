@@ -24,20 +24,19 @@ public class RiskAssessmentServiceImpl implements RiskAssessmentService {
         this.loanRequestRepository = loanRequestRepository;
     }
 
-    @Override
-    public RiskAssessment saveRiskAssessment(Long loanRequestId, RiskAssessment riskAssessment) {
-        LoanRequest loanRequest = loanRequestRepository.findById(loanRequestId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("LoanRequest not found with id " + loanRequestId));
+   @Override
+public RiskAssessment saveRiskAssessment(Long loanRequestId, RiskAssessment riskAssessment) {
+    LoanRequest loanRequest = loanRequestRepository.findById(loanRequestId)
+            .orElseThrow(() ->
+                    new ResourceNotFoundException("LoanRequest not found with id " + loanRequestId));
 
-        riskAssessment.setLoanRequest(loanRequest);
-        riskAssessment.setCreatedAt(LocalDateTime.now());
+    riskAssessment.setLoanRequest(loanRequest);
+    riskAssessment.setCreatedAt(LocalDateTime.now());
 
-        return riskAssessmentRepository.save(riskAssessment);
-    }
+    return riskAssessmentRepository.save(riskAssessment);
+}
 
-    @Override
-    public Optional<RiskAssessment> getRiskAssessmentByLoanRequestId(Long loanRequestId) {
-        return riskAssessmentRepository.findByLoanRequestId(loanRequestId);
-    }
+@Override
+public Optional<RiskAssessment> getRiskAssessmentByLoanRequestId(Long loanRequestId) {
+    return riskAssessmentRepository.findByLoanRequestId(loanRequestId);
 }
