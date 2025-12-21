@@ -8,33 +8,28 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
 @RestController
 @RequestMapping("/api/financial-profiles")
 public class FinancialProfileController {
 
-    @Autowired
-    private FinancialProfileRepository financialProfileRepository;
+    private final FinancialProfileService financialProfileService;
 
-    // CREATE - POST Method
+    public FinancialProfileController(FinancialProfileService financialProfileService) {
+        this.financialProfileService = financialProfileService;
+    }
+
+    // POST /
     @PostMapping
-    public ResponseEntity<FinancialProfile> createProfile(@RequestBody FinancialProfile profile) {
-        // The lastUpdatedAt is handled automatically by the @PrePersist in the Entity
-        FinancialProfile savedProfile = financialProfileRepository.save(profile);
-        return new ResponseEntity<>(savedProfile, HttpStatus.CREATED);
+    public ResponseEntity<?> saveProfile(@RequestBody FinancialProfileDto dto) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(financialProfileService.save(dto));
     }
 
-    // GET BY ID
-    @GetMapping("/{id}")
-    public ResponseEntity<FinancialProfile> getProfileById(@PathVariable Long id) {
-        return financialProfileRepository.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
-
-    // GET ALL
-    @GetMapping
-    public List<FinancialProfile> getAllProfiles() {
-        return financialProfileRepository.findAll();
+    // GET /user/{userId}
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<?> getByUser(@PathVariable Long userId) {
+        return ResponseEntity.ok(
+                financialProfileService.getByUserId(userId)
+        );
     }
 }
