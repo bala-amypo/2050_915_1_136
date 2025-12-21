@@ -21,7 +21,6 @@ public class FinancialProfileController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
-    
     @GetMapping
     public List<FinancialProfile> getAllProfiles() {
         return financialProfileRepository.findAll();
