@@ -24,7 +24,7 @@ public class RiskAssessmentServiceImpl implements RiskAssessmentService {
     }
 
     @Override
-    public RiskAssessmentLog assessRisk(Long loanRequestId) {
+    public RiskAssessment assessRisk(Long loanRequestId) {
 
         if (!riskRepo.findByLoanRequestId(loanRequestId).isEmpty()) {
             throw new BadRequestException("Risk already assessed");
