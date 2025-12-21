@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.service.RiskAssessmentService;
 import com.example.demo.entity.RiskAssessment;
 import com.example.demo.repository.RiskAssessmentRepository;
 import org.springframework.http.HttpStatus;
@@ -18,18 +19,13 @@ public class RiskLogController {
         this.riskAssessmentRepository = riskAssessmentRepository;
     }
 
-    @GetMapping("/{loanRequestId}")
-    public ResponseEntity<?> getByLoanRequestId(
-            @PathVariable Long loanRequestId) {
+   @GetMapping("/{loanRequestId}")
+public ResponseEntity<?> getByLoanRequestId(@PathVariable Long loanRequestId) {
 
-        Optional<RiskAssessment> assessment =
-                riskAssessmentRepository.findByLoanRequestId(loanRequestId);
+    return riskAssessmentService.getByLoanRequestId(loanRequestId)
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No Risk Assessment found for LoanRequest ID: " + loanRequestId));
+}
 
-        if (assessment.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No Risk Assessment found for LoanRequest ID: " + loanRequestId);
-        }
-
-        return ResponseEntity.ok(assessment.get());
-    }
 }
