@@ -28,33 +28,25 @@ public class EligibilityServiceImpl implements EligibilityService {
     @Override
     public EligibilityResult evaluateEligibility(Long loanRequestId) {
 
-        // 1️⃣ Prevent duplicate eligibility
         if (resultRepo.findByLoanRequestId(loanRequestId).isPresent()) {
             throw new BadRequestException("Eligibility already evaluated");
         }
 
-        // 2️⃣ Fetch LoanRequest
         LoanRequest loanRequest = loanRequestRepo.findById(loanRequestId)
                 .orElseThrow(() -> new ResourceNotFoundException("Loan request not found"));
 
-        // 3️⃣ Fetch FinancialProfile
         FinancialProfile profile = profileRepo.findByUserId(
                 loanRequest.getUser().getId()
         ).orElseThrow(() -> new ResourceNotFoundException("Financial profile not found"));
 
-        // 4️⃣ Calculate DTI
         double obligations = profile.getMonthlyExpenses()
                 + (profile.getExistingLoanEmi() != null ? profile.getExistingLoanEmi() : 0);
 
         double dti = obligations / profile.getMonthlyIncome();
 
-        // 5️⃣ Business Rules
         boolean eligible = dti <= 0.5 && profile.getCreditScore() >= 650;
 
-        double maxEligibleAmount = eligible
-                ? profile.getMonthlyIncome() * 20
-                : 0;
-
+        double maxEligibleAmount = eligible ? profile.getMonthlyIncome() * 20 : 0;
         double estimatedEmi = eligible
                 ? maxEligibleAmount / loanRequest.getTenureMonths()
                 : 0;
@@ -63,9 +55,9 @@ public class EligibilityServiceImpl implements EligibilityService {
                 dti < 0.3 ? "LOW" :
                 dti < 0.5 ? "MEDIUM" : "HIGH";
 
-        // 6️⃣ Save EligibilityResult
         EligibilityResult result = new EligibilityResult();
         result.setLoanRequest(loanRequest);
+        result.setUser(loanRequest.getUser()); // ⭐ FIX FOR user_id ERROR
         result.setEligible(eligible);
         result.setMaxEligibleAmount(maxEligibleAmount);
         result.setEstimatedEmi(estimatedEmi);
@@ -73,7 +65,7 @@ public class EligibilityServiceImpl implements EligibilityService {
         result.setRejectionReason(eligible ? null : "High DTI or Low Credit Score");
         result.setCalculatedAt(LocalDateTime.now());
 
-        return resultRepo.save(result); // 🔥 THIS INSERTS INTO DB
+        return resultRepo.save(result); // ✅ SAVES TO DB
     }
 
     @Override
@@ -82,7 +74,7 @@ public class EligibilityServiceImpl implements EligibilityService {
                 .orElseThrow(() -> new ResourceNotFoundException("Eligibility result not found"));
 
         return result.isEligible()
-                ? "Eligible | Max Amount: " + result.getMaxEligibleAmount()
-                : "Not Eligible | Reason: " + result.getRejectionReason();
+                ? "ELIGIBLE | Max Amount: " + result.getMaxEligibleAmount()
+                : "NOT ELIGIBLE | Reason: " + result.getRejectionReason();
     }
 }

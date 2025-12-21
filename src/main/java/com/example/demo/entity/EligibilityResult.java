@@ -11,10 +11,15 @@ public class EligibilityResult {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // One EligibilityResult per LoanRequest
+    // One-to-One with LoanRequest
     @OneToOne
     @JoinColumn(name = "loan_request_id", nullable = false, unique = true)
     private LoanRequest loanRequest;
+
+    // REQUIRED because DB has user_id NOT NULL
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @Column(name = "is_eligible", nullable = false)
     private boolean eligible;
@@ -34,11 +39,9 @@ public class EligibilityResult {
     @Column(name = "calculated_at", nullable = false)
     private LocalDateTime calculatedAt;
 
-    // 🔹 No-args constructor
     public EligibilityResult() {}
 
-    // 🔹 Getters & Setters
-
+    // Getters & Setters
     public Long getId() {
         return id;
     }
@@ -49,6 +52,14 @@ public class EligibilityResult {
 
     public void setLoanRequest(LoanRequest loanRequest) {
         this.loanRequest = loanRequest;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public boolean isEligible() {
