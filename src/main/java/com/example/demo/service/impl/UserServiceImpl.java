@@ -8,35 +8,31 @@ import com.example.demo.service.UserService;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class RiskAssessmentServiceImpl implements RiskAssessmentService {
 
-    private final UserRepository userRepo;
+    private final RiskAssessmentRepository riskAssessmentRepository;
+    private final LoanRequestRepository loanRequestRepository;
 
-    public UserServiceImpl(UserRepository userRepo) {
-        this.userRepo = userRepo;
+    public RiskAssessmentServiceImpl(
+            RiskAssessmentRepository riskAssessmentRepository,
+            LoanRequestRepository loanRequestRepository) {
+        this.riskAssessmentRepository = riskAssessmentRepository;
+        this.loanRequestRepository = loanRequestRepository;
     }
 
     @Override
-    public User register(User user) {
+    public RiskAssessment saveRiskAssessment(Long loanRequestId, RiskAssessment riskAssessment) {
+        LoanRequest loanRequest = loanRequestRepository.findById(loanRequestId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("LoanRequest not found with id " + loanRequestId));
 
-        // ✅ CHECK duplicate email BEFORE saving
-        if (userRepo.findByEmail(user.getEmail()).isPresent()) {
-            throw new BadRequestException("Email already registered: " + user.getEmail());
-        }
+        riskAssessment.setLoanRequest(loanRequest);
+        riskAssessment.setCreatedAt(LocalDateTime.now());
 
-        // ✅ Link loan requests to user
-        if (user.getLoanRequests() != null) {
-            for (LoanRequest request : user.getLoanRequests()) {
-                request.setUser(user);
-            }
-        }
-
-        return userRepo.save(user);
+        return riskAssessmentRepository.save(riskAssessment);
     }
 
     @Override
-    public User findByEmail(String email) {
-        return userRepo.findByEmail(email)
-                .orElseThrow(() -> new BadRequestException("User not found with email: " + email));
-    }
-}
+    public Optional<RiskAssessment> getRiskAssessmentByLoanRequestId(Long loanRequestId) {
+        return riskAssessmentRepository.findByLoanRequestId(loanRequestId);
+    } } // <--- Make sure this closing brace exists
