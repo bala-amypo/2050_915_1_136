@@ -9,6 +9,7 @@ import com.example.demo.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class RiskAssessmentServiceImpl implements RiskAssessmentService {
@@ -19,14 +20,12 @@ public class RiskAssessmentServiceImpl implements RiskAssessmentService {
     public RiskAssessmentServiceImpl(
             RiskAssessmentRepository riskAssessmentRepository,
             LoanRequestRepository loanRequestRepository) {
-
         this.riskAssessmentRepository = riskAssessmentRepository;
         this.loanRequestRepository = loanRequestRepository;
     }
 
     @Override
     public RiskAssessment saveRiskAssessment(Long loanRequestId, RiskAssessment riskAssessment) {
-
         LoanRequest loanRequest = loanRequestRepository.findById(loanRequestId)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("LoanRequest not found with id " + loanRequestId));
@@ -35,5 +34,10 @@ public class RiskAssessmentServiceImpl implements RiskAssessmentService {
         riskAssessment.setCreatedAt(LocalDateTime.now());
 
         return riskAssessmentRepository.save(riskAssessment);
+    }
+
+    @Override
+    public Optional<RiskAssessment> getRiskAssessmentByLoanRequestId(Long loanRequestId) {
+        return riskAssessmentRepository.findByLoanRequestId(loanRequestId);
     }
 }
