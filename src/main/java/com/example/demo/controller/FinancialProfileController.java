@@ -19,8 +19,10 @@ public class FinancialProfileController {
         return service.createOrUpdate(profile);
     }
 
-    @GetMapping("/{userId}")
-    public FinancialProfile get(@PathVariable Long userId) {
-        return service.getByUserId(userId);
-    }
+    @GetMapping("/{id}")
+public ResponseEntity<FinancialProfile> getProfileById(@PathVariable Long id) {
+    return financialProfileRepository.findById(id)
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
+}
 }

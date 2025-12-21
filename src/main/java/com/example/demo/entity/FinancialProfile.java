@@ -2,6 +2,7 @@ package com.example.demo.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "financial_profiles")
@@ -13,79 +14,73 @@ public class FinancialProfile {
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
+    // This stops the infinite loop and hides sensitive data from the JSON
+    @JsonIgnoreProperties({"password", "loanRequests", "createdAt", "role"})
     private User user;
 
-    private double monthlyIncome;
-    private double existingDebt;
-    private int creditScore;
+    @Column(nullable = false)
+    private Double monthlyIncome;
 
-    private double monthlyExpenses;
-    private double existingLoanEmi;
-    private double savingsBalance;
+    @Column(nullable = false)
+    private Double monthlyExpenses;
+
+    private Double existingLoanEmi; // Optional
+
+    @Column(nullable = false)
+    private Integer creditScore;
+
+    @Column(nullable = false)
+    private Double savingsBalance;
+
     private LocalDateTime lastUpdatedAt;
 
-    // ✅ REQUIRED getter/setter (THIS FIXES THE ERROR)
-    public User getUser() {
-        return user;
+    // --- CONSTRUCTORS ---
+
+    // No-args constructor (Required by JPA)
+    public FinancialProfile() {
     }
 
-    public void setUser(User user) {
+    // Core fields constructor
+    public FinancialProfile(User user, Double monthlyIncome, Double monthlyExpenses, 
+                            Integer creditScore, Double savingsBalance) {
         this.user = user;
-    }
-
-    public double getMonthlyIncome() {
-        return monthlyIncome;
-    }
-
-    public void setMonthlyIncome(double monthlyIncome) {
         this.monthlyIncome = monthlyIncome;
-    }
-
-    public double getExistingDebt() {
-        return existingDebt;
-    }
-
-    public void setExistingDebt(double existingDebt) {
-        this.existingDebt = existingDebt;
-    }
-
-    public int getCreditScore() {
-        return creditScore;
-    }
-
-    public void setCreditScore(int creditScore) {
-        this.creditScore = creditScore;
-    }
-
-    public double getMonthlyExpenses() {
-        return monthlyExpenses;
-    }
-
-    public void setMonthlyExpenses(double monthlyExpenses) {
         this.monthlyExpenses = monthlyExpenses;
-    }
-
-    public double getExistingLoanEmi() {
-        return existingLoanEmi;
-    }
-
-    public void setExistingLoanEmi(double existingLoanEmi) {
-        this.existingLoanEmi = existingLoanEmi;
-    }
-
-    public double getSavingsBalance() {
-        return savingsBalance;
-    }
-
-    public void setSavingsBalance(double savingsBalance) {
+        this.creditScore = creditScore;
         this.savingsBalance = savingsBalance;
+        this.lastUpdatedAt = LocalDateTime.now();
     }
 
-    public LocalDateTime getLastUpdatedAt() {
-        return lastUpdatedAt;
+    // --- LIFECYCLE HOOKS ---
+    @PrePersist
+    @PreUpdate
+    public void onUpdate() {
+        this.lastUpdatedAt = LocalDateTime.now();
     }
 
-    public void setLastUpdatedAt(LocalDateTime lastUpdatedAt) {
-        this.lastUpdatedAt = lastUpdatedAt;
-    }
+    // --- GETTERS AND SETTERS ---
+
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
+
+    public Double getMonthlyIncome() { return monthlyIncome; }
+    public void setMonthlyIncome(Double monthlyIncome) { this.monthlyIncome = monthlyIncome; }
+
+    public Double getMonthlyExpenses() { return monthlyExpenses; }
+    public void setMonthlyExpenses(Double monthlyExpenses) { this.monthlyExpenses = monthlyExpenses; }
+
+    public Double getExistingLoanEmi() { return existingLoanEmi; }
+    public void setExistingLoanEmi(Double existingLoanEmi) { this.existingLoanEmi = existingLoanEmi; }
+
+    public Integer getCreditScore() { return creditScore; }
+    public void setCreditScore(Integer creditScore) { this.creditScore = creditScore; }
+
+    public Double getSavingsBalance() { return savingsBalance; }
+    public void setSavingsBalance(Double savingsBalance) { this.savingsBalance = savingsBalance; }
+
+    public LocalDateTime getLastUpdatedAt() { return lastUpdatedAt; }
+    public void setLastUpdatedAt(LocalDateTime lastUpdatedAt) { this.lastUpdatedAt = lastUpdatedAt; }
 }
