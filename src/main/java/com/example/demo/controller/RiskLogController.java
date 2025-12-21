@@ -1,30 +1,36 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.RiskAssessment;
-import com.example.demo.service.RiskAssessmentService;
+import com.example.demo.repository.RiskAssessmentRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/risk-assessments")
 public class RiskLogController {
 
-    private final RiskAssessmentService riskAssessmentService;
+    private final RiskAssessmentRepository riskAssessmentRepository;
 
-    public RiskLogController(RiskAssessmentService riskAssessmentService) {
-        this.riskAssessmentService = riskAssessmentService;
+    public RiskLogController(RiskAssessmentRepository riskAssessmentRepository) {
+        this.riskAssessmentRepository = riskAssessmentRepository;
     }
 
-    // GET /api/risk-assessments/{loanRequestId}
+    // GET RiskAssessment by LoanRequest ID
     @GetMapping("/{loanRequestId}")
-    public ResponseEntity<List<RiskAssessment>> getByLoanRequestId(
+    public ResponseEntity<?> getByLoanRequestId(
             @PathVariable Long loanRequestId) {
 
-        List<RiskAssessment> list =
-                riskAssessmentService.getByLoanRequestId(loanRequestId);
+        Optional<RiskAssessment> assessment =
+                riskAssessmentRepository.findByLoanRequestId(loanRequestId);
 
-        return ResponseEntity.ok(list);
+        if (assessment.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No Risk Assessment found for LoanRequest ID: " + loanRequestId);
+        }
+
+        return ResponseEntity.ok(assessment.get());
     }
 }

@@ -1,11 +1,9 @@
 package com.example.demo.repository;
 
 import com.example.demo.entity.RiskAssessment;
-import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.Optional;
 
-import java.util.List;
+public interface RiskAssessmentRepository {
 
-public interface RiskAssessmentRepository extends JpaRepository<RiskAssessment, Long> {
-
-    List<RiskAssessment> findByLoanRequestId(Long loanRequestId);
+    Optional<RiskAssessment> findByLoanRequestId(Long loanRequestId);
 }
