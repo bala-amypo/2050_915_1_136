@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -12,35 +13,47 @@ public class FinancialProfile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // Relationship: One profile per user. 
+    // JsonIgnoreProperties prevents infinite loops by hiding user-internal lists.
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
-    // This stops the infinite loop and hides sensitive data from the JSON
+    @NotNull(message = "User is required")
     @JsonIgnoreProperties({"password", "loanRequests", "createdAt", "role"})
     private User user;
 
+    @NotNull(message = "Monthly income is required")
+    @DecimalMin(value = "0.01", message = "Monthly income must be greater than 0")
     @Column(nullable = false)
     private Double monthlyIncome;
 
+    @NotNull(message = "Monthly expenses are required")
+    @Min(value = 0, message = "Monthly expenses cannot be negative")
     @Column(nullable = false)
     private Double monthlyExpenses;
 
-    private Double existingLoanEmi; // Optional
+    private Double existingLoanEmi; // Optional field
 
+    @NotNull(message = "Credit score is required")
+    @Min(value = 300, message = "Credit score must be at least 300")
+    @Max(value = 900, message = "Credit score cannot exceed 900")
     @Column(nullable = false)
     private Integer creditScore;
 
+    @NotNull(message = "Savings balance is required")
+    @Min(value = 0, message = "Savings balance cannot be negative")
     @Column(nullable = false)
     private Double savingsBalance;
 
+    @Column(name = "last_updated_at")
     private LocalDateTime lastUpdatedAt;
 
     // --- CONSTRUCTORS ---
 
-    // No-args constructor (Required by JPA)
+    // 1. No-args constructor (Required by JPA)
     public FinancialProfile() {
     }
 
-    // Core fields constructor
+    // 2. Core fields constructor
     public FinancialProfile(User user, Double monthlyIncome, Double monthlyExpenses, 
                             Integer creditScore, Double savingsBalance) {
         this.user = user;
@@ -52,9 +65,10 @@ public class FinancialProfile {
     }
 
     // --- LIFECYCLE HOOKS ---
+    // Automatically updates the timestamp before saving or updating
     @PrePersist
     @PreUpdate
-    public void onUpdate() {
+    protected void onUpdate() {
         this.lastUpdatedAt = LocalDateTime.now();
     }
 
