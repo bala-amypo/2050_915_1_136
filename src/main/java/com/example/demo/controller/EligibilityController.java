@@ -11,15 +11,15 @@ public class EligibilityController {
 
     private final EligibilityService service;
 
-    public EligibilityController(EligibilityService service) {
-        this.service = service;
-    }
+public EligibilityController(EligibilityService service) {
+    this.service = service;
+}
 
-    @PostMapping("/evaluate/{loanRequestId}")
-    public ResponseEntity<EligibilityResult> evaluate(
-            @PathVariable Long loanRequestId) {
-        return ResponseEntity.ok(service.evaluateEligibility(loanRequestId));
-    }
+@PostMapping("/evaluate/{loanRequestId}")
+public ResponseEntity<?> evaluate(@PathVariable Long loanRequestId) {
+    return ResponseEntity.ok(service.evaluateEligibility(loanRequestId));
+}
+
 
 
     // ✅ ADD THIS METHOD

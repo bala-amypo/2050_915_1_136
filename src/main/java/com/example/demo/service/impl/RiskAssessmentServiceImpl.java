@@ -12,12 +12,12 @@ public class RiskAssessmentServiceImpl implements RiskAssessmentService {
 
     private final LoanRequestRepository loanRepo;
     private final FinancialProfileRepository profileRepo;
-    private final RiskAssessmentLogRepository riskRepo;
+    private final RiskAssessmentRepository riskRepo;
 
     public RiskAssessmentServiceImpl(
             LoanRequestRepository loanRepo,
             FinancialProfileRepository profileRepo,
-            RiskAssessmentLogRepository riskRepo) {
+            RiskAssessmentRepository riskRepo) {
         this.loanRepo = loanRepo;
         this.profileRepo = profileRepo;
         this.riskRepo = riskRepo;
@@ -37,24 +37,24 @@ public class RiskAssessmentServiceImpl implements RiskAssessmentService {
                 .orElseThrow(() -> new ResourceNotFoundException("Financial profile not found"));
 
         double obligations =
-                profile.getMonthlyExpenses() +
-                (profile.getExistingLoanEmi() != null
-                        ? profile.getExistingLoanEmi() : 0);
+                profile.getMonthlyExpenses()
+                + (profile.getExistingLoanEmi() != null
+                    ? profile.getExistingLoanEmi() : 0);
 
         double dti = obligations / profile.getMonthlyIncome();
 
-        RiskAssessmentLog log = new RiskAssessmentLog();
-        log.setLoanRequestId(loanRequestId);
-        log.setDtiRatio(dti);
+        RiskAssessment risk = new RiskAssessment();
+        risk.setLoanRequestId(loanRequestId);
+        risk.setDtiRatio(dti);
 
         if (profile.getCreditScore() >= 700) {
-            log.setCreditCheckStatus("APPROVED");
+            risk.setCreditCheckStatus("APPROVED");
         } else if (profile.getCreditScore() < 600) {
-            log.setCreditCheckStatus("REJECTED");
+            risk.setCreditCheckStatus("REJECTED");
         } else {
-            log.setCreditCheckStatus("PENDING_REVIEW");
+            risk.setCreditCheckStatus("PENDING_REVIEW");
         }
 
-        return riskRepo.save(log); // ✅ STORED IN DB
+        return riskRepo.save(risk); // ✅ SAVED IN DB
     }
 }
