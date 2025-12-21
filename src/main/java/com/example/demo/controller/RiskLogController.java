@@ -19,13 +19,18 @@ public class RiskLogController {
         this.riskAssessmentService = riskAssessmentService;
     }
 
-    // Create / save a risk assessment for a loan request
-    @PostMapping("/{loanRequestId}")
-    public ResponseEntity<RiskAssessment> saveRiskAssessment(
-            @PathVariable Long loanRequestId,
-            @RequestBody RiskAssessment riskAssessment) {
+   @PostMapping("/risk-assessments")
+public ResponseEntity<RiskAssessment> createRiskAssessment(@RequestBody RiskAssessment riskAssessment) {
+    Long loanRequestId = riskAssessment.getLoanRequest().getId();
 
-        RiskAssessment savedRiskAssessment = riskAssessmentService.saveRiskAssessment(loanRequestId, riskAssessment);
-        return ResponseEntity.ok(savedRiskAssessment);
-    }
-    }
+    // Fetch the existing LoanRequest
+    LoanRequest loanRequest = loanRequestRepository.findById(loanRequestId)
+        .orElseThrow(() -> new ResourceNotFoundException("LoanRequest not found with id: " + loanRequestId));
+
+    riskAssessment.setLoanRequest(loanRequest); // associate the existing loan request
+    riskAssessment.setCreatedAt(LocalDateTime.now());
+
+    RiskAssessment saved = riskAssessmentRepository.save(riskAssessment);
+    return ResponseEntity.ok(saved);
+}
+}
