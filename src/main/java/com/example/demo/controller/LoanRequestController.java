@@ -1,9 +1,3 @@
-package com.example.demo.controller;
-
-import com.example.demo.entity.LoanRequest;
-import com.example.demo.service.LoanRequestService;
-import org.springframework.web.bind.annotation.*;
-
 @RestController
 @RequestMapping("/loan")
 public class LoanRequestController {
@@ -15,7 +9,10 @@ public class LoanRequestController {
     }
 
     @PostMapping("/create")
-    public LoanRequest createLoan(@RequestBody LoanRequest request) {
-        return loanRequestService.saveLoanRequest(request);
+    public ResponseEntity<LoanRequest> createLoan(
+            @RequestBody LoanDtos dto) {
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(loanRequestService.createLoanRequest(dto));
     }
 }

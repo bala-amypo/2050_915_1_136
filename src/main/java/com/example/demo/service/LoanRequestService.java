@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface LoanRequestService {
 
-    LoanRequest saveLoanRequest(LoanRequest loanRequest);
+    LoanRequest createLoanRequest(LoanRequestCreateDto dto);
 
     List<LoanRequest> getLoanRequestsByUserId(Long userId);
 }
