@@ -1,11 +1,11 @@
-    package com.example.demo.repository;
+package com.example.demo.repository;
 
-    import com.example.demo.entity.RiskAssessment;
-    import org.springframework.data.jpa.repository.JpaRepository;
-    import java.util.Optional;
+import com.example.demo.entity.RiskAssessment;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-    public interface RiskAssessmentRepository extends JpaRepository<RiskAssessment, Long> {
+import java.util.List;
 
-        // Custom query to find risk assessment by loan request ID
-        Optional<RiskAssessment> findByLoanRequestId(Long loanRequestId);
-    }
+public interface RiskAssessmentRepository extends JpaRepository<RiskAssessment, Long> {
+
+    List<RiskAssessment> findByLoanRequestId(Long loanRequestId);
+}
