@@ -2,12 +2,19 @@ package com.example.demo.dto;
 
 public class LoanDtos {
 
-    // ✅ DTO for creating loan
     public static class LoanRequestDto {
 
+        private Long userId;
         private Double requestedAmount;
         private Integer tenureMonths;
-        private Long userId;
+
+        public Long getUserId() {
+            return userId;
+        }
+
+        public void setUserId(Long userId) {
+            this.userId = userId;
+        }
 
         public Double getRequestedAmount() {
             return requestedAmount;
@@ -24,19 +31,5 @@ public class LoanDtos {
         public void setTenureMonths(Integer tenureMonths) {
             this.tenureMonths = tenureMonths;
         }
-
-        public Long getUserId() {
-            return userId;
-        }
-
-        public void setUserId(Long userId) {
-            this.userId = userId;
-        }
-    }
-
-    // (optional – keep if you use eligibility)
-    public static class EligibilityResponseDto {
-        public boolean eligible;
-        public Double maxAmount;
     }
 }

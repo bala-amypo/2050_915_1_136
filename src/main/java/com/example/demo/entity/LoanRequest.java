@@ -20,81 +20,39 @@ public class LoanRequest {
 
     @Column(nullable = false)
     private String status;
+
     @Column(name = "eligibility_result")
-private String eligibilityResult;
+    private String eligibilityResult;
 
     @Column(name = "submitted_at", nullable = false)
     private LocalDateTime submittedAt;
 
-    // ✅ STOP infinite JSON recursion
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     @JsonBackReference
     private User user;
 
-    // Constructors
     public LoanRequest() {}
 
-    public LoanRequest(Double requestedAmount, Integer tenureMonths, String status, LocalDateTime submittedAt) {
-        this.requestedAmount = requestedAmount;
-        this.tenureMonths = tenureMonths;
-        this.status = status;
-        this.submittedAt = submittedAt;
-    }
+    // getters & setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    // Getters and Setters
-    public Long getId() {
-        return id;
-    }
+    public Double getRequestedAmount() { return requestedAmount; }
+    public void setRequestedAmount(Double requestedAmount) { this.requestedAmount = requestedAmount; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-    public String getEligibilityResult() {
-    return eligibilityResult;
-}
+    public Integer getTenureMonths() { return tenureMonths; }
+    public void setTenureMonths(Integer tenureMonths) { this.tenureMonths = tenureMonths; }
 
-public void setEligibilityResult(String eligibilityResult) {
-    this.eligibilityResult = eligibilityResult;
-}
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 
-    public Double getRequestedAmount() {
-        return requestedAmount;
-    }
+    public String getEligibilityResult() { return eligibilityResult; }
+    public void setEligibilityResult(String eligibilityResult) { this.eligibilityResult = eligibilityResult; }
 
-    public void setRequestedAmount(Double requestedAmount) {
-        this.requestedAmount = requestedAmount;
-    }
+    public LocalDateTime getSubmittedAt() { return submittedAt; }
+    public void setSubmittedAt(LocalDateTime submittedAt) { this.submittedAt = submittedAt; }
 
-    public Integer getTenureMonths() {
-        return tenureMonths;
-    }
-
-    public void setTenureMonths(Integer tenureMonths) {
-        this.tenureMonths = tenureMonths;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public LocalDateTime getSubmittedAt() {
-        return submittedAt;
-    }
-
-    public void setSubmittedAt(LocalDateTime submittedAt) {
-        this.submittedAt = submittedAt;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
 }
