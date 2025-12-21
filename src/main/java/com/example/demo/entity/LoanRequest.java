@@ -22,8 +22,9 @@ public class LoanRequest {
     @JsonIgnore
     private User user;
 
-    @Column(nullable = false)
-    private String status;
+   // Inside LoanRequest.java
+@Column(nullable = false)
+private String status = "PENDING"; // This ensures it is never null
 
     @Column(name = "submitted_at", nullable = false)
     private LocalDateTime submittedAt;
