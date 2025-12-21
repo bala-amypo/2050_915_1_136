@@ -11,17 +11,13 @@ public class RiskAssessment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "assessment_result")
     private String assessmentResult;
 
-    @ManyToOne
-    @JoinColumn(name = "loan_request_id", nullable = false)
-    private LoanRequest loanRequest;
-
-    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    // ===== getters & setters =====
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "loan_request_id", nullable = false)
+    private LoanRequest loanRequest;
 
     public Long getId() {
         return id;
@@ -39,19 +35,19 @@ public class RiskAssessment {
         this.assessmentResult = assessmentResult;
     }
 
-    public LoanRequest getLoanRequest() {
-        return loanRequest;
-    }
-
-    public void setLoanRequest(LoanRequest loanRequest) {
-        this.loanRequest = loanRequest;
-    }
-
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public LoanRequest getLoanRequest() {
+        return loanRequest;
+    }
+
+    public void setLoanRequest(LoanRequest loanRequest) {
+        this.loanRequest = loanRequest;
     }
 }
