@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.entity.EligibilityResult;
 import com.example.demo.service.EligibilityService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -8,18 +9,18 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/eligibility")
 public class EligibilityController {
 
-    private final EligibilityService eligibilityService;
+    private final EligibilityService service;
 
-    public EligibilityController(EligibilityService eligibilityService) {
-        this.eligibilityService = eligibilityService;
+    public EligibilityController(EligibilityService service) {
+        this.service = service;
     }
 
-    // POST /api/eligibility/check
-    @PostMapping("/check")
-    public ResponseEntity<String> checkEligibility(@RequestBody Long loanRequestId) {
-        boolean eligible = eligibilityService.checkEligibility(loanRequestId);
-        return ResponseEntity.ok(eligible ? "Eligible" : "Not Eligible");
+    @PostMapping("/evaluate/{loanRequestId}")
+    public ResponseEntity<EligibilityResult> evaluate(
+            @PathVariable Long loanRequestId) {
+        return ResponseEntity.ok(service.evaluateEligibility(loanRequestId));
     }
+
 
     // ✅ ADD THIS METHOD
     // GET /api/eligibility/result/{loanRequestId}

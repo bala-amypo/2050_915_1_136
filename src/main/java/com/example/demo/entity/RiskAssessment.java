@@ -36,10 +36,10 @@ public class RiskAssessment {
     // Constructors
     // ===============================
 
-    public RiskAssessmentLog() {
+    public RiskAssessment() {
     }
 
-    public RiskAssessmentLog(
+    public RiskAssessment(
             Long loanRequestId,
             Double dtiRatio,
             String creditCheckStatus) {
