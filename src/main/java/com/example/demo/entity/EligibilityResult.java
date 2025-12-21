@@ -11,8 +11,15 @@ public class EligibilityResult {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "loan_request_id", nullable = false, unique = true)
+    /**
+     * One eligibility result per loan request
+     */
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+        name = "loan_request_id",
+        nullable = false,
+        unique = true
+    )
     private LoanRequest loanRequest;
 
     @Column(nullable = false)
@@ -27,37 +34,100 @@ public class EligibilityResult {
     @Column(nullable = false)
     private String riskLevel;
 
+    @Column(length = 255)
     private String rejectionReason;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime calculatedAt;
 
+    // ===============================
+    // Constructors
+    // ===============================
+
+    public EligibilityResult() {
+    }
+
+    public EligibilityResult(
+            LoanRequest loanRequest,
+            Boolean isEligible,
+            Double maxEligibleAmount,
+            Double estimatedEmi,
+            String riskLevel,
+            String rejectionReason) {
+        this.loanRequest = loanRequest;
+        this.isEligible = isEligible;
+        this.maxEligibleAmount = maxEligibleAmount;
+        this.estimatedEmi = estimatedEmi;
+        this.riskLevel = riskLevel;
+        this.rejectionReason = rejectionReason;
+    }
+
+    // ===============================
+    // JPA Lifecycle
+    // ===============================
+
     @PrePersist
-    public void onCreate() {
+    protected void onCreate() {
         this.calculatedAt = LocalDateTime.now();
     }
 
-    public EligibilityResult() {}
+    // ===============================
+    // Getters & Setters
+    // ===============================
 
-    // getters and setters
-}
-
-
-    public EligibilityResult(LoanRequest loanRequest, boolean eligible, String reason) {
-        this.loanRequest = loanRequest;
-        this.eligible = eligible;
-        this.reason = reason;
+    public Long getId() {
+        return id;
     }
 
-    // Getters and setters
-    public Long getId() { return id; }
+    public LoanRequest getLoanRequest() {
+        return loanRequest;
+    }
 
-    public LoanRequest getLoanRequest() { return loanRequest; }
-    public void setLoanRequest(LoanRequest loanRequest) { this.loanRequest = loanRequest; }
+    public void setLoanRequest(LoanRequest loanRequest) {
+        this.loanRequest = loanRequest;
+    }
 
-    public boolean isEligible() { return eligible; }
-    public void setEligible(boolean eligible) { this.eligible = eligible; }
+    public Boolean getIsEligible() {
+        return isEligible;
+    }
 
-    public String getReason() { return reason; }
-    public void setReason(String reason) { this.reason = reason; }
+    public void setIsEligible(Boolean eligible) {
+        isEligible = eligible;
+    }
+
+    public Double getMaxEligibleAmount() {
+        return maxEligibleAmount;
+    }
+
+    public void setMaxEligibleAmount(Double maxEligibleAmount) {
+        this.maxEligibleAmount = maxEligibleAmount;
+    }
+
+    public Double getEstimatedEmi() {
+        return estimatedEmi;
+    }
+
+    public void setEstimatedEmi(Double estimatedEmi) {
+        this.estimatedEmi = estimatedEmi;
+    }
+
+    public String getRiskLevel() {
+        return riskLevel;
+    }
+
+    public void setRiskLevel(String riskLevel) {
+        this.riskLevel = riskLevel;
+    }
+
+    public String getRejectionReason() {
+        return rejectionReason;
+    }
+
+    public void setRejectionReason(String rejectionReason) {
+        this.rejectionReason = rejectionReason;
+    }
+
+    public LocalDateTime getCalculatedAt() {
+        return calculatedAt;
+    }
 }

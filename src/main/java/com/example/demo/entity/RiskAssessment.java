@@ -5,63 +5,91 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "risk_assessment_logs")
-public class RiskAssessmentLog {
+public class RiskAssessment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /**
+     * Reference to LoanRequest (audit-only, no FK)
+     */
     @Column(name = "loan_request_id", nullable = false)
     private Long loanRequestId;
 
+    /**
+     * Debt-to-Income ratio
+     */
     @Column(nullable = false)
     private Double dtiRatio;
 
-    @Column(nullable = false)
+    /**
+     * APPROVED | REJECTED | PENDING_REVIEW
+     */
+    @Column(nullable = false, length = 30)
     private String creditCheckStatus;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime timestamp;
 
+    // ===============================
+    // Constructors
+    // ===============================
+
+    public RiskAssessmentLog() {
+    }
+
+    public RiskAssessmentLog(
+            Long loanRequestId,
+            Double dtiRatio,
+            String creditCheckStatus) {
+        this.loanRequestId = loanRequestId;
+        this.dtiRatio = dtiRatio;
+        this.creditCheckStatus = creditCheckStatus;
+    }
+
+    // ===============================
+    // JPA Lifecycle
+    // ===============================
+
     @PrePersist
-    public void onCreate() {
+    protected void onCreate() {
         this.timestamp = LocalDateTime.now();
     }
 
-    public RiskAssessmentLog() {}
-
-    // getters and setters
-}
+    // ===============================
+    // Getters & Setters
+    // ===============================
 
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public Long getLoanRequestId() {
+        return loanRequestId;
     }
 
-    public String getAssessmentResult() {
-        return assessmentResult;
+    public void setLoanRequestId(Long loanRequestId) {
+        this.loanRequestId = loanRequestId;
     }
 
-    public void setAssessmentResult(String assessmentResult) {
-        this.assessmentResult = assessmentResult;
+    public Double getDtiRatio() {
+        return dtiRatio;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
+    public void setDtiRatio(Double dtiRatio) {
+        this.dtiRatio = dtiRatio;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+    public String getCreditCheckStatus() {
+        return creditCheckStatus;
     }
 
-    public LoanRequest getLoanRequest() {
-        return loanRequest;
+    public void setCreditCheckStatus(String creditCheckStatus) {
+        this.creditCheckStatus = creditCheckStatus;
     }
 
-    public void setLoanRequest(LoanRequest loanRequest) {
-        this.loanRequest = loanRequest;
+    public LocalDateTime getTimestamp() {
+        return timestamp;
     }
 }
