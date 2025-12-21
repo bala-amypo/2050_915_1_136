@@ -18,7 +18,6 @@ public class RiskLogController {
         this.riskAssessmentRepository = riskAssessmentRepository;
     }
 
-    // GET RiskAssessment by LoanRequest ID
     @GetMapping("/{loanRequestId}")
     public ResponseEntity<?> getByLoanRequestId(
             @PathVariable Long loanRequestId) {
