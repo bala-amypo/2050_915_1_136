@@ -1,13 +1,11 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.FinancialProfile;
-import com.example.demo.repository.FinancialProfileRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.demo.dto.FinancialProfileDto;
+import com.example.demo.service.FinancialProfileService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 @RestController
 @RequestMapping("/api/financial-profiles")
 public class FinancialProfileController {
@@ -18,14 +16,15 @@ public class FinancialProfileController {
         this.financialProfileService = financialProfileService;
     }
 
-    // POST /
+    // POST /api/financial-profiles
     @PostMapping
     public ResponseEntity<?> saveProfile(@RequestBody FinancialProfileDto dto) {
-        return ResponseEntity.status(HttpStatus.CREATED)
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
                 .body(financialProfileService.save(dto));
     }
 
-    // GET /user/{userId}
+    // GET /api/financial-profiles/user/{userId}
     @GetMapping("/user/{userId}")
     public ResponseEntity<?> getByUser(@PathVariable Long userId) {
         return ResponseEntity.ok(
