@@ -14,27 +14,31 @@ import java.util.List;
 public class FinancialProfileController {
 
     @Autowired
-    private FinancialProfileRepository financialProfileRepository;
+    private FinancialProfileService financialProfileService;
 
-    // CREATE - POST Method
+    @Autowired
+    private UserRepository userRepository;
+
     @PostMapping
     public ResponseEntity<FinancialProfile> createProfile(@RequestBody FinancialProfile profile) {
-        // The lastUpdatedAt is handled automatically by the @PrePersist in the Entity
-        FinancialProfile savedProfile = financialProfileRepository.save(profile);
-        return new ResponseEntity<>(savedProfile, HttpStatus.CREATED);
+        // Fetch the persistent User from DB
+        if (profile.getUser() == null || profile.getUser().getId() == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        User user = userRepository.findById(profile.getUser().getId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Set the persistent user in the profile
+        profile.setUser(user);
+
+        FinancialProfile savedProfile = financialProfileService.createOrUpdate(profile);
+        return ResponseEntity.status(201).body(savedProfile);
     }
 
-    // GET BY ID
-    @GetMapping("/{id}")
-    public ResponseEntity<FinancialProfile> getProfileById(@PathVariable Long id) {
-        return financialProfileRepository.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    @GetMapping("/{userId}")
+    public ResponseEntity<FinancialProfile> getProfileByUserId(@PathVariable Long userId) {
+        FinancialProfile profile = financialProfileService.getByUserId(userId);
+        return ResponseEntity.ok(profile);
     }
-
-    // // GET ALL
-    // @GetMapping
-    // public List<FinancialProfile> getAllProfiles() {
-    //     return financialProfileRepository.findAll();
-    // }
 }
