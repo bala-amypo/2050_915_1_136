@@ -10,14 +10,14 @@ import java.util.Optional;
 @Service
 public class RiskAssessmentServiceImpl implements RiskAssessmentService {
 
-    private final RiskAssessmentRepository repository;
+    private final RiskAssessmentRepository riskAssessmentRepository;
 
-    public RiskAssessmentServiceImpl(RiskAssessmentRepository repository) {
-        this.repository = repository;
+    public RiskAssessmentServiceImpl(RiskAssessmentRepository riskAssessmentRepository) {
+        this.riskAssessmentRepository = riskAssessmentRepository;
     }
 
     @Override
     public Optional<RiskAssessment> getByLoanRequestId(Long loanRequestId) {
-        return repository.findByLoanRequestId(loanRequestId);
+        return riskAssessmentRepository.findByLoanRequestId(loanRequestId);
     }
 }

@@ -5,10 +5,10 @@ import com.example.demo.service.RiskAssessmentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/risk-assessments")
+@RequestMapping("/risk-logs")
 public class RiskLogController {
 
     private final RiskAssessmentService riskAssessmentService;
@@ -17,13 +17,15 @@ public class RiskLogController {
         this.riskAssessmentService = riskAssessmentService;
     }
 
-    @GetMapping("/{loanRequestId}")
-    public ResponseEntity<List<RiskAssessment>> getByLoanRequestId(
+    @GetMapping("/loan/{loanRequestId}")
+    public ResponseEntity<RiskAssessment> getByLoanRequestId(
             @PathVariable Long loanRequestId) {
 
-        List<RiskAssessment> assessments =
+        Optional<RiskAssessment> riskAssessment =
                 riskAssessmentService.getByLoanRequestId(loanRequestId);
 
-        return ResponseEntity.ok(assessments);
+        return riskAssessment
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }
