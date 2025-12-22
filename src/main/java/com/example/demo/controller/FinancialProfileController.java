@@ -17,12 +17,24 @@ public class FinancialProfileController {
     private FinancialProfileRepository financialProfileRepository;
 
     // CREATE - POST Method
-    @PostMapping
-    public ResponseEntity<FinancialProfile> createProfile(@RequestBody FinancialProfile profile) {
-        // The lastUpdatedAt is handled automatically by the @PrePersist in the Entity
-        FinancialProfile savedProfile = financialProfileRepository.save(profile);
-        return new ResponseEntity<>(savedProfile, HttpStatus.CREATED);
-    }
+   @PostMapping("/financial-profile")
+public ResponseEntity<FinancialProfileResponseDto> createProfile(
+        @RequestBody FinancialProfileDto dto) {
+
+    FinancialProfile profile = financialProfileService.createProfile(dto);
+
+    FinancialProfileResponseDto response = new FinancialProfileResponseDto();
+    response.setId(profile.getId());
+    response.setUserId(profile.getUser().getId());
+    response.setMonthlyIncome(profile.getMonthlyIncome());
+    response.setMonthlyExpenses(profile.getMonthlyExpenses());
+    response.setExistingLoanEmi(profile.getExistingLoanEmi());
+    response.setCreditScore(profile.getCreditScore());
+    response.setSavingsBalance(profile.getSavingsBalance());
+    response.setLastUpdatedAt(profile.getLastUpdatedAt());
+
+    return ResponseEntity.ok(response);
+}
 
     // GET BY ID
     @GetMapping("/{id}")
