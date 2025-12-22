@@ -6,33 +6,29 @@ import com.example.demo.repository.FinancialProfileRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.FinancialProfileService;
 import org.springframework.stereotype.Service;
+
 @Service
 public class FinancialProfileServiceImpl implements FinancialProfileService {
 
-    private final FinancialProfileRepository financialProfileRepository;
-    private final UserRepository userRepository;
+    private final FinancialProfileRepository profileRepo;
+    private final UserRepository userRepo;
 
-    public FinancialProfileServiceImpl(FinancialProfileRepository financialProfileRepository,
-                                       UserRepository userRepository) {
-        this.financialProfileRepository = financialProfileRepository;
-        this.userRepository = userRepository;
+    public FinancialProfileServiceImpl(FinancialProfileRepository profileRepo,
+                                       UserRepository userRepo) {
+        this.profileRepo = profileRepo;
+        this.userRepo = userRepo;
     }
 
     @Override
-    public FinancialProfile createProfile(FinancialProfileDto dto) {
+    public FinancialProfile createOrUpdate(FinancialProfile profile) {
+        userRepo.findById(profile.getUser().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        return profileRepo.save(profile);
+    }
 
-        User user = userRepository.findById(dto.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        FinancialProfile profile = new FinancialProfile();
-        profile.setUser(user); // ✅ MUST SET
-        profile.setMonthlyIncome(dto.getMonthlyIncome());
-        profile.setMonthlyExpenses(dto.getMonthlyExpenses());
-        profile.setExistingLoanEmi(dto.getExistingLoanEmi());
-        profile.setCreditScore(dto.getCreditScore());
-        profile.setSavingsBalance(dto.getSavingsBalance());
-        profile.setLastUpdatedAt(LocalDateTime.now());
-
-        return financialProfileRepository.save(profile);
+    @Override
+    public FinancialProfile getByUserId(Long userId) {
+        return profileRepo.findByUserId(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Profile not found"));
     }
 }
