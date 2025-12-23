@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 @RestController
 @RequestMapping("/risk/logs")
 public class RiskLogController {
@@ -19,12 +18,11 @@ public class RiskLogController {
         this.service = service;
     }
 
-    // ✅ Log a new risk assessment
     @PostMapping
     public ResponseEntity<Map<String, Object>> logAssessment(
-            @RequestBody RiskLog log) {
+            @RequestBody RiskAssessmentLog log) {
 
-        RiskLog savedLog = service.logAssessment(log);
+        RiskAssessmentLog savedLog = service.logAssessment(log);
 
         Map<String, Object> response = new HashMap<>();
         response.put("message", "Risk assessment log saved successfully");
@@ -33,12 +31,11 @@ public class RiskLogController {
         return ResponseEntity.ok(response);
     }
 
-    // ✅ Get logs by loan request ID
     @GetMapping("/{loanId}")
     public ResponseEntity<Map<String, Object>> getLogsByRequest(
             @PathVariable Long loanId) {
 
-        List<RiskLog> logs = service.getLogsByRequest(loanId);
+        List<RiskAssessmentLog> logs = service.getLogsByRequest(loanId);
 
         Map<String, Object> response = new HashMap<>();
         response.put("message", "Risk assessment logs fetched successfully");
