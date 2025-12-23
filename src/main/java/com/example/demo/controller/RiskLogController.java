@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 @RestController
 @RequestMapping("/risk/logs")
 public class RiskLogController {
@@ -18,27 +19,30 @@ public class RiskLogController {
         this.service = service;
     }
 
+    // CREATE RISK LOG
     @PostMapping
     public ResponseEntity<Map<String, Object>> logAssessment(
             @RequestBody RiskAssessmentLog log) {
 
-        RiskAssessmentLog savedLog = service.logAssessment(log);
+        RiskAssessmentLog saved = service.logAssessment(log);
 
         Map<String, Object> response = new HashMap<>();
-        response.put("message", "Risk assessment log saved successfully");
-        response.put("data", savedLog);
+        response.put("message", "Risk assessment logged successfully");
+        response.put("data", saved);
 
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{loanId}")
-    public ResponseEntity<Map<String, Object>> getLogsByRequest(
-            @PathVariable Long loanId) {
+    // GET LOGS BY LOAN REQUEST ID
+    @GetMapping("/{loanRequestId}")
+    public ResponseEntity<Map<String, Object>> getLogs(
+            @PathVariable Long loanRequestId) {
 
-        List<RiskAssessmentLog> logs = service.getLogsByRequest(loanId);
+        List<RiskAssessmentLog> logs =
+                service.getLogsByRequest(loanRequestId);
 
         Map<String, Object> response = new HashMap<>();
-        response.put("message", "Risk assessment logs fetched successfully");
+        response.put("message", "Risk logs fetched successfully");
         response.put("data", logs);
 
         return ResponseEntity.ok(response);

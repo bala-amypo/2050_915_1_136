@@ -11,38 +11,39 @@ public class RiskAssessmentLog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "loan_request_id", nullable = false)
-    private LoanRequest loanRequest;
+    @Column(name = "loan_request_id", nullable = false)
+    private Long loanRequestId;
 
-    @Column(name = "risk_level")
-    private String riskLevel;
+    @Column(name = "dti_ratio")
+    private Double dtiRatio;
 
-    @Column(name = "remarks")
-    private String remarks;
+    @Column(name = "credit_check_status")
+    private String creditCheckStatus;
 
-    @Column(name = "assessed_at")
-    private LocalDateTime assessedAt;
+    @Column(name = "timestamp")
+    private LocalDateTime timestamp;
 
     public RiskAssessmentLog() {}
 
     @PrePersist
-    public void onPrePersist() {
-        assessedAt = LocalDateTime.now();
+    public void onCreate() {
+        this.timestamp = LocalDateTime.now();
     }
 
-    // Getters and Setters
+    // Getters & Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public LoanRequest getLoanRequest() { return loanRequest; }
-    public void setLoanRequest(LoanRequest loanRequest) { this.loanRequest = loanRequest; }
+    public Long getLoanRequestId() { return loanRequestId; }
+    public void setLoanRequestId(Long loanRequestId) { this.loanRequestId = loanRequestId; }
 
-    public String getRiskLevel() { return riskLevel; }
-    public void setRiskLevel(String riskLevel) { this.riskLevel = riskLevel; }
+    public Double getDtiRatio() { return dtiRatio; }
+    public void setDtiRatio(Double dtiRatio) { this.dtiRatio = dtiRatio; }
 
-    public String getRemarks() { return remarks; }
-    public void setRemarks(String remarks) { this.remarks = remarks; }
+    public String getCreditCheckStatus() { return creditCheckStatus; }
+    public void setCreditCheckStatus(String creditCheckStatus) {
+        this.creditCheckStatus = creditCheckStatus;
+    }
 
-    public LocalDateTime getAssessedAt() { return assessedAt; }
+    public LocalDateTime getTimestamp() { return timestamp; }
 }
