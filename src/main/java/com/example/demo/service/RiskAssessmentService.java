@@ -1,9 +1,10 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.RiskAssessment;
+import java.util.Optional;
 
 public interface RiskAssessmentService {
-    RiskAssessment assessRisk(Long loanRequestId);
-    RiskAssessment getByLoanRequestId(Long loanRequestId);
-}
 
+    Optional<RiskAssessment> getByLoanRequestId(Long loanRequestId);
+
+}
