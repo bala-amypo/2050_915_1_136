@@ -1,56 +1,48 @@
-
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
-public class RiskAssessment {
+@Table(name = "risk_assessment_logs")
+public class RiskAssessmentLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long loanRequestId;
+    @ManyToOne
+    @JoinColumn(name = "loan_request_id", nullable = false)
+    private LoanRequest loanRequest;
 
-    private double dtiRatio;
+    @Column(name = "risk_level")
+    private String riskLevel;
 
-    private double riskScore;
+    @Column(name = "remarks")
+    private String remarks;
 
-    // ✅ No-args constructor required by JPA
-    public RiskAssessment() {}
+    @Column(name = "assessed_at")
+    private LocalDateTime assessedAt;
 
-    /* ---------- Getters & Setters ---------- */
+    public RiskAssessmentLog() {}
 
-    public Long getId() {
-        return id;
+    @PrePersist
+    public void onPrePersist() {
+        assessedAt = LocalDateTime.now();
     }
 
-    // ✅ Setter for ID (needed by some tests)
-    public void setId(Long id) {
-        this.id = id;
-    }
+    // Getters and Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public Long getLoanRequestId() {
-        return loanRequestId;
-    }
+    public LoanRequest getLoanRequest() { return loanRequest; }
+    public void setLoanRequest(LoanRequest loanRequest) { this.loanRequest = loanRequest; }
 
-    public void setLoanRequestId(Long loanRequestId) {
-        this.loanRequestId = loanRequestId;
-    }
+    public String getRiskLevel() { return riskLevel; }
+    public void setRiskLevel(String riskLevel) { this.riskLevel = riskLevel; }
 
-    public double getDtiRatio() {
-        return dtiRatio;
-    }
+    public String getRemarks() { return remarks; }
+    public void setRemarks(String remarks) { this.remarks = remarks; }
 
-    public void setDtiRatio(double dtiRatio) {
-        this.dtiRatio = dtiRatio;
-    }
-
-    public double getRiskScore() {
-        return riskScore;
-    }
-
-    public void setRiskScore(double riskScore) {
-        this.riskScore = riskScore;
-    }
+    public LocalDateTime getAssessedAt() { return assessedAt; }
 }

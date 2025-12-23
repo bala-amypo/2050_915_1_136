@@ -13,3 +13,4 @@ public interface FinancialProfileRepository
     // 🔥 REQUIRED for tests
     Optional<FinancialProfile> findTopByUserIdOrderByCreatedAtDesc(Long userId);
 }
+

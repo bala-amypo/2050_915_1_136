@@ -24,7 +24,7 @@ public class RiskLogController {
     public ResponseEntity<Map<String, Object>> logAssessment(
             @RequestBody RiskLog log) {
 
-        RiskAssessmentLog savedLog = service.logAssessment(log);
+        RiskLog savedLog = service.logAssessment(log);
 
         Map<String, Object> response = new HashMap<>();
         response.put("message", "Risk assessment log saved successfully");
@@ -38,7 +38,7 @@ public class RiskLogController {
     public ResponseEntity<Map<String, Object>> getLogsByRequest(
             @PathVariable Long loanId) {
 
-        List<RiskAssessmentLog> logs = service.getLogsByRequest(loanId);
+        List<RiskLog> logs = service.getLogsByRequest(loanId);
 
         Map<String, Object> response = new HashMap<>();
         response.put("message", "Risk assessment logs fetched successfully");
