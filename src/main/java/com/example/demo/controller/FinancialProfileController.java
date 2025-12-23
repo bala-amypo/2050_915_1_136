@@ -1,4 +1,3 @@
-FinancialProfileController.java
 package com.example.demo.controller;
 
 import com.example.demo.entity.FinancialProfile;
@@ -29,6 +28,20 @@ public class FinancialProfileController {
         Map<String, Object> response = new HashMap<>();
         response.put("message", "Financial profile saved successfully");
         response.put("data", saved);
+
+        return ResponseEntity.ok(response);
+    }
+
+    // ✅ GET FINANCIAL PROFILE BY USER ID
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<Map<String, Object>> getByUserId(
+            @PathVariable Long userId) {
+
+        FinancialProfile profile = service.getProfileByUser(userId);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "Financial profile fetched successfully");
+        response.put("data", profile);
 
         return ResponseEntity.ok(response);
     }
