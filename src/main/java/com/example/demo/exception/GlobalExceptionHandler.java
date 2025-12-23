@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.*;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(RuntimeException.class)
-    public String handle(RuntimeException ex) {
+    @ExceptionHandler(BadRequestException.class)
+    public String handleBadRequest(BadRequestException ex) {
         return ex.getMessage();
     }
 }

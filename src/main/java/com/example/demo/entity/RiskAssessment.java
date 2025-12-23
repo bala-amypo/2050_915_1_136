@@ -1,53 +1,56 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "risk_assessments")
 public class RiskAssessment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String assessmentResult;
+    private Long loanRequestId;
 
-    private LocalDateTime createdAt;
+    private double dtiRatio;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "loan_request_id", nullable = false)
-    private LoanRequest loanRequest;
+    private double riskScore;
+
+    // ✅ No-args constructor required by JPA
+    public RiskAssessment() {}
+
+    /* ---------- Getters & Setters ---------- */
 
     public Long getId() {
         return id;
     }
 
+    // ✅ Setter for ID (needed by some tests)
     public void setId(Long id) {
         this.id = id;
     }
 
-    public String getAssessmentResult() {
-        return assessmentResult;
+    public Long getLoanRequestId() {
+        return loanRequestId;
     }
 
-    public void setAssessmentResult(String assessmentResult) {
-        this.assessmentResult = assessmentResult;
+    public void setLoanRequestId(Long loanRequestId) {
+        this.loanRequestId = loanRequestId;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
+    public double getDtiRatio() {
+        return dtiRatio;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+    public void setDtiRatio(double dtiRatio) {
+        this.dtiRatio = dtiRatio;
     }
 
-    public LoanRequest getLoanRequest() {
-        return loanRequest;
+    public double getRiskScore() {
+        return riskScore;
     }
 
-    public void setLoanRequest(LoanRequest loanRequest) {
-        this.loanRequest = loanRequest;
+    public void setRiskScore(double riskScore) {
+        this.riskScore = riskScore;
     }
 }
+
