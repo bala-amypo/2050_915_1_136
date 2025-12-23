@@ -1,61 +1,58 @@
+    package com.example.demo.entity;
 
-package com.example.demo.entity;
+    import com.fasterxml.jackson.annotation.JsonBackReference;
+    import jakarta.persistence.*;
+    import java.time.LocalDateTime;
 
-import jakarta.persistence.*;
-import java.time.LocalDateTime;
-import java.util.Objects;
+    @Entity
+    @Table(name = "loan_requests")
+    public class LoanRequest {
 
-@Entity
-public class LoanRequest {
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Long id;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+        @Column(name = "requested_amount", nullable = false)
+        private Double requestedAmount;
 
-    private Double requestedAmount;
-    private Integer tenureMonths;
+        @Column(name = "tenure_months", nullable = false)
+        private Integer tenureMonths;
 
-    @Enumerated(EnumType.STRING)
-    private Status status = Status.PENDING;
+        @Column(nullable = false)
+        private String status;
 
-    @ManyToOne
-    private User user;
+        @Column(name = "eligibility_result")
+        private String eligibilityResult;
 
-    private LocalDateTime submittedAt = LocalDateTime.now();
+        @Column(name = "submitted_at", nullable = false)
+        private LocalDateTime submittedAt;
 
-    public enum Status { PENDING, APPROVED, REJECTED }
+        @ManyToOne
+        @JoinColumn(name = "user_id", nullable = false)
+        @JsonBackReference
+        private User user;
 
-    // Getters & Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+        public LoanRequest() {}
 
-    public Double getRequestedAmount() { return requestedAmount; }
-    public void setRequestedAmount(Double requestedAmount) { this.requestedAmount = requestedAmount; }
+        // getters & setters
+        public Long getId() { return id; }
+        public void setId(Long id) { this.id = id; }
 
-    public Integer getTenureMonths() { return tenureMonths; }
-    public void setTenureMonths(Integer tenureMonths) { this.tenureMonths = tenureMonths; }
+        public Double getRequestedAmount() { return requestedAmount; }
+        public void setRequestedAmount(Double requestedAmount) { this.requestedAmount = requestedAmount; }
 
-    public Status getStatus() { return status; }
-    public void setStatus(Status status) { this.status = status; }
-    public void setStatus(String status) { if(status != null) this.status = Status.valueOf(status.toUpperCase()); }
+        public Integer getTenureMonths() { return tenureMonths; }
+        public void setTenureMonths(Integer tenureMonths) { this.tenureMonths = tenureMonths; }
 
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
+        public String getStatus() { return status; }
+        public void setStatus(String status) { this.status = status; }
 
-    public LocalDateTime getSubmittedAt() { return submittedAt; }
-    public void setSubmittedAt(LocalDateTime submittedAt) { this.submittedAt = submittedAt; }
+        public String getEligibilityResult() { return eligibilityResult; }
+        public void setEligibilityResult(String eligibilityResult) { this.eligibilityResult = eligibilityResult; }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        LoanRequest that = (LoanRequest) o;
-        return Objects.equals(id, that.id);
+        public LocalDateTime getSubmittedAt() { return submittedAt; }
+        public void setSubmittedAt(LocalDateTime submittedAt) { this.submittedAt = submittedAt; }
+
+        public User getUser() { return user; }
+        public void setUser(User user) { this.user = user; }
     }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
-}
-

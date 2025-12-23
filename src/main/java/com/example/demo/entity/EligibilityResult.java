@@ -1,7 +1,6 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 public class EligibilityResult {
@@ -10,50 +9,31 @@ public class EligibilityResult {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(optional = false)
-    private LoanRequest loanRequest;
+    @OneToOne
+    @JoinColumn(name = "loan_request_id", nullable = false)
+    private LoanRequest loanRequest; // Link to LoanRequest
 
-    private Boolean eligible;
-    private Double disposableIncome;
-    
-    private Double maxEligibleAmount = 0.0;
+    private boolean eligible;
+    private String reason;
 
-    private LocalDateTime createdAt = LocalDateTime.now();
+    // Constructors
+    public EligibilityResult() {}
 
-    @PrePersist
-    public void prePersist() {
-        if (this.createdAt == null) this.createdAt = LocalDateTime.now();
-        if (this.eligible == null) this.eligible = false;
-        if (this.maxEligibleAmount == null) this.maxEligibleAmount = 0.0;
+    public EligibilityResult(LoanRequest loanRequest, boolean eligible, String reason) {
+        this.loanRequest = loanRequest;
+        this.eligible = eligible;
+        this.reason = reason;
     }
 
-
+    // Getters and setters
     public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
 
     public LoanRequest getLoanRequest() { return loanRequest; }
     public void setLoanRequest(LoanRequest loanRequest) { this.loanRequest = loanRequest; }
 
-    public Boolean getEligible() { return eligible; }
-    public void setEligible(Boolean eligible) { this.eligible = eligible; }
+    public boolean isEligible() { return eligible; }
+    public void setEligible(boolean eligible) { this.eligible = eligible; }
 
-    public Double getDisposableIncome() { return disposableIncome; }
-    public void setDisposableIncome(Double disposableIncome) { this.disposableIncome = disposableIncome; }
-
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
-
-    public Double getMaxEligibleAmount() { 
-        return maxEligibleAmount; 
-    }
-    public void setMaxEligibleAmount(Double maxEligibleAmount) { 
-        this.maxEligibleAmount = maxEligibleAmount; 
-    }
-
-    public void setMaxEmiPossible(Double maxEmiPossible) { 
-        this.maxEligibleAmount = maxEmiPossible; 
-    }
-    public Double getMaxEmiPossible() { 
-        return maxEligibleAmount; 
-    }
+    public String getReason() { return reason; }
+    public void setReason(String reason) { this.reason = reason; }
 }
