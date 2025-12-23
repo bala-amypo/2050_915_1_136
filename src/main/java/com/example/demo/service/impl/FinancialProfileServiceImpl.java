@@ -14,7 +14,6 @@ public class FinancialProfileServiceImpl implements FinancialProfileService {
     private final FinancialProfileRepository repo;
     private final UserRepository userRepo;
 
-    // ✅ ONLY constructor (Spring will inject automatically)
     public FinancialProfileServiceImpl(
             FinancialProfileRepository repo,
             UserRepository userRepo) {
@@ -45,8 +44,9 @@ public class FinancialProfileServiceImpl implements FinancialProfileService {
                 });
     }
 
+    // ✅ METHOD NAME NOW MATCHES INTERFACE
     @Override
-    public FinancialProfile getByUserId(Long userId) {
+    public FinancialProfile getProfileByUser(Long userId) {
         return repo.findTopByUserIdOrderByCreatedAtDesc(userId)
                 .orElseThrow(() ->
                         new BadRequestException("Financial profile not found"));
