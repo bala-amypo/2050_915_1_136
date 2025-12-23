@@ -7,11 +7,11 @@ import java.util.List;
 
 public interface LoanRequestService {
 
-    LoanRequest createLoanRequest(LoanDtos.LoanRequestDto dto);
+    LoanRequest submitRequest(LoanDtos.LoanRequestDto dto);
 
-    List<LoanRequest> getByUserId(Long userId);
+    List<LoanRequest> getRequestsByUser(Long userId);
 
-    LoanRequest getById(Long id);
+    LoanRequest getRequestById(Long id);
 
-    List<LoanRequest> getAll();
+    List<LoanRequest> getAllRequests();
 }

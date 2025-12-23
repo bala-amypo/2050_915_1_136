@@ -25,15 +25,14 @@ public class LoanRequestServiceImpl implements LoanRequestService {
     }
 
     @Override
-    public LoanRequest createLoanRequest(LoanDtos.LoanRequestDto dto) {
-
+    public LoanRequest submitRequest(LoanDtos.LoanRequestDto dto) {
         User user = userRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         LoanRequest loan = new LoanRequest();
         loan.setRequestedAmount(dto.getRequestedAmount());
         loan.setTenureMonths(dto.getTenureMonths());
-        loan.setStatus("PENDING");
+        loan.setStatus(LoanRequest.Status.SUBMITTED);
         loan.setSubmittedAt(LocalDateTime.now());
         loan.setUser(user);
 
@@ -41,18 +40,18 @@ public class LoanRequestServiceImpl implements LoanRequestService {
     }
 
     @Override
-    public List<LoanRequest> getByUserId(Long userId) {
+    public List<LoanRequest> getRequestsByUser(Long userId) {
         return loanRequestRepository.findByUserId(userId);
     }
 
     @Override
-    public LoanRequest getById(Long id) {
+    public LoanRequest getRequestById(Long id) {
         return loanRequestRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Loan request not found"));
     }
 
     @Override
-    public List<LoanRequest> getAll() {
+    public List<LoanRequest> getAllRequests() {
         return loanRequestRepository.findAll();
     }
 }

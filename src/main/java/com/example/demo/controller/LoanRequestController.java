@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.LoanDtos;
 import com.example.demo.entity.LoanRequest;
 import com.example.demo.service.LoanRequestService;
 import org.springframework.http.ResponseEntity;
@@ -22,9 +23,9 @@ public class LoanRequestController {
     // ✅ SUBMIT LOAN REQUEST
     @PostMapping
     public ResponseEntity<Map<String, Object>> submit(
-            @RequestBody LoanRequest lr) {
+            @RequestBody LoanDtos.LoanRequestDto dto) {
 
-        LoanRequest saved = service.submitRequest(lr);
+        LoanRequest saved = service.submitRequest(dto);
 
         Map<String, Object> response = new HashMap<>();
         response.put("message", "Loan request submitted successfully");
@@ -35,8 +36,7 @@ public class LoanRequestController {
 
     // ✅ GET LOAN REQUESTS BY USER
     @GetMapping("/user/{userId}")
-    public ResponseEntity<Map<String, Object>> byUser(
-            @PathVariable Long userId) {
+    public ResponseEntity<Map<String, Object>> byUser(@PathVariable Long userId) {
 
         List<LoanRequest> list = service.getRequestsByUser(userId);
 
@@ -49,8 +49,7 @@ public class LoanRequestController {
 
     // ✅ GET LOAN REQUEST BY ID
     @GetMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> getById(
-            @PathVariable Long id) {
+    public ResponseEntity<Map<String, Object>> getById(@PathVariable Long id) {
 
         LoanRequest request = service.getRequestById(id);
 
