@@ -20,22 +20,23 @@ public class FinancialProfileServiceImpl implements FinancialProfileService {
     }
 
     @Override
-public FinancialProfile createOrUpdate(FinancialProfile profile) {
-    if (profile.getUser() == null || profile.getUser().getId() == null) {
-        throw new RuntimeException("User is required");
+    public FinancialProfile createOrUpdate(FinancialProfile profile) {
+
+        // ✅ Validate userId instead of User object
+        if (profile.getUserId() == null) {
+            throw new RuntimeException("User ID is required");
+        }
+
+        // ✅ Check user exists
+        userRepo.findById(profile.getUserId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return profileRepo.save(profile);
     }
-
-    // Verify that the user exists
-    userRepo.findById(profile.getUser().getId())
-            .orElseThrow(() -> new RuntimeException("User not found"));
-
-    return profileRepo.save(profile);
-}
-
 
     @Override
     public FinancialProfile getByUserId(Long userId) {
-        return profileRepo.findByUserId(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("Profile not found"));
+        return profileRepo.findTopByUserIdOrderByCreatedAtDesc(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Financial profile not found"));
     }
 }

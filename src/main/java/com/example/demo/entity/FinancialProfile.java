@@ -1,71 +1,87 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
 import java.time.LocalDateTime;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "financial_profile")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class FinancialProfile {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // If you want relationship later, we can change this to @ManyToOne
+    @Column(nullable = false)
     private Long userId;
 
-    private Double income;
-    private Double expenses;
+    @Column(nullable = false)
+    private Double monthlyIncome;
+
+    @Column(nullable = false)
+    private Double monthlyExpenses;
+
+    private Double existingLoanEmi;
+
+    private Double savingsBalance;
+
     private Integer creditScore;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @Column(nullable = false)
+    private LocalDateTime lastUpdatedAt;
+
+    // ---------- Constructors ----------
+    public FinancialProfile() {}
+
+    public FinancialProfile(Long userId, Double monthlyIncome, Double monthlyExpenses,
+                            Double existingLoanEmi, Double savingsBalance, Integer creditScore) {
+        this.userId = userId;
+        this.monthlyIncome = monthlyIncome;
+        this.monthlyExpenses = monthlyExpenses;
+        this.existingLoanEmi = existingLoanEmi;
+        this.savingsBalance = savingsBalance;
+        this.creditScore = creditScore;
+    }
+
+    // ---------- Auto timestamps ----------
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
+        this.lastUpdatedAt = LocalDateTime.now();
     }
 
-
-    public FinancialProfile() {}
-
-    public FinancialProfile(User user, Double monthlyIncome, Double monthlyExpenses, 
-                            Integer creditScore, Double savingsBalance) {
-        this.user = user;
-        this.monthlyIncome = monthlyIncome;
-        this.monthlyExpenses = monthlyExpenses;
-        this.creditScore = creditScore;
-        this.savingsBalance = savingsBalance;
-    }
-
-    // --- AUTO-UPDATE TIMESTAMP ---
-    @PrePersist
     @PreUpdate
     protected void onUpdate() {
         this.lastUpdatedAt = LocalDateTime.now();
     }
 
-    // --- GETTERS AND SETTERS ---
-    // (Generate these for all fields above)
+    // ---------- Getters & Setters ----------
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
+
+    public Long getUserId() { return userId; }
+    public void setUserId(Long userId) { this.userId = userId; }
+
     public Double getMonthlyIncome() { return monthlyIncome; }
     public void setMonthlyIncome(Double monthlyIncome) { this.monthlyIncome = monthlyIncome; }
+
     public Double getMonthlyExpenses() { return monthlyExpenses; }
     public void setMonthlyExpenses(Double monthlyExpenses) { this.monthlyExpenses = monthlyExpenses; }
+
     public Double getExistingLoanEmi() { return existingLoanEmi; }
     public void setExistingLoanEmi(Double existingLoanEmi) { this.existingLoanEmi = existingLoanEmi; }
-    public Integer getCreditScore() { return creditScore; }
-    public void setCreditScore(Integer creditScore) { this.creditScore = creditScore; }
+
     public Double getSavingsBalance() { return savingsBalance; }
     public void setSavingsBalance(Double savingsBalance) { this.savingsBalance = savingsBalance; }
+
+    public Integer getCreditScore() { return creditScore; }
+    public void setCreditScore(Integer creditScore) { this.creditScore = creditScore; }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
+
     public LocalDateTime getLastUpdatedAt() { return lastUpdatedAt; }
     public void setLastUpdatedAt(LocalDateTime lastUpdatedAt) { this.lastUpdatedAt = lastUpdatedAt; }
 }
