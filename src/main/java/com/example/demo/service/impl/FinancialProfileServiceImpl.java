@@ -1,8 +1,7 @@
-
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.FinancialProfile;
-import com.example.demo.entity.User; // ✅ REQUIRED
+import com.example.demo.entity.User;
 import com.example.demo.exception.BadRequestException;
 import com.example.demo.repository.FinancialProfileRepository;
 import com.example.demo.repository.UserRepository;
@@ -12,18 +11,24 @@ import org.springframework.stereotype.Service;
 @Service
 public class FinancialProfileServiceImpl implements FinancialProfileService {
 
-    private FinancialProfileRepository repo;
-    private UserRepository userRepo;
+    private final FinancialProfileRepository repo;
+    private final UserRepository userRepo;
 
-    public FinancialProfileServiceImpl() {}
-
-    public FinancialProfileServiceImpl(FinancialProfileRepository r, UserRepository u) {
-        this.repo = r;
-        this.userRepo = u;
+    // ✅ ONLY constructor (Spring will inject automatically)
+    public FinancialProfileServiceImpl(
+            FinancialProfileRepository repo,
+            UserRepository userRepo) {
+        this.repo = repo;
+        this.userRepo = userRepo;
     }
 
     @Override
     public FinancialProfile createOrUpdate(FinancialProfile profile) {
+
+        if (profile.getUser() == null || profile.getUser().getId() == null) {
+            throw new BadRequestException("User ID is required");
+        }
+
         User user = userRepo.findById(profile.getUser().getId())
                 .orElseThrow(() -> new BadRequestException("User not found"));
 
@@ -43,6 +48,7 @@ public class FinancialProfileServiceImpl implements FinancialProfileService {
     @Override
     public FinancialProfile getByUserId(Long userId) {
         return repo.findTopByUserIdOrderByCreatedAtDesc(userId)
-                .orElseThrow(() -> new BadRequestException("Financial profile not found"));
+                .orElseThrow(() ->
+                        new BadRequestException("Financial profile not found"));
     }
 }
