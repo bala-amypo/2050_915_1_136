@@ -6,42 +6,31 @@ import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
-@Table(name = "financial_profiles")
+@Table(name = "financial_profile")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class FinancialProfile {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    @NotNull(message = "User is required")
-    // This line removes the password and the extra loan list from your JSON output
-    @JsonIgnoreProperties({"password", "loanRequests", "createdAt", "role", "password"})
-    private User user;
+    private Long userId;
 
-    @NotNull(message = "Monthly income is required")
-    @DecimalMin(value = "0.01", message = "Monthly income must be greater than 0")
-    private Double monthlyIncome;
-
-    @NotNull(message = "Monthly expenses are required")
-    @Min(value = 0, message = "Monthly expenses cannot be negative")
-    private Double monthlyExpenses;
-
-    private Double existingLoanEmi; // Optional
-
-    @NotNull(message = "Credit score is required")
-    @Min(value = 300, message = "Credit score must be at least 300")
-    @Max(value = 900, message = "Credit score cannot exceed 900")
+    private Double income;
+    private Double expenses;
     private Integer creditScore;
 
-    @NotNull(message = "Savings balance is required")
-    @Min(value = 0, message = "Savings balance cannot be negative")
-    private Double savingsBalance;
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
-    private LocalDateTime lastUpdatedAt;
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
 
-    // --- CONSTRUCTORS ---
 
     public FinancialProfile() {}
 
