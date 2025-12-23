@@ -5,8 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface RiskAssessmentLogRepository
-        extends JpaRepository<RiskAssessmentLog, Long> {
+public interface RiskAssessmentRepository
+        extends JpaRepository<RiskAssessment, Long> {
 
-    List<RiskAssessmentLog> findByLoanRequestId(Long loanRequestId);
+    List<RiskAssessment> findByLoanRequestId(Long loanRequestId);
 }
