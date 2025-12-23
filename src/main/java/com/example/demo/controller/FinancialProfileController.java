@@ -1,32 +1,35 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.FinancialProfile;
+import com.example.demo.entity.User;
+import com.example.demo.repository.UserRepository;
 import com.example.demo.service.FinancialProfileService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.Map;
-
 @RestController
-@RequestMapping("/financial-profile")
+@RequestMapping("/api/financial-profiles")
 public class FinancialProfileController {
 
-    private final FinancialProfileService service;
+    @Autowired
+    private FinancialProfileService financialProfileService;
 
-    public FinancialProfileController(FinancialProfileService service) {
-        this.service = service;
-    }
+    @Autowired
+    private UserRepository userRepository;
+
     @PostMapping
-    public ResponseEntity<Map<String, Object>> save(
-            @RequestBody FinancialProfile fp) {
+    public ResponseEntity<FinancialProfile> createProfile(@RequestBody FinancialProfile profile) {
+        User user = userRepository.findById(profile.getUser().getId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        profile.setUser(user);
 
-        FinancialProfile saved = service.createOrUpdate(fp);
+        FinancialProfile savedProfile = financialProfileService.createOrUpdate(profile);
+        return ResponseEntity.status(201).body(savedProfile);
+    }
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("message", "Financial profile saved successfully");
-        response.put("data", saved);
-
-        return ResponseEntity.ok(response);
+    @GetMapping("/{userId}")
+    public ResponseEntity<FinancialProfile> getProfileByUserId(@PathVariable Long userId) {
+        FinancialProfile profile = financialProfileService.getByUserId(userId);
+        return ResponseEntity.ok(profile);
     }
 }
