@@ -1,52 +1,28 @@
 package com.example.demo.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
-@Table(name = "loan_requests")
 public class LoanRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "requested_amount", nullable = false)
     private Double requestedAmount;
-
-    @Column(name = "tenure_months", nullable = false)
     private Integer tenureMonths;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Status status;
-
-    @Column(name = "eligibility_result")
-    private String eligibilityResult;
-
-    @Column(name = "submitted_at", nullable = false)
-    private LocalDateTime submittedAt;
+    private Status status = Status.PENDING;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    @JsonBackReference
     private User user;
 
-    // 🔥 REQUIRED ENUM
-    public enum Status {
-        SUBMITTED,
-        APPROVED,
-        REJECTED
-    }
+    private LocalDateTime submittedAt = LocalDateTime.now();
 
-    public LoanRequest() {}
-
-    @PrePersist
-    protected void onSubmit() {
-        this.submittedAt = LocalDateTime.now();
-        this.status = Status.SUBMITTED;
-    }
+    public enum Status { PENDING, APPROVED, REJECTED }
 
     // Getters & Setters
     public Long getId() { return id; }
@@ -60,12 +36,25 @@ public class LoanRequest {
 
     public Status getStatus() { return status; }
     public void setStatus(Status status) { this.status = status; }
-
-    public String getEligibilityResult() { return eligibilityResult; }
-    public void setEligibilityResult(String eligibilityResult) { this.eligibilityResult = eligibilityResult; }
-
-    public LocalDateTime getSubmittedAt() { return submittedAt; }
+    public void setStatus(String status) { if(status != null) this.status = Status.valueOf(status.toUpperCase()); }
 
     public User getUser() { return user; }
     public void setUser(User user) { this.user = user; }
+
+    public LocalDateTime getSubmittedAt() { return submittedAt; }
+    public void setSubmittedAt(LocalDateTime submittedAt) { this.submittedAt = submittedAt; }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        LoanRequest that = (LoanRequest) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }
+
