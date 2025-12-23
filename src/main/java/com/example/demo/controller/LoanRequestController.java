@@ -1,59 +1,76 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.LoanDtos;
 import com.example.demo.entity.LoanRequest;
 import com.example.demo.service.LoanRequestService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
-@RequestMapping("/api/loan-requests")
+@RequestMapping("/loan")
 public class LoanRequestController {
 
-    private final LoanRequestService loanRequestService;
+    private final LoanRequestService service;
 
-    public LoanRequestController(LoanRequestService loanRequestService) {
-        this.loanRequestService = loanRequestService;
+    public LoanRequestController(LoanRequestService service) {
+        this.service = service;
     }
 
-    // POST /api/loan-requests
+    // ✅ SUBMIT LOAN REQUEST
     @PostMapping
-    public ResponseEntity<LoanRequest> createLoan(
-            @RequestBody LoanDtos.LoanRequestDto dto) {
+    public ResponseEntity<Map<String, Object>> submit(
+            @RequestBody LoanRequest lr) {
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(loanRequestService.createLoanRequest(dto));
+        LoanRequest saved = service.submitRequest(lr);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "Loan request submitted successfully");
+        response.put("data", saved);
+
+        return ResponseEntity.ok(response);
     }
 
-    // GET /api/loan-requests/user/{userId}
+    // ✅ GET LOAN REQUESTS BY USER
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<LoanRequest>> getByUser(
+    public ResponseEntity<Map<String, Object>> byUser(
             @PathVariable Long userId) {
 
-        return ResponseEntity.ok(
-                loanRequestService.getByUserId(userId)
-        );
+        List<LoanRequest> list = service.getRequestsByUser(userId);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "Loan requests fetched successfully");
+        response.put("data", list);
+
+        return ResponseEntity.ok(response);
     }
 
-    // GET /api/loan-requests/{id}
+    // ✅ GET LOAN REQUEST BY ID
     @GetMapping("/{id}")
-    public ResponseEntity<LoanRequest> getById(
+    public ResponseEntity<Map<String, Object>> getById(
             @PathVariable Long id) {
 
-        return ResponseEntity.ok(
-                loanRequestService.getById(id)
-        );
+        LoanRequest request = service.getRequestById(id);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "Loan request fetched successfully");
+        response.put("data", request);
+
+        return ResponseEntity.ok(response);
     }
 
-    // GET /api/loan-requests
+    // ✅ GET ALL LOAN REQUESTS
     @GetMapping
-    public ResponseEntity<List<LoanRequest>> getAll() {
+    public ResponseEntity<Map<String, Object>> getAll() {
 
-        return ResponseEntity.ok(
-                loanRequestService.getAll()
-        );
+        List<LoanRequest> list = service.getAllRequests();
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "All loan requests fetched successfully");
+        response.put("data", list);
+
+        return ResponseEntity.ok(response);
     }
 }
