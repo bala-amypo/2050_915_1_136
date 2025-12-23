@@ -1,43 +1,47 @@
 package com.example.demo.controller;
 
+import com.example.demo.entity.User;
 import com.example.demo.dto.AuthRequest;
 import com.example.demo.dto.AuthResponse;
-import com.example.demo.entity.User;
+import com.example.demo.exception.BadRequestException;
+import com.example.demo.repository.UserRepository;
 import com.example.demo.security.JwtUtil;
 import com.example.demo.service.UserService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class AuthController {
 
     private final UserService userService;
     private final JwtUtil jwtUtil;
+    private final UserRepository userRepository;
 
-    public AuthController(UserService userService, JwtUtil jwtUtil) {
+    public AuthController(UserService userService, JwtUtil jwtUtil, UserRepository userRepository) {
         this.userService = userService;
         this.jwtUtil = jwtUtil;
+        this.userRepository = userRepository;
     }
-    @PostMapping("/register")
-public User register(@RequestBody User user) {
-    return userService.register(user);
-}
-
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
-
-        User user = userService.findByEmail(request.getEmail());
-
-        if (!user.getPassword().equals(request.getPassword())) {
-            throw new RuntimeException("Invalid credentials");
-        }
+    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest authRequest) {
+        User user = userRepository.findByEmail(authRequest.getEmail())
+                .orElseThrow(() -> new BadRequestException("User not found"));
 
         String token = jwtUtil.generateToken(user);
 
-        return ResponseEntity.ok(
-                new AuthResponse(token, user.getEmail(), user.getRole().name())
+        AuthResponse response = new AuthResponse(
+                token,
+                user.getEmail(),
+                user.getRole() != null ? user.getRole().name() : "CUSTOMER"
         );
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody User user) {
+        return ResponseEntity.ok(userService.register(user));
     }
 }
