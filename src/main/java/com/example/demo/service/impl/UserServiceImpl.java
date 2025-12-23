@@ -1,16 +1,19 @@
+
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.User;
-import com.example.demo.entity.LoanRequest;
 import com.example.demo.exception.BadRequestException;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepo;
+    private final PasswordEncoder encoder = new BCryptPasswordEncoder();
 
     public UserServiceImpl(UserRepository userRepo) {
         this.userRepo = userRepo;
@@ -18,25 +21,24 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User register(User user) {
+        if (user == null) throw new BadRequestException("Invalid user");
 
-        // ✅ CHECK duplicate email BEFORE saving
-        if (userRepo.findByEmail(user.getEmail()).isPresent()) {
-            throw new BadRequestException("Email already registered: " + user.getEmail());
-        }
+        if (userRepo.findByEmail(user.getEmail()).isPresent())
+            throw new BadRequestException("Email already exists");
 
-        // ✅ Link loan requests to user
-        if (user.getLoanRequests() != null) {
-            for (LoanRequest request : user.getLoanRequests()) {
-                request.setUser(user);
-            }
-        }
-
+        user.setPassword(encoder.encode(user.getPassword()));
         return userRepo.save(user);
     }
 
     @Override
     public User findByEmail(String email) {
         return userRepo.findByEmail(email)
-                .orElseThrow(() -> new BadRequestException("User not found with email: " + email));
+                .orElseThrow(() -> new BadRequestException("User not found"));
+    }
+
+    @Override
+    public User getById(Long id) {
+        return userRepo.findById(id)
+                .orElseThrow(() -> new BadRequestException("User not found"));
     }
 }
