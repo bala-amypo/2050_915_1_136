@@ -1,32 +1,48 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.RiskAssessment;
-import com.example.demo.service.RiskAssessmentService;
+import com.example.demo.entity.RiskAssessmentLog;
+import com.example.demo.service.RiskAssessmentLogService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/risk")
+@RequestMapping("/risk/logs")
 public class RiskLogController {
 
-    private final RiskAssessmentService service;
+    private final RiskAssessmentLogService service;
 
-    public RiskLogController(RiskAssessmentService service) {
+    public RiskLogController(RiskAssessmentLogService service) {
         this.service = service;
     }
 
-    @PostMapping("/{loanId}")
-    public ResponseEntity<Map<String, Object>> assess(
-            @PathVariable Long loanId) {
+    // ✅ Log a new risk assessment
+    @PostMapping
+    public ResponseEntity<Map<String, Object>> logAssessment(
+            @RequestBody RiskLog log) {
 
-        RiskAssessment result = service.assessRisk(loanId);
+        RiskAssessmentLog savedLog = service.logAssessment(log);
 
         Map<String, Object> response = new HashMap<>();
-        response.put("message", "Risk assessment completed");
-        response.put("data", result);
+        response.put("message", "Risk assessment log saved successfully");
+        response.put("data", savedLog);
+
+        return ResponseEntity.ok(response);
+    }
+
+    // ✅ Get logs by loan request ID
+    @GetMapping("/{loanId}")
+    public ResponseEntity<Map<String, Object>> getLogsByRequest(
+            @PathVariable Long loanId) {
+
+        List<RiskAssessmentLog> logs = service.getLogsByRequest(loanId);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "Risk assessment logs fetched successfully");
+        response.put("data", logs);
 
         return ResponseEntity.ok(response);
     }
