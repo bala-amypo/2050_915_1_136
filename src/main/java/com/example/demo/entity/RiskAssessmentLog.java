@@ -23,7 +23,7 @@ public class RiskAssessment {
     @Column(name = "timestamp")
     private LocalDateTime timestamp;
 
-    public RiskAssessmentLog() {}
+    public RiskAssessment() {}
 
     @PrePersist
     public void onCreate() {
