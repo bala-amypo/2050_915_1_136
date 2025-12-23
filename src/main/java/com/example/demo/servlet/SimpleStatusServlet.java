@@ -1,3 +1,4 @@
+
 package com.example.demo.servlet;
 
 import jakarta.servlet.http.*;
@@ -15,3 +16,4 @@ public class SimpleStatusServlet extends HttpServlet {
         resp.getWriter().write("SimpleStatusServlet is running");
     }
 }
+
