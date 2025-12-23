@@ -1,37 +1,35 @@
+FinancialProfileController.java
 package com.example.demo.controller;
 
 import com.example.demo.entity.FinancialProfile;
 import com.example.demo.service.FinancialProfileService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
-@RequestMapping("/api/financial-profiles")
+@RequestMapping("/financial-profile")
 public class FinancialProfileController {
 
-    @Autowired
-    private FinancialProfileService financialProfileService;
+    private final FinancialProfileService service;
 
-    // ---------- CREATE / UPDATE ----------
-    @PostMapping
-    public ResponseEntity<FinancialProfile> createProfile(
-            @RequestBody FinancialProfile profile) {
-
-        FinancialProfile savedProfile =
-                financialProfileService.createOrUpdate(profile);
-
-        return ResponseEntity.status(201).body(savedProfile);
+    public FinancialProfileController(FinancialProfileService service) {
+        this.service = service;
     }
 
-    // ---------- GET LATEST PROFILE BY USER ID ----------
-    @GetMapping("/{userId}")
-    public ResponseEntity<FinancialProfile> getProfileByUserId(
-            @PathVariable Long userId) {
+    // ✅ CREATE OR UPDATE FINANCIAL PROFILE
+    @PostMapping
+    public ResponseEntity<Map<String, Object>> save(
+            @RequestBody FinancialProfile fp) {
 
-        FinancialProfile profile =
-                financialProfileService.getByUserId(userId);
+        FinancialProfile saved = service.createOrUpdate(fp);
 
-        return ResponseEntity.ok(profile);
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "Financial profile saved successfully");
+        response.put("data", saved);
+
+        return ResponseEntity.ok(response);
     }
 }
