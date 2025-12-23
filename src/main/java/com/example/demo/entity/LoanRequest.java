@@ -7,6 +7,16 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "loan_requests")
 public class LoanRequest {
+@Column(name = "submitted_at")
+private LocalDateTime submittedAt;
+
+public LocalDateTime getSubmittedAt() {
+    return submittedAt;
+}
+
+public void setSubmittedAt(LocalDateTime submittedAt) {
+    this.submittedAt = submittedAt;
+}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
