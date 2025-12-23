@@ -35,8 +35,6 @@ public void setSubmittedAt(LocalDateTime submittedAt) {
     @Column(name = "eligibility_result")
     private String eligibilityResult;
 
-    @Column(name = "submitted_at", nullable = false)
-    private LocalDateTime submittedAt;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -74,7 +72,7 @@ public void setSubmittedAt(LocalDateTime submittedAt) {
     public String getEligibilityResult() { return eligibilityResult; }
     public void setEligibilityResult(String eligibilityResult) { this.eligibilityResult = eligibilityResult; }
 
-    public LocalDateTime getSubmittedAt() { return submittedAt; }
+  
 
     public User getUser() { return user; }
     public void setUser(User user) { this.user = user; }
