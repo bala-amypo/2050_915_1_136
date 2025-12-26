@@ -19,16 +19,10 @@ public class FinancialProfileController {
     }
 
     // ✅ CREATE OR UPDATE FINANCIAL PROFILE
-    @PostMapping
-    public ResponseEntity<Map<String, Object>> save(
-            @RequestBody FinancialProfile fp) {
+  @PostMapping("/financial-profile")
+public ResponseEntity<FinancialProfile> saveProfile(@RequestBody FinancialProfile profile) {
+    FinancialProfile savedProfile = profileRepository.save(profile);
+    return ResponseEntity.ok(savedProfile);
+}
 
-        FinancialProfile saved = service.createOrUpdate(fp);
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("message", "Financial profile saved successfully");
-        response.put("data", saved);
-
-        return ResponseEntity.ok(response);
-    }
 }
