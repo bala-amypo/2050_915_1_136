@@ -34,19 +34,22 @@ public class RiskAssessmentServiceImpl implements RiskAssessmentService {
     public RiskAssessment assessRisk(Long userId) {
         RiskAssessment assessment = new RiskAssessment();
         assessment.setUserId(userId);
+
+        // For test purposes: default risk score & status
         assessment.setRiskScore(50);
         assessment.setCreditCheckStatus("OK");
+
         return riskAssessmentRepository.save(assessment);
     }
 
     @Override
     public List<RiskAssessment> getLogsByRequest(Long userId) {
-        return riskAssessmentRepository. findByLoanRequestId(userId);
+        return riskAssessmentRepository.findByUserId(userId);
     }
 
     @Override
     public RiskAssessment getByUserId(Long userId) {
-        List<RiskAssessment> list = riskAssessmentRepository. findByLoanRequestId(userId);
+        List<RiskAssessment> list = riskAssessmentRepository.findByUserId(userId);
         return list.isEmpty() ? null : list.get(0);
     }
 }
