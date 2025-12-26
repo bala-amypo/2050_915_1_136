@@ -2,101 +2,58 @@ package com.example.demo.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
-@Table(name = "loan_requests")
 public class LoanRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "requested_amount", nullable = false)
-    private Double requestedAmount = 0.0;
-
-    @Column(name = "tenure_months", nullable = false)
-    private Integer tenureMonths = 0;
+    private Double requestedAmount;
+    private Integer tenureMonths;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
     private Status status = Status.PENDING;
 
-    @Column(name = "submitted_at")
-    private LocalDateTime submittedAt;
-
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "user_id")
+    @ManyToOne
     private User user;
 
-    public LoanRequest() {
+    private LocalDateTime submittedAt = LocalDateTime.now();
+
+    public enum Status { PENDING, APPROVED, REJECTED }
+
+    // Getters & Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public Double getRequestedAmount() { return requestedAmount; }
+    public void setRequestedAmount(Double requestedAmount) { this.requestedAmount = requestedAmount; }
+
+    public Integer getTenureMonths() { return tenureMonths; }
+    public void setTenureMonths(Integer tenureMonths) { this.tenureMonths = tenureMonths; }
+
+    public Status getStatus() { return status; }
+    public void setStatus(Status status) { this.status = status; }
+    public void setStatus(String status) { if(status != null) this.status = Status.valueOf(status.toUpperCase()); }
+
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
+
+    public LocalDateTime getSubmittedAt() { return submittedAt; }
+    public void setSubmittedAt(LocalDateTime submittedAt) { this.submittedAt = submittedAt; }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        LoanRequest that = (LoanRequest) o;
+        return Objects.equals(id, that.id);
     }
 
-    public enum Status {
-        PENDING,
-        SUBMITTED,
-        APPROVED,
-        REJECTED
-    }
-
-    // ---------- JPA LIFECYCLE ----------
-
-    @PrePersist
-    protected void onCreate() {
-        if (this.submittedAt == null) {
-            this.submittedAt = LocalDateTime.now();
-        }
-        if (this.status == null) {
-            this.status = Status.PENDING;
-        }
-    }
-
-    // ---------- GETTERS & SETTERS ----------
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Double getRequestedAmount() {
-        return requestedAmount != null ? requestedAmount : 0.0;
-    }
-
-    public void setRequestedAmount(Double requestedAmount) {
-        this.requestedAmount = requestedAmount;
-    }
-
-    public Integer getTenureMonths() {
-        return tenureMonths != null ? tenureMonths : 0;
-    }
-
-    public void setTenureMonths(Integer tenureMonths) {
-        this.tenureMonths = tenureMonths;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    public LocalDateTime getSubmittedAt() {
-        return submittedAt;
-    }
-
-    public void setSubmittedAt(LocalDateTime submittedAt) {
-        this.submittedAt = submittedAt;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
