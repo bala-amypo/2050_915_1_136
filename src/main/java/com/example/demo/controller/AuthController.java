@@ -24,11 +24,19 @@ public class AuthController {
         this.userRepository = userRepository;
     }
 
+    // Login endpoint
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest authRequest) {
+        // Find user by email
         User user = userRepository.findByEmail(authRequest.getEmail())
                 .orElseThrow(() -> new BadRequestException("User not found"));
 
+        // Check password
+        if (!userService.matchesPassword(authRequest.getPassword(), user.getPassword())) {
+            throw new BadRequestException("Invalid credentials");
+        }
+
+        // Generate JWT token
         String token = jwtUtil.generateToken(user);
 
         AuthResponse response = new AuthResponse(
@@ -40,8 +48,10 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
+    // Registration endpoint
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody User user) {
-        return ResponseEntity.ok(userService.register(user));
+    public ResponseEntity<User> register(@RequestBody User user) {
+        User savedUser = userService.register(user);
+        return ResponseEntity.ok(savedUser);
     }
 }

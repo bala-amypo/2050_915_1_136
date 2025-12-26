@@ -3,6 +3,7 @@ package com.example.demo.service.impl;
 import com.example.demo.dto.LoanDtos;
 import com.example.demo.entity.LoanRequest;
 import com.example.demo.entity.User;
+import com.example.demo.exception.BadRequestException;
 import com.example.demo.repository.LoanRequestRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.LoanRequestService;
@@ -25,9 +26,13 @@ public class LoanRequestServiceImpl implements LoanRequestService {
     }
 
     @Override
-    public LoanRequest submitRequest(LoanDtos.LoanRequestDto dto) {
+    public LoanRequest createLoanRequest(LoanDtos.LoanRequestDto dto) {
+        if (dto == null || dto.getUserId() == null) {
+            throw new BadRequestException("Invalid loan request data");
+        }
+
         User user = userRepository.findById(dto.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new BadRequestException("User not found"));
 
         LoanRequest loan = new LoanRequest();
         loan.setRequestedAmount(dto.getRequestedAmount());
@@ -40,27 +45,28 @@ public class LoanRequestServiceImpl implements LoanRequestService {
     }
 
     @Override
-    public LoanRequest submitRequest(LoanRequest loanRequest) {
+    public LoanRequest createLoanRequest(LoanRequest loanRequest) {
+        if (loanRequest == null || loanRequest.getUser() == null) {
+            throw new BadRequestException("Invalid loan request");
+        }
+        loanRequest.setStatus(LoanRequest.Status.PENDING);
+        loanRequest.setSubmittedAt(LocalDateTime.now());
         return loanRequestRepository.save(loanRequest);
     }
 
     @Override
-    public List<LoanRequest> getRequestsByUser(Long userId) {
+    public List<LoanRequest> getByUserId(Long userId) {
         return loanRequestRepository.findByUserId(userId);
     }
 
     @Override
-    public LoanRequest getRequestById(Long id) {
-        return loanRequestRepository.findById(id).orElse(null);
-    }
-
-    @Override
     public LoanRequest getById(Long id) {
-        return loanRequestRepository.findById(id).orElse(null);
+        return loanRequestRepository.findById(id)
+                .orElseThrow(() -> new BadRequestException("Loan request not found"));
     }
 
     @Override
-    public List<LoanRequest> getAllRequests() {
+    public List<LoanRequest> getAll() {
         return loanRequestRepository.findAll();
     }
 }

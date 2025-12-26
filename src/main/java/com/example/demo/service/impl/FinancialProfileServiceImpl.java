@@ -23,6 +23,9 @@ public class FinancialProfileServiceImpl implements FinancialProfileService {
 
     @Override
     public FinancialProfile createOrUpdate(FinancialProfile profile) {
+        if (profile == null) {
+            throw new BadRequestException("Profile cannot be null");
+        }
 
         if (profile.getUser() == null || profile.getUser().getId() == null) {
             throw new BadRequestException("User ID is required");
@@ -44,11 +47,9 @@ public class FinancialProfileServiceImpl implements FinancialProfileService {
                 });
     }
 
- 
-    // ✅ ADD THIS METHOD (FOR TEST CASE)
     @Override
     public FinancialProfile getByUserId(Long userId) {
-        return repo.findTopByUserIdOrderByCreatedAtDesc(userId)
-                .orElse(null); // tests expect nullable, NOT exception
+        if (userId == null) return null;
+        return repo.findTopByUserIdOrderByCreatedAtDesc(userId).orElse(null);
     }
 }

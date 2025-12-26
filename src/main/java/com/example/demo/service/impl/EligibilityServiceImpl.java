@@ -27,12 +27,16 @@ public class EligibilityServiceImpl implements EligibilityService {
     }
 
     @Override
-    public EligibilityResult evaluateEligibility(long requestId) {
+    public EligibilityResult checkEligibility(long requestId) {
         if (repo.findByLoanRequestId(requestId).isPresent())
             throw new BadRequestException("Eligibility already exists");
 
         LoanRequest lr = loanRepo.findById(requestId)
                 .orElseThrow(() -> new BadRequestException("Loan request not found"));
+
+        if (lr.getUser() == null || lr.getUser().getId() == null) {
+            throw new BadRequestException("User not associated with loan request");
+        }
 
         FinancialProfile fp = profileRepo.findTopByUserIdOrderByCreatedAtDesc(lr.getUser().getId())
                 .orElseThrow(() -> new BadRequestException("Financial profile not found"));
@@ -50,8 +54,8 @@ public class EligibilityServiceImpl implements EligibilityService {
         return repo.save(res);
     }
 
-    
-    public EligibilityResult getByLoanRequestId(long requestId) {
+    @Override
+    public EligibilityResult getEligibilityByLoanRequestId(long requestId) {
         return repo.findByLoanRequestId(requestId)
                 .orElseThrow(() -> new BadRequestException("Result not found"));
     }
