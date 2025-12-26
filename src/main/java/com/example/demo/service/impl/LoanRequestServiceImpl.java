@@ -17,14 +17,20 @@ public class LoanRequestServiceImpl implements LoanRequestService {
         this.repo = repo;
     }
 
-    @Override
-    public LoanRequest submitRequest(LoanDtos.LoanRequestDto dto) {
-        LoanRequest request = new LoanRequest();
-        request.setRequestedAmount(dto.getRequestedAmount());
-        request.setTenureMonths(dto.getTenureMonths());
-        request.setUserId(dto.getUserId());
-        return repo.save(request);
-    }
+   @Override
+public LoanRequest submitRequest(LoanDtos.LoanRequestDto dto) {
+    LoanRequest request = new LoanRequest();
+    request.setRequestedAmount(dto.getRequestedAmount());
+    request.setTenureMonths(dto.getTenureMonths());
+
+    // Set the User entity
+    User user = new User();
+    user.setId(dto.getUserId()); // set only ID, JPA will handle it
+    request.setUser(user);
+
+    return repo.save(request);
+}
+
 
     @Override
     public List<LoanRequest> getRequestsByUser(Long userId) {
