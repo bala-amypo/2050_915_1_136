@@ -1,8 +1,10 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.dto.LoanDtos;
 import com.example.demo.entity.LoanRequest;
+import com.example.demo.entity.User;
+import com.example.demo.exception.BadRequestException;
 import com.example.demo.repository.LoanRequestRepository;
+import com.example.demo.repository.UserRepository;
 import com.example.demo.service.LoanRequestService;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -11,32 +13,31 @@ import java.util.List;
 public class LoanRequestServiceImpl implements LoanRequestService {
 
     private final LoanRequestRepository repo;
+    private final UserRepository userRepo;
 
-    public LoanRequestServiceImpl(LoanRequestRepository repo) {
-        this.repo = repo;
+    public LoanRequestServiceImpl(LoanRequestRepository r, UserRepository u) {
+        this.repo = r;
+        this.userRepo = u;
     }
 
     @Override
-    public LoanRequest submitRequest(LoanDtos.LoanRequestDto dto) {
-        LoanRequest request = new LoanRequest();
-        request.setRequestedAmount(dto.getRequestedAmount());
-        request.setTenureMonths(dto.getTenureMonths());
-        request.setUser(dto.getUser()); // Use dto.getUser() instead of setUserId
+    public LoanRequest submitRequest(LoanRequest request) {
+        User user = userRepo.findById(request.getUser().getId())
+                .orElseThrow(() -> new BadRequestException("User not found"));
+
+        request.setUser(user);
         return repo.save(request);
     }
 
     @Override
     public List<LoanRequest> getRequestsByUser(Long userId) {
-        return repo.findByUser_Id(userId); // Correct repository method
+        return repo.findByUserId(userId);
     }
 
     @Override
-    public LoanRequest getRequestById(Long id) {
-        return repo.findById(id).orElse(null);
-    }
-
-    @Override
-    public List<LoanRequest> getAllRequests() {
-        return repo.findAll();
+    public LoanRequest getById(Long id) {
+        return repo.findById(id)
+                .orElseThrow(() -> new BadRequestException("Loan request not found"));
     }
 }
+

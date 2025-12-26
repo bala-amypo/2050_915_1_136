@@ -1,7 +1,8 @@
+
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.FinancialProfile;
-import com.example.demo.entity.User;
+import com.example.demo.entity.User; // ✅ REQUIRED
 import com.example.demo.exception.BadRequestException;
 import com.example.demo.repository.FinancialProfileRepository;
 import com.example.demo.repository.UserRepository;
@@ -11,20 +12,18 @@ import org.springframework.stereotype.Service;
 @Service
 public class FinancialProfileServiceImpl implements FinancialProfileService {
 
-    private final FinancialProfileRepository repo;
-    private final UserRepository userRepo;
+    private FinancialProfileRepository repo;
+    private UserRepository userRepo;
 
-    public FinancialProfileServiceImpl(FinancialProfileRepository repo, UserRepository userRepo) {
-        this.repo = repo;
-        this.userRepo = userRepo;
+    public FinancialProfileServiceImpl() {}
+
+    public FinancialProfileServiceImpl(FinancialProfileRepository r, UserRepository u) {
+        this.repo = r;
+        this.userRepo = u;
     }
 
     @Override
     public FinancialProfile createOrUpdate(FinancialProfile profile) {
-        if (profile == null) throw new BadRequestException("Profile cannot be null");
-        if (profile.getUser() == null || profile.getUser().getId() == null)
-            throw new BadRequestException("User ID is required");
-
         User user = userRepo.findById(profile.getUser().getId())
                 .orElseThrow(() -> new BadRequestException("User not found"));
 
@@ -33,8 +32,6 @@ public class FinancialProfileServiceImpl implements FinancialProfileService {
                     existing.setMonthlyIncome(profile.getMonthlyIncome());
                     existing.setMonthlyExpenses(profile.getMonthlyExpenses());
                     existing.setExistingEmis(profile.getExistingEmis());
-                    existing.setCreditScore(profile.getCreditScore());
-                    existing.setSavingsBalance(profile.getSavingsBalance());
                     return repo.save(existing);
                 })
                 .orElseGet(() -> {
@@ -45,12 +42,8 @@ public class FinancialProfileServiceImpl implements FinancialProfileService {
 
     @Override
     public FinancialProfile getByUserId(Long userId) {
-        if (userId == null) return null;
-        return repo.findTopByUserIdOrderByCreatedAtDesc(userId).orElse(null);
-    }
-
-    @Override
-    public boolean existsByUserId(Long userId) {
-        return repo.findByUserId(userId).isPresent();
+        return repo.findTopByUserIdOrderByCreatedAtDesc(userId)
+                .orElseThrow(() -> new BadRequestException("Financial profile not found"));
     }
 }
+
