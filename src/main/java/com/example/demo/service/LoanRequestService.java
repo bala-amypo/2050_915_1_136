@@ -11,7 +11,7 @@ public interface LoanRequestService {
 
     List<LoanRequest> getRequestsByUser(Long userId);
 
-    LoanRequest getRequestById(Long id);  // Add this
+    LoanRequest getRequestById(Long id);
 
-    List<LoanRequest> getAllRequests();   // Add this
+    List<LoanRequest> getAllRequests();
 }

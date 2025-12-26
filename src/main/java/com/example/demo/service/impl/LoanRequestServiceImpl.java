@@ -18,15 +18,13 @@ public class LoanRequestServiceImpl implements LoanRequestService {
     private final LoanRequestRepository loanRequestRepository;
     private final UserRepository userRepository;
 
-    public LoanRequestServiceImpl(
-            LoanRequestRepository loanRequestRepository,
-            UserRepository userRepository) {
+    public LoanRequestServiceImpl(LoanRequestRepository loanRequestRepository, UserRepository userRepository) {
         this.loanRequestRepository = loanRequestRepository;
         this.userRepository = userRepository;
     }
 
     @Override
-    public LoanRequest createLoanRequest(LoanDtos.LoanRequestDto dto) {
+    public LoanRequest submitRequest(LoanDtos.LoanRequestDto dto) {
         if (dto == null || dto.getUserId() == null) {
             throw new BadRequestException("Invalid loan request data");
         }
@@ -45,28 +43,18 @@ public class LoanRequestServiceImpl implements LoanRequestService {
     }
 
     @Override
-    public LoanRequest createLoanRequest(LoanRequest loanRequest) {
-        if (loanRequest == null || loanRequest.getUser() == null) {
-            throw new BadRequestException("Invalid loan request");
-        }
-        loanRequest.setStatus(LoanRequest.Status.PENDING);
-        loanRequest.setSubmittedAt(LocalDateTime.now());
-        return loanRequestRepository.save(loanRequest);
-    }
-
-    @Override
-    public List<LoanRequest> getByUserId(Long userId) {
+    public List<LoanRequest> getRequestsByUser(Long userId) {
         return loanRequestRepository.findByUserId(userId);
     }
 
     @Override
-    public LoanRequest getById(Long id) {
+    public LoanRequest getRequestById(Long id) {
         return loanRequestRepository.findById(id)
                 .orElseThrow(() -> new BadRequestException("Loan request not found"));
     }
 
     @Override
-    public List<LoanRequest> getAll() {
+    public List<LoanRequest> getAllRequests() {
         return loanRequestRepository.findAll();
     }
 }
