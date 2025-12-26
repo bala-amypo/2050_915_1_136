@@ -14,22 +14,16 @@ public class FinancialProfileServiceImpl implements FinancialProfileService {
     private final FinancialProfileRepository repo;
     private final UserRepository userRepo;
 
-    public FinancialProfileServiceImpl(
-            FinancialProfileRepository repo,
-            UserRepository userRepo) {
+    public FinancialProfileServiceImpl(FinancialProfileRepository repo, UserRepository userRepo) {
         this.repo = repo;
         this.userRepo = userRepo;
     }
 
     @Override
     public FinancialProfile createOrUpdate(FinancialProfile profile) {
-        if (profile == null) {
-            throw new BadRequestException("Profile cannot be null");
-        }
-
-        if (profile.getUser() == null || profile.getUser().getId() == null) {
+        if (profile == null) throw new BadRequestException("Profile cannot be null");
+        if (profile.getUser() == null || profile.getUser().getId() == null)
             throw new BadRequestException("User ID is required");
-        }
 
         User user = userRepo.findById(profile.getUser().getId())
                 .orElseThrow(() -> new BadRequestException("User not found"));
@@ -39,6 +33,8 @@ public class FinancialProfileServiceImpl implements FinancialProfileService {
                     existing.setMonthlyIncome(profile.getMonthlyIncome());
                     existing.setMonthlyExpenses(profile.getMonthlyExpenses());
                     existing.setExistingEmis(profile.getExistingEmis());
+                    existing.setCreditScore(profile.getCreditScore());
+                    existing.setSavingsBalance(profile.getSavingsBalance());
                     return repo.save(existing);
                 })
                 .orElseGet(() -> {
@@ -51,5 +47,10 @@ public class FinancialProfileServiceImpl implements FinancialProfileService {
     public FinancialProfile getByUserId(Long userId) {
         if (userId == null) return null;
         return repo.findTopByUserIdOrderByCreatedAtDesc(userId).orElse(null);
+    }
+
+    @Override
+    public boolean existsByUserId(Long userId) {
+        return repo.findByUserId(userId).isPresent();
     }
 }
