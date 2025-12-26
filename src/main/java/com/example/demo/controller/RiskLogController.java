@@ -22,9 +22,9 @@ public class RiskLogController {
     // CREATE RISK LOG
     @PostMapping
     public ResponseEntity<Map<String, Object>> logAssessment(
-            @RequestBody RiskAssessmentLog log) {
+            @RequestBody RiskAssessment log) {
 
-        RiskAssessmentLog saved = service.logAssessment(log);
+        RiskAssessment saved = service.logAssessment(log);
 
         Map<String, Object> response = new HashMap<>();
         response.put("message", "Risk assessment logged successfully");
@@ -38,7 +38,7 @@ public class RiskLogController {
     public ResponseEntity<Map<String, Object>> getLogs(
             @PathVariable Long loanRequestId) {
 
-        List<RiskAssessmentLog> logs =
+        List<RiskAssessment> logs =
                 service.getLogsByRequest(loanRequestId);
 
         Map<String, Object> response = new HashMap<>();
