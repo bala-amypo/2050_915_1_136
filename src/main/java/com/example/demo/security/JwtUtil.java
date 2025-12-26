@@ -3,16 +3,18 @@ package com.example.demo.security;
 import com.example.demo.entity.User;
 import io.jsonwebtoken.*;
 import org.springframework.stereotype.Component;
+
 import java.util.Date;
 import java.util.Map;
 
 @Component
 public class JwtUtil {
 
-    private String secret = "your_secret_key"; 
-    private int expiration = 3600000;
+    private String secret = "your_secret_key"; // for tests, can be hardcoded
+    private int expiration = 3600000; // 1 hour in milliseconds
 
     public JwtUtil() {}
+
     public JwtUtil(String secret, int expiration) {
         this.secret = secret;
         this.expiration = expiration;
@@ -42,11 +44,21 @@ public class JwtUtil {
         try {
             Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
             return true;
-        } catch (Exception e) { return false; }
+        } catch (JwtException | IllegalArgumentException e) {
+            return false;
+        }
     }
 
     public Claims getAllClaims(String token) {
         return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
     }
-}
 
+    public String getEmailFromToken(String token) {
+        return getAllClaims(token).getSubject();
+    }
+
+    public String getRoleFromToken(String token) {
+        Object role = getAllClaims(token).get("role");
+        return role != null ? role.toString() : "CUSTOMER";
+    }
+}
