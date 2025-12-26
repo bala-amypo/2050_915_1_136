@@ -2,7 +2,8 @@ package com.example.demo.service;
 
 import com.example.demo.entity.User;
 
-User register(User user);
-boolean existsByEmail(String email);
-Optional<User> getUserByEmail(String email);
-
+public interface UserService {
+    User register(User user);
+    User getById(Long id);
+    User findByEmail(String email);
+}
