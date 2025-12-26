@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
+
 @RestController
 @RequestMapping("/financial-profile")
 public class FinancialProfileController {
@@ -19,8 +20,15 @@ public class FinancialProfileController {
 
     // ✅ CREATE OR UPDATE FINANCIAL PROFILE
     @PostMapping
-    public ResponseEntity<FinancialProfile> saveProfile(@RequestBody FinancialProfile profile) {
-        FinancialProfile savedProfile = service.saveProfile(profile); // call service method
-        return ResponseEntity.ok(savedProfile);
+    public ResponseEntity<Map<String, Object>> save(
+            @RequestBody FinancialProfile fp) {
+
+        FinancialProfile saved = service.createOrUpdate(fp);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "Financial profile saved successfully");
+        response.put("data", saved);
+
+        return ResponseEntity.ok(response);
     }
 }
