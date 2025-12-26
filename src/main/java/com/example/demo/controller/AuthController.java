@@ -1,13 +1,14 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.User;
 import com.example.demo.dto.AuthRequest;
 import com.example.demo.dto.AuthResponse;
+import com.example.demo.entity.User;
 import com.example.demo.exception.BadRequestException;
+import com.example.demo.repository.UserRepository;
 import com.example.demo.security.JwtUtil;
 import com.example.demo.service.UserService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,35 +17,30 @@ public class AuthController {
 
     private final UserService userService;
     private final JwtUtil jwtUtil;
-    private final PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
 
-    public AuthController(UserService userService, JwtUtil jwtUtil, PasswordEncoder passwordEncoder) {
+    public AuthController(UserService userService, JwtUtil jwtUtil, UserRepository userRepository) {
         this.userService = userService;
         this.jwtUtil = jwtUtil;
-        this.passwordEncoder = passwordEncoder;
+        this.userRepository = userRepository;
     }
 
-    // Login endpoint
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest authRequest) {
-        User user = userService.findByEmail(authRequest.getEmail());
+        User user = userRepository.findByEmail(authRequest.getEmail())
+                .orElseThrow(() -> new BadRequestException("User not found"));
 
-        if (!passwordEncoder.matches(authRequest.getPassword(), user.getPassword())) {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        if (!encoder.matches(authRequest.getPassword(), user.getPassword())) {
             throw new BadRequestException("Invalid credentials");
         }
 
         String token = jwtUtil.generateToken(user);
 
-        AuthResponse response = new AuthResponse(
-                token,
-                user.getEmail(),
-                user.getRole() != null ? user.getRole() : "CUSTOMER"
-        );
-
+        AuthResponse response = new AuthResponse(token, user.getEmail(), user.getRole());
         return ResponseEntity.ok(response);
     }
 
-    // Registration endpoint
     @PostMapping("/register")
     public ResponseEntity<User> register(@RequestBody User user) {
         User savedUser = userService.register(user);
