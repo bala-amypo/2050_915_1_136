@@ -4,7 +4,6 @@ import com.example.demo.dto.AuthRequest;
 import com.example.demo.dto.AuthResponse;
 import com.example.demo.entity.User;
 import com.example.demo.exception.BadRequestException;
-import com.example.demo.repository.UserRepository;
 import com.example.demo.security.JwtUtil;
 import com.example.demo.service.UserService;
 import org.springframework.http.ResponseEntity;
@@ -17,17 +16,15 @@ public class AuthController {
 
     private final UserService userService;
     private final JwtUtil jwtUtil;
-    private final UserRepository userRepository;
 
-    public AuthController(UserService userService, JwtUtil jwtUtil, UserRepository userRepository) {
+    public AuthController(UserService userService, JwtUtil jwtUtil) {
         this.userService = userService;
         this.jwtUtil = jwtUtil;
-        this.userRepository = userRepository;
     }
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest authRequest) {
-        User user = userRepository.findByEmail(authRequest.getEmail())
+        User user = userService.getUserByEmail(authRequest.getEmail())
                 .orElseThrow(() -> new BadRequestException("User not found"));
 
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
@@ -43,7 +40,15 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<User> register(@RequestBody User user) {
-        User savedUser = userService.register(user);
+        if (userService.existsByEmail(user.getEmail())) {
+            throw new BadRequestException("Email already in use");
+        }
+
+        // Hash the password before saving
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        user.setPassword(encoder.encode(user.getPassword()));
+
+        User savedUser = userService.saveUser(user); // ✅ fixed
         return ResponseEntity.ok(savedUser);
     }
 }
