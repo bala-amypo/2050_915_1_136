@@ -11,7 +11,7 @@ public class RiskAssessment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "user_id")      // <- Add this
+    @Column(name = "user_id", nullable = false)
     private Long userId;
 
     @Column(name = "dti_ratio")
@@ -33,47 +33,21 @@ public class RiskAssessment {
         this.timestamp = LocalDateTime.now();
     }
 
-    public Long getId() {
-        return id;
-    }
+    // Getters and setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public Long getUserId() { return userId; }
+    public void setUserId(Long userId) { this.userId = userId; }
 
-    public Long getUserId() {
-        return userId;
-    }
+    public Double getDtiRatio() { return dtiRatio; }
+    public void setDtiRatio(Double dtiRatio) { this.dtiRatio = dtiRatio; }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
+    public String getCreditCheckStatus() { return creditCheckStatus; }
+    public void setCreditCheckStatus(String creditCheckStatus) { this.creditCheckStatus = creditCheckStatus; }
 
-    public Double getDtiRatio() {
-        return dtiRatio;
-    }
+    public Integer getRiskScore() { return riskScore; }
+    public void setRiskScore(Integer riskScore) { this.riskScore = riskScore; }
 
-    public void setDtiRatio(Double dtiRatio) {
-        this.dtiRatio = dtiRatio;
-    }
-
-    public String getCreditCheckStatus() {
-        return creditCheckStatus;
-    }
-
-    public void setCreditCheckStatus(String creditCheckStatus) {
-        this.creditCheckStatus = creditCheckStatus;
-    }
-
-    public Integer getRiskScore() {
-        return riskScore;
-    }
-
-    public void setRiskScore(Integer riskScore) {
-        this.riskScore = riskScore;
-    }
-
-    public LocalDateTime getTimestamp() {
-        return timestamp;
-    }
+    public LocalDateTime getTimestamp() { return timestamp; }
 }

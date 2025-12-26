@@ -30,28 +30,23 @@ public class RiskAssessmentServiceImpl implements RiskAssessmentService {
         return riskAssessmentRepository.save(log);
     }
 
-   
+    @Override
+    public RiskAssessment assessRisk(Long userId) {
+        RiskAssessment assessment = new RiskAssessment();
+        assessment.setUserId(userId);
+        assessment.setRiskScore(50);
+        assessment.setCreditCheckStatus("OK");
+        return riskAssessmentRepository.save(assessment);
+    }
 
     @Override
-public RiskAssessment assessRisk(Long userId) {
-    RiskAssessment assessment = new RiskAssessment();
-    assessment.setUserId(userId); 
-    assessment.setRiskScore(50);
-    assessment.setCreditCheckStatus("OK");
-
-    return riskAssessmentRepository.save(assessment);
-}
-
+    public List<RiskAssessment> getLogsByRequest(Long userId) {
+        return riskAssessmentRepository.findByUserId(userId);
+    }
 
     @Override
-public List<RiskAssessment> getLogsByRequest(Long userId) {
-    return riskAssessmentRepository.findByUserId(userId);
-}
-
-@Override
-public RiskAssessment getByUserId(Long userId) {
-    List<RiskAssessment> list = riskAssessmentRepository.findByUserId(userId);
-    return list.isEmpty() ? null : list.get(0);
-}
-
+    public RiskAssessment getByUserId(Long userId) {
+        List<RiskAssessment> list = riskAssessmentRepository.findByUserId(userId);
+        return list.isEmpty() ? null : list.get(0);
+    }
 }

@@ -19,32 +19,21 @@ public class RiskLogController {
         this.service = service;
     }
 
-    // CREATE RISK LOG
     @PostMapping
-    public ResponseEntity<Map<String, Object>> logAssessment(
-            @RequestBody RiskAssessment log) {
-
+    public ResponseEntity<Map<String, Object>> logAssessment(@RequestBody RiskAssessment log) {
         RiskAssessment saved = service.logAssessment(log);
-
         Map<String, Object> response = new HashMap<>();
         response.put("message", "Risk assessment logged successfully");
         response.put("data", saved);
-
         return ResponseEntity.ok(response);
     }
 
-    // GET LOGS BY LOAN REQUEST ID
-    @GetMapping("/{loanRequestId}")
-    public ResponseEntity<Map<String, Object>> getLogs(
-            @PathVariable Long loanRequestId) {
-
-        List<RiskAssessment> logs =
-                service.getLogsByRequest(loanRequestId);
-
+    @GetMapping("/{userId}")
+    public ResponseEntity<Map<String, Object>> getLogs(@PathVariable Long userId) {
+        List<RiskAssessment> logs = service.getLogsByRequest(userId);
         Map<String, Object> response = new HashMap<>();
         response.put("message", "Risk logs fetched successfully");
         response.put("data", logs);
-
         return ResponseEntity.ok(response);
     }
 }
