@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
-
 @RestController
 @RequestMapping("/financial-profile")
 public class FinancialProfileController {
@@ -19,10 +18,9 @@ public class FinancialProfileController {
     }
 
     // ✅ CREATE OR UPDATE FINANCIAL PROFILE
-  @PostMapping("/financial-profile")
-public ResponseEntity<FinancialProfile> saveProfile(@RequestBody FinancialProfile profile) {
-    FinancialProfile savedProfile = profileRepository.save(profile);
-    return ResponseEntity.ok(savedProfile);
-}
-
+    @PostMapping
+    public ResponseEntity<FinancialProfile> saveProfile(@RequestBody FinancialProfile profile) {
+        FinancialProfile savedProfile = service.saveProfile(profile); // call service method
+        return ResponseEntity.ok(savedProfile);
+    }
 }

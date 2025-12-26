@@ -21,7 +21,10 @@ public class FinancialProfileServiceImpl implements FinancialProfileService {
         this.repo = r;
         this.userRepo = u;
     }
-
+    @Override
+    public FinancialProfile saveProfile(FinancialProfile profile) {
+        return repository.save(profile);
+    }
     @Override
     public FinancialProfile createOrUpdate(FinancialProfile profile) {
         User user = userRepo.findById(profile.getUser().getId())
