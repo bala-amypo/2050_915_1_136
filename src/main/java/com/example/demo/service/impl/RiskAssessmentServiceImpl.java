@@ -41,12 +41,12 @@ public class RiskAssessmentServiceImpl implements RiskAssessmentService {
 
     @Override
     public List<RiskAssessment> getLogsByRequest(Long userId) {
-        return riskAssessmentRepository.findByUserId(userId);
+        return riskAssessmentRepository. findByLoanRequestId(userId);
     }
 
     @Override
     public RiskAssessment getByUserId(Long userId) {
-        List<RiskAssessment> list = riskAssessmentRepository.findByUserId(userId);
+        List<RiskAssessment> list = riskAssessmentRepository. findByLoanRequestId(userId);
         return list.isEmpty() ? null : list.get(0);
     }
 }
