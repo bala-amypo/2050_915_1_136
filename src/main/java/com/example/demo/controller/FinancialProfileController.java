@@ -32,17 +32,16 @@ public class FinancialProfileController {
         return ResponseEntity.ok(response);
     }
 
-    // ✅ GET FINANCIAL PROFILE BY USER ID
     @GetMapping("/user/{userId}")
-    public ResponseEntity<Map<String, Object>> getByUserId(
-            @PathVariable Long userId) {
+public ResponseEntity<Map<String, Object>> getByUserId(
+        @PathVariable Long userId) {
 
-        FinancialProfile profile = service.getProfileByUser(userId);
+    FinancialProfile profile = service.getByUserId(userId);  // ✅ fixed
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("message", "Financial profile fetched successfully");
-        response.put("data", profile);
+    Map<String, Object> response = new HashMap<>();
+    response.put("message", "Financial profile fetched successfully");
+    response.put("data", profile);
 
-        return ResponseEntity.ok(response);
-    }
+    return ResponseEntity.ok(response);
+}
 }
