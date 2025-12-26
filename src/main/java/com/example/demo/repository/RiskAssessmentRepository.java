@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface RiskAssessmentRepository extends JpaRepository<RiskAssessment, Long> {
 
-    List<RiskAssessment> findByUserId(Long userId);
+    List<RiskAssessment> findByLoanRequestId(Long userId);
 }
