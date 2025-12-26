@@ -1,45 +1,57 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.entity.RiskAssessment;
-import com.example.demo.repository.RiskAssessmentRepository;
+import com.example.demo.entity.*;
+import com.example.demo.exception.BadRequestException;
+import com.example.demo.repository.*;
 import com.example.demo.service.RiskAssessmentService;
+
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-
 @Service
 public class RiskAssessmentServiceImpl implements RiskAssessmentService {
 
-    private final RiskAssessmentRepository repo;
+    private final LoanRequestRepository loanRepo;
+    private final FinancialProfileRepository profileRepo;
+    private final RiskAssessmentRepository riskRepo;
 
-    public RiskAssessmentServiceImpl(RiskAssessmentRepository repo) {
-        this.repo = repo;
+    public RiskAssessmentServiceImpl(
+            LoanRequestRepository loanRepo,
+            FinancialProfileRepository profileRepo,
+            RiskAssessmentRepository riskRepo) {
+        this.loanRepo = loanRepo;
+        this.profileRepo = profileRepo;
+        this.riskRepo = riskRepo;
     }
 
     @Override
-    public RiskAssessment logAssessment(RiskAssessment log) {
-        return repo.save(log);
+    public RiskAssessment assessRisk(Long loanRequestId) {
+
+        if (riskRepo.findByLoanRequestId(loanRequestId).isPresent()) {
+            throw new BadRequestException("Risk already assessed");
+        }
+
+        LoanRequest lr = loanRepo.findById(loanRequestId)
+                .orElseThrow(() -> new BadRequestException("Loan not found"));
+
+        FinancialProfile fp = profileRepo.findByUserId(lr.getUser().getId())
+                .orElseThrow(() -> new BadRequestException("Profile not found"));
+
+        double dti = fp.getMonthlyIncome() == 0 ? 0 :
+                fp.getExistingEmis() / fp.getMonthlyIncome();
+
+        RiskAssessment log = new RiskAssessment();
+        log.setLoanRequestId(loanRequestId);
+        log.setDtiRatio(dti);
+        log.setRiskScore(Math.min(100, dti * 100));
+
+        return riskRepo.save(log);
     }
 
-    @Override
-    public List<RiskAssessment> getLogsByUser(Long userId) {
-        return repo.findByUser_Id(userId);
-    }
-
-    @Override
-    public RiskAssessment getLatestByUser(Long userId) {
-        List<RiskAssessment> logs = repo.findByUser_Id(userId);
-        return logs.isEmpty() ? null : logs.get(logs.size() - 1);
-    }
-
-    @Override
-    public RiskAssessment assessRisk(Long userId) {
-        // implement risk assessment logic here if needed
-        return null;
-    }
-
-    @Override
-    public RiskAssessment getByLoanRequestId(Long loanRequestId) {
-        return repo.findByLoanRequest_Id(loanRequestId).orElse(null);
-    }
+   @Override
+public RiskAssessment getByLoanRequestId(Long loanRequestId) {
+    return riskRepo.findByLoanRequestId(loanRequestId)
+            .orElseThrow(() -> new BadRequestException("Risk not found"));
 }
+
+}
+
+

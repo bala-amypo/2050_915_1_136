@@ -1,43 +1,43 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.entity.*;
-import com.example.demo.repository.*;
-import com.example.demo.service.EligibilityService;
+import com.example.demo.entity.User;
 import com.example.demo.exception.BadRequestException;
+import com.example.demo.repository.UserRepository;
+import com.example.demo.service.UserService;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Service
-public class EligibilityServiceImpl implements EligibilityService {
-    private final LoanRequestRepository loanRepo;
-    private final FinancialProfileRepository profileRepo;
-    private final EligibilityResultRepository repo;
+public class UserServiceImpl implements UserService {
 
-    public EligibilityServiceImpl(LoanRequestRepository lr, FinancialProfileRepository fpr, EligibilityResultRepository r) {
-        this.loanRepo = lr;
-        this.profileRepo = fpr;
-        this.repo = r;
+    private final UserRepository userRepo;
+    private final PasswordEncoder encoder = new BCryptPasswordEncoder();
+
+    public UserServiceImpl(UserRepository userRepo) {
+        this.userRepo = userRepo;
     }
 
     @Override
-    public EligibilityResult evaluateEligibility(long requestId) {
-        if (repo.findByLoanRequestId(requestId).isPresent()) throw new BadRequestException("Eligibility already exists");
+    public User register(User user) {
+        if (user == null) throw new BadRequestException("Invalid user");
 
-        LoanRequest lr = loanRepo.findById(requestId).orElseThrow(() -> new BadRequestException("Loan request not found"));
-        FinancialProfile fp = profileRepo.findByUserId(lr.getUser().getId()).orElseThrow(() -> new BadRequestException("Financial profile not found"));
+        if (userRepo.findByEmail(user.getEmail()).isPresent())
+            throw new BadRequestException("Email already exists");
 
-        double disposable = fp.getMonthlyIncome() - fp.getMonthlyExpenses() - fp.getExistingEmis();
-        double emi = lr.getRequestedAmount() / lr.getTenureMonths();
-        boolean eligible = disposable >= (emi * 1.5) && fp.getCreditScore() >= 700;
-
-        EligibilityResult res = new EligibilityResult();
-        res.setLoanRequest(lr);
-        res.setEligible(eligible);
-        res.setDisposableIncome(disposable);
-        res.setMaxEmiPossible(disposable / 1.5);
-        return repo.save(res);
+        user.setPassword(encoder.encode(user.getPassword()));
+        return userRepo.save(user);
     }
-    
-    public EligibilityResult getByLoanRequestId(long requestId) {
-        return repo.findByLoanRequestId(requestId).orElseThrow(() -> new BadRequestException("Result not found"));
+
+    @Override
+    public User findByEmail(String email) {
+        return userRepo.findByEmail(email)
+                .orElseThrow(() -> new BadRequestException("User not found"));
+    }
+
+    @Override
+    public User getById(Long id) {
+        return userRepo.findById(id)
+                .orElseThrow(() -> new BadRequestException("User not found"));
     }
 }

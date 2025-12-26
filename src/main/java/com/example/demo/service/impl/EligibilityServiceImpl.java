@@ -54,7 +54,7 @@ public class EligibilityServiceImpl implements EligibilityService {
         return repo.save(res);
     }
 
-    @Override
+    
     public EligibilityResult getByLoanRequestId(long loanRequestId) {
         return repo.findByLoanRequestId(loanRequestId)
                 .orElseThrow(() -> new BadRequestException("Eligibility result not found"));
