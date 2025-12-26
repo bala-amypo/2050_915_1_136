@@ -30,15 +30,16 @@ public class JwtUtil {
                 .compact();
     }
 
-    public String generateToken(Map<String, Object> claims, String subject) {
-        return Jwts.builder()
-                .setClaims(claims)
-                .setSubject(subject)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + expiration))
-                .signWith(SignatureAlgorithm.HS256, secret)
-                .compact();
-    }
+    public String generateToken(User user) {
+    return Jwts.builder()
+            .setSubject(user.getEmail())
+            .claim("role", user.getRole() != null ? user.getRole() : "CUSTOMER")
+            .setIssuedAt(new Date())
+            .setExpiration(new Date(System.currentTimeMillis() + expiration))
+            .signWith(SignatureAlgorithm.HS256, secret)
+            .compact();
+}
+
 
     public boolean validateToken(String token) {
         try {

@@ -25,28 +25,27 @@ public class AuthController {
     }
 
     // Login endpoint
-    @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest authRequest) {
-        // Find user by email
-        User user = userRepository.findByEmail(authRequest.getEmail())
-                .orElseThrow(() -> new BadRequestException("User not found"));
+   @PostMapping("/login")
+public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest authRequest) {
+    User user = userRepository.findByEmail(authRequest.getEmail())
+            .orElseThrow(() -> new BadRequestException("User not found"));
 
-        // Check password
-        if (!userService.matchesPassword(authRequest.getPassword(), user.getPassword())) {
-            throw new BadRequestException("Invalid credentials");
-        }
-
-        // Generate JWT token
-        String token = jwtUtil.generateToken(user);
-
-        AuthResponse response = new AuthResponse(
-                token,
-                user.getEmail(),
-                user.getRole() != null ? user.getRole().name() : "CUSTOMER"
-        );
-
-        return ResponseEntity.ok(response);
+    BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+    if (!encoder.matches(authRequest.getPassword(), user.getPassword())) {
+        throw new BadRequestException("Invalid credentials");
     }
+
+    String token = jwtUtil.generateToken(user);
+
+    AuthResponse response = new AuthResponse(
+            token,
+            user.getEmail(),
+            user.getRole() != null ? user.getRole() : "CUSTOMER"
+    );
+
+    return ResponseEntity.ok(response);
+}
+
 
     // Registration endpoint
     @PostMapping("/register")
