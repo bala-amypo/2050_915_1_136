@@ -1,15 +1,18 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.RiskAssessment;
+
 import java.util.List;
 
 public interface RiskAssessmentService {
 
     RiskAssessment logAssessment(RiskAssessment log);
 
-    List<RiskAssessment> getLogsByUser(Long userId);
+    List<RiskAssessment> getLogsByRequest(Long userId);
 
-    RiskAssessment assessRisk(Long loanRequestId);
+    RiskAssessment assessRisk(Long userId);
 
-    RiskAssessment getLatestByUser(Long userId);
+    RiskAssessment getByUserId(Long userId);
+
+    RiskAssessment getByLoanRequestId(long loanRequestId); // ✅ Add this method
 }
