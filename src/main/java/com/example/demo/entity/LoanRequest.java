@@ -12,23 +12,24 @@ public class LoanRequest {
     private Long id;
 
     @Column(name = "requested_amount", nullable = false)
-    private Double requestedAmount;
+    private Double requestedAmount = 0.0;
 
     @Column(name = "tenure_months", nullable = false)
-    private Integer tenureMonths;
+    private Integer tenureMonths = 0;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status")
-    private Status status;
+    @Column(name = "status", nullable = false)
+    private Status status = Status.PENDING;
 
     @Column(name = "submitted_at")
     private LocalDateTime submittedAt;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "user_id")
     private User user;
 
-    public LoanRequest() {}
+    public LoanRequest() {
+    }
 
     public enum Status {
         PENDING,
@@ -36,6 +37,20 @@ public class LoanRequest {
         APPROVED,
         REJECTED
     }
+
+    // ---------- JPA LIFECYCLE ----------
+
+    @PrePersist
+    protected void onCreate() {
+        if (this.submittedAt == null) {
+            this.submittedAt = LocalDateTime.now();
+        }
+        if (this.status == null) {
+            this.status = Status.PENDING;
+        }
+    }
+
+    // ---------- GETTERS & SETTERS ----------
 
     public Long getId() {
         return id;
@@ -46,7 +61,7 @@ public class LoanRequest {
     }
 
     public Double getRequestedAmount() {
-        return requestedAmount;
+        return requestedAmount != null ? requestedAmount : 0.0;
     }
 
     public void setRequestedAmount(Double requestedAmount) {
@@ -54,7 +69,7 @@ public class LoanRequest {
     }
 
     public Integer getTenureMonths() {
-        return tenureMonths;
+        return tenureMonths != null ? tenureMonths : 0;
     }
 
     public void setTenureMonths(Integer tenureMonths) {

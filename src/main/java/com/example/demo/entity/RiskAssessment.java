@@ -14,40 +14,86 @@ public class RiskAssessment {
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
-    @Column(name = "dti_ratio")
-    private Double dtiRatio;
+    @Column(name = "dti_ratio", nullable = false)
+    private Double dtiRatio = 0.0;
 
-    @Column(name = "credit_check_status")
-    private String creditCheckStatus;
+    @Column(name = "credit_check_status", nullable = false)
+    private String creditCheckStatus = "PENDING";
 
-    @Column(name = "risk_score")
-    private Integer riskScore;
+    @Column(name = "risk_score", nullable = false)
+    private Integer riskScore = 0;
 
-    @Column(name = "timestamp")
+    @Column(name = "timestamp", nullable = false)
     private LocalDateTime timestamp;
 
-    public RiskAssessment() {}
-
-    @PrePersist
-    public void onCreate() {
-        this.timestamp = LocalDateTime.now();
+    public RiskAssessment() {
     }
 
-    // Getters and setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    // ---------- JPA LIFECYCLE ----------
 
-    public Long getUserId() { return userId; }
-    public void setUserId(Long userId) { this.userId = userId; }
+    @PrePersist
+    protected void onCreate() {
+        if (this.timestamp == null) {
+            this.timestamp = LocalDateTime.now();
+        }
+        if (this.creditCheckStatus == null) {
+            this.creditCheckStatus = "PENDING";
+        }
+        if (this.riskScore == null) {
+            this.riskScore = 0;
+        }
+        if (this.dtiRatio == null) {
+            this.dtiRatio = 0.0;
+        }
+    }
 
-    public Double getDtiRatio() { return dtiRatio; }
-    public void setDtiRatio(Double dtiRatio) { this.dtiRatio = dtiRatio; }
+    // ---------- GETTERS & SETTERS ----------
 
-    public String getCreditCheckStatus() { return creditCheckStatus; }
-    public void setCreditCheckStatus(String creditCheckStatus) { this.creditCheckStatus = creditCheckStatus; }
+    public Long getId() {
+        return id;
+    }
 
-    public Integer getRiskScore() { return riskScore; }
-    public void setRiskScore(Integer riskScore) { this.riskScore = riskScore; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public LocalDateTime getTimestamp() { return timestamp; }
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public Double getDtiRatio() {
+        return dtiRatio != null ? dtiRatio : 0.0;
+    }
+
+    public void setDtiRatio(Double dtiRatio) {
+        this.dtiRatio = dtiRatio;
+    }
+
+    public String getCreditCheckStatus() {
+        return creditCheckStatus;
+    }
+
+    public void setCreditCheckStatus(String creditCheckStatus) {
+        this.creditCheckStatus = creditCheckStatus;
+    }
+
+    public Integer getRiskScore() {
+        return riskScore != null ? riskScore : 0;
+    }
+
+    public void setRiskScore(Integer riskScore) {
+        this.riskScore = riskScore;
+    }
+
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
+    }
 }
