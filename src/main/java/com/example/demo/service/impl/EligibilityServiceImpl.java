@@ -27,11 +27,11 @@ public class EligibilityServiceImpl implements EligibilityService {
     }
 
     @Override
-    public EligibilityResult checkEligibility(long requestId) {
-        if (repo.findByLoanRequestId(requestId).isPresent())
+    public EligibilityResult evaluateEligibility(long loanRequestId) {
+        if (repo.findByLoanRequestId(loanRequestId).isPresent())
             throw new BadRequestException("Eligibility already exists");
 
-        LoanRequest lr = loanRepo.findById(requestId)
+        LoanRequest lr = loanRepo.findById(loanRequestId)
                 .orElseThrow(() -> new BadRequestException("Loan request not found"));
 
         if (lr.getUser() == null || lr.getUser().getId() == null) {
@@ -43,7 +43,7 @@ public class EligibilityServiceImpl implements EligibilityService {
 
         double disposable = fp.getMonthlyIncome() - fp.getMonthlyExpenses() - fp.getExistingEmis();
         double emi = lr.getRequestedAmount() / lr.getTenureMonths();
-        boolean eligible = disposable >= (emi * 1.5) && fp.getCreditScore() >= 700;
+        boolean eligible = disposable >= (emi * 1.5) && fp.getCreditScore() != null && fp.getCreditScore() >= 700;
 
         EligibilityResult res = new EligibilityResult();
         res.setLoanRequest(lr);
@@ -54,10 +54,9 @@ public class EligibilityServiceImpl implements EligibilityService {
         return repo.save(res);
     }
 
-   @Override
-public EligibilityResult getByLoanRequestId(long requestId) {
-    return repo.findByLoanRequestId(requestId)
-            .orElseThrow(() -> new BadRequestException("Result not found"));
-}
-
+    @Override
+    public EligibilityResult getByLoanRequestId(long loanRequestId) {
+        return repo.findByLoanRequestId(loanRequestId)
+                .orElseThrow(() -> new BadRequestException("Eligibility result not found"));
+    }
 }

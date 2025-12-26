@@ -15,14 +15,12 @@ public class EligibilityController {
         this.eligibilityService = eligibilityService;
     }
 
-    // Evaluate eligibility (creates a new result)
     @PostMapping("/evaluate/{loanRequestId}")
     public ResponseEntity<EligibilityResult> evaluateEligibility(@PathVariable Long loanRequestId) {
         EligibilityResult result = eligibilityService.evaluateEligibility(loanRequestId);
         return ResponseEntity.ok(result);
     }
 
-    // Retrieve eligibility result (does NOT create a new one)
     @GetMapping("/{loanRequestId}")
     public ResponseEntity<EligibilityResult> getEligibility(@PathVariable Long loanRequestId) {
         EligibilityResult result = eligibilityService.getByLoanRequestId(loanRequestId);

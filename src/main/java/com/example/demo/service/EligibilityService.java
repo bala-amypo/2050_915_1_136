@@ -4,8 +4,9 @@ import com.example.demo.entity.EligibilityResult;
 
 public interface EligibilityService {
 
-    EligibilityResult evaluateEligibility(long requestId);
+    // Evaluate eligibility and create a new record
+    EligibilityResult evaluateEligibility(long loanRequestId);
 
-    // Add this method to fix compilation
-    EligibilityResult getByLoanRequestId(long requestId);
+    // Retrieve existing eligibility result
+    EligibilityResult getByLoanRequestId(long loanRequestId);
 }
