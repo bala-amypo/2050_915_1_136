@@ -23,23 +23,24 @@ public class RiskAssessmentServiceImpl implements RiskAssessmentService {
 
     @Override
     public List<RiskAssessment> getLogsByUser(Long userId) {
-        return repo.findByUserId(userId);
+        // Must match interface name exactly
+        return repo.findByUser_Id(userId);
     }
 
     @Override
     public RiskAssessment getLatestByUser(Long userId) {
-        List<RiskAssessment> logs = repo.findByUserId(userId);
+        List<RiskAssessment> logs = repo.findByUser_Id(userId);
         return logs.isEmpty() ? null : logs.get(logs.size() - 1);
     }
 
     @Override
-    public RiskAssessment assessRisk(Long userId) {
-        // Implement risk assessment logic
-        return null;
+    public RiskAssessment getByLoanRequestId(Long loanRequestId) {
+        return repo.findByLoanRequest_Id(loanRequestId).orElse(null);
     }
 
     @Override
-    public RiskAssessment getByLoanRequestId(Long loanRequestId) {
-        return repo.findByLoanRequestId(loanRequestId).orElse(null);
+    public RiskAssessment assessRisk(Long userId) {
+        // Risk assessment logic can be implemented here
+        return null;
     }
 }

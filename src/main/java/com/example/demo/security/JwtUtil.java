@@ -56,11 +56,12 @@ public class JwtUtil {
     public String extractRole(String token) {
         return getClaims(token).get("role", String.class);
     }
+    // Use this version to match test cases
+public boolean validateToken(String token, User user) {
+    String email = extractEmail(token);
+    return email.equals(user.getEmail()) && !isTokenExpired(token);
+}
 
-    public boolean validateToken(String token) {
-        String email = extractEmail(token);
-        return email.equals(user.getEmail()) && !isTokenExpired(token);
-    }
 
     public Claims getAllClaims(String token) {
         return getClaims(token);
