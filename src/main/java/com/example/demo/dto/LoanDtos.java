@@ -1,27 +1,39 @@
 package com.example.demo.dto;
 
+import com.example.demo.entity.User;
+
 public class LoanDtos {
 
     public static class LoanRequestDto {
-        private Long userId;
+
         private Double requestedAmount;
         private Integer tenureMonths;
+        private User user; // Required by service
 
-        public LoanRequestDto() {}
+        // ---------- Getters & Setters ----------
 
-        public LoanRequestDto(Long userId, Double requestedAmount, Integer tenureMonths) {
-            this.userId = userId;
+        public Double getRequestedAmount() {
+            return requestedAmount;
+        }
+
+        public void setRequestedAmount(Double requestedAmount) {
             this.requestedAmount = requestedAmount;
+        }
+
+        public Integer getTenureMonths() {
+            return tenureMonths;
+        }
+
+        public void setTenureMonths(Integer tenureMonths) {
             this.tenureMonths = tenureMonths;
         }
 
-        public Long getUserId() { return userId; }
-        public void setUserId(Long userId) { this.userId = userId; }
+        public User getUser() {
+            return user;
+        }
 
-        public Double getRequestedAmount() { return requestedAmount; }
-        public void setRequestedAmount(Double requestedAmount) { this.requestedAmount = requestedAmount; }
-
-        public Integer getTenureMonths() { return tenureMonths; }
-        public void setTenureMonths(Integer tenureMonths) { this.tenureMonths = tenureMonths; }
+        public void setUser(User user) {
+            this.user = user;
+        }
     }
 }
