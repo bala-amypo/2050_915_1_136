@@ -13,5 +13,5 @@ public interface RiskAssessmentService {
 
     RiskAssessment assessRisk(Long loanRequestId);
 
-    Optional<RiskAssessment> getByLoanRequestId(Long loanRequestId);
+        RiskAssessment getByLoanRequestId(Long loanRequestId);
 }
