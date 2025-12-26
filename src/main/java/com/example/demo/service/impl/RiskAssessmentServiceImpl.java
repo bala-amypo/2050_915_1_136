@@ -30,10 +30,7 @@ public class RiskAssessmentServiceImpl implements RiskAssessmentService {
         return riskAssessmentRepository.save(log);
     }
 
-    @Override
-    public List<RiskAssessment> getLogsByRequest(Long requestId) {
-        return riskAssessmentRepository.findByLoanRequestId(requestId);
-    }
+   
 
     @Override
     public RiskAssessment assessRisk(Long loanRequestId) {
@@ -46,8 +43,13 @@ public class RiskAssessmentServiceImpl implements RiskAssessmentService {
     }
 
     @Override
-    public RiskAssessment getByLoanRequestId(Long loanRequestId) {
-        List<RiskAssessment> list = riskAssessmentRepository.findByLoanRequestId(loanRequestId);
-        return list.isEmpty() ? null : list.get(0); // returns first assessment
-    }
+public List<RiskAssessment> getLogsByRequest(Long userId) {
+    return riskAssessmentRepository.findByUserId(userId);
+}
+
+@Override
+public RiskAssessment getByLoanRequestId(Long userId) {
+    List<RiskAssessment> list = riskAssessmentRepository.findByUserId(userId);
+    return list.isEmpty() ? null : list.get(0);
+}
 }
