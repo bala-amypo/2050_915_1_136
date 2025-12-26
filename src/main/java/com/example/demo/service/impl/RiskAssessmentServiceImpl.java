@@ -66,4 +66,10 @@ public class RiskAssessmentServiceImpl implements RiskAssessmentService {
         return riskAssessmentRepository.findTopByUserIdOrderByTimestampDesc(userId)
                 .orElse(null);
     }
+    @Override
+public RiskAssessment getByLoanRequestId(long loanRequestId) {
+    return riskAssessmentRepository.findByLoanRequestId(loanRequestId)
+            .orElseThrow(() -> new RuntimeException("RiskAssessment not found"));
+}
+
 }
