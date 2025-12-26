@@ -11,8 +11,8 @@ public class RiskAssessment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "loan_request_id", nullable = false)
-    private Long loanRequestId;
+    @Column(name = "user_id")      // <- Add this
+    private Long userId;
 
     @Column(name = "dti_ratio")
     private Double dtiRatio;
@@ -41,12 +41,12 @@ public class RiskAssessment {
         this.id = id;
     }
 
-    public Long getLoanRequestId() {
-        return loanRequestId;
+    public Long getUserId() {
+        return UserId;
     }
 
-    public void setLoanRequestId(Long loanRequestId) {
-        this.loanRequestId = loanRequestId;
+    public void setUserId(Long UserId) {
+        this.UserId = UserId;
     }
 
     public Double getDtiRatio() {
