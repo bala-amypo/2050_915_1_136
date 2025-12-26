@@ -1,9 +1,9 @@
 package com.example.demo.security;
 
 import com.example.demo.entity.User;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.Claims;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -11,7 +11,7 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    private final String SECRET_KEY = "mySecretKey12345"; // Use a strong secret in production
+    private final String SECRET_KEY = "mySecretKey12345"; // strong secret for production
     private final long EXPIRATION_TIME = 1000 * 60 * 60 * 10; // 10 hours
 
     // Generate JWT token
@@ -35,16 +35,15 @@ public class JwtUtil {
         return getClaims(token).get("role", String.class);
     }
 
-    // Validate token
-    public boolean validateToken(String token, User user) {
-        String email = extractEmail(token);
-        return email.equals(user.getEmail()) && !isTokenExpired(token);
+    // Validate token (single argument)
+    public void validateToken(String token) throws Exception {
+        Claims claims = getClaims(token);
+        if (claims.getExpiration().before(new Date())) {
+            throw new Exception("Token expired");
+        }
     }
 
-    private boolean isTokenExpired(String token) {
-        return getClaims(token).getExpiration().before(new Date());
-    }
-
+    // Helper to get claims
     private Claims getClaims(String token) {
         return Jwts.parser()
                 .setSigningKey(SECRET_KEY)

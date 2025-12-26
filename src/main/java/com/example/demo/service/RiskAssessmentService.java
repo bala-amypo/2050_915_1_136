@@ -7,9 +7,9 @@ public interface RiskAssessmentService {
 
     RiskAssessment logAssessment(RiskAssessment log);
 
-    List<RiskAssessment> getLogsByRequest(Long userId);
+    List<RiskAssessment> getLogsByUser(Long userId);
 
-    RiskAssessment assessRisk(Long userId);
+    RiskAssessment assessRisk(Long loanRequestId);
 
-    RiskAssessment getByUserId(Long userId);
+    RiskAssessment getLatestByUser(Long userId);
 }
