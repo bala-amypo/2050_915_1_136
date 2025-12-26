@@ -1,51 +1,48 @@
 package com.example.demo.security;
 
+import com.example.demo.entity.User;
+import com.example.demo.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.stereotype.Component;
-import org.springframework.web.filter.OncePerRequestFilter;
-
 import java.io.IOException;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
-    private final JwtUtil jwtUtil;
+    @Autowired
+    private JwtUtil jwtUtil;
 
-    public JwtFilter(JwtUtil jwtUtil) {
-        this.jwtUtil = jwtUtil;
-    }
+    @Autowired
+    private UserService userService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-        String path = request.getRequestURI();
-
-        // Skip auth endpoints
-        if (path.startsWith("/api/auth")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
         String authorizationHeader = request.getHeader("Authorization");
 
+        String token = null;
+        String email = null;
+
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            String token = authorizationHeader.substring(7);
-            try {
-                jwtUtil.validateToken(token);
-            } catch (Exception e) {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter().write("Invalid or expired JWT token");
-                return;
+            token = authorizationHeader.substring(7);
+            email = jwtUtil.extractEmail(token);
+        }
+
+        if (email != null && token != null) {
+            // Fetch user from DB
+            User user = userService.findByEmail(email);
+
+            // Validate token with user
+            if (jwtUtil.validateToken(token, user)) {
+                // Proceed with authenticated request
             }
-        } else {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Authorization header missing");
-            return;
         }
 
         filterChain.doFilter(request, response);

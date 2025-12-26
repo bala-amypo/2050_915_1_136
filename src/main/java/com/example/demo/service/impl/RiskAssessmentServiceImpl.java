@@ -23,7 +23,6 @@ public class RiskAssessmentServiceImpl implements RiskAssessmentService {
 
     @Override
     public List<RiskAssessment> getLogsByUser(Long userId) {
-        // Must match interface name exactly
         return repo.findByUser_Id(userId);
     }
 
@@ -34,13 +33,13 @@ public class RiskAssessmentServiceImpl implements RiskAssessmentService {
     }
 
     @Override
-    public RiskAssessment getByLoanRequestId(Long loanRequestId) {
-        return repo.findByLoanRequest_Id(loanRequestId).orElse(null);
+    public RiskAssessment assessRisk(Long userId) {
+        // implement risk assessment logic here if needed
+        return null;
     }
 
     @Override
-    public RiskAssessment assessRisk(Long userId) {
-        // Risk assessment logic can be implemented here
-        return null;
+    public RiskAssessment getByLoanRequestId(Long loanRequestId) {
+        return repo.findByLoanRequest_Id(loanRequestId).orElse(null);
     }
 }

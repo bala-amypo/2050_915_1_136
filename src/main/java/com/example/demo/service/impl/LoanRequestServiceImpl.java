@@ -24,7 +24,7 @@ public class LoanRequestServiceImpl implements LoanRequestService {
         request.setRequestedAmount(dto.getRequestedAmount());
         request.setTenureMonths(dto.getTenureMonths());
 
-        // Set User object from userId in DTO
+        // Set user using userId from DTO
         User user = new User();
         user.setId(dto.getUserId());
         request.setUser(user);
