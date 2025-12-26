@@ -4,41 +4,31 @@ import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
 import org.springframework.stereotype.Service;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository userRepo;
-    private final PasswordEncoder encoder = new BCryptPasswordEncoder();
+    private final UserRepository repo;
 
-    // ✅ Constructor injection (Spring will autowire the repository)
-    public UserServiceImpl(UserRepository userRepo) {
-        this.userRepo = userRepo;
+    // Constructor injection
+    public UserServiceImpl(UserRepository repo) {
+        this.repo = repo;
     }
 
     @Override
-    public User createUser(User user) {
-        user.setPassword(encoder.encode(user.getPassword()));
-        return userRepo.save(user);
-    }
-
-    @Override
-    public Optional<User> getUserById(Long id) {
-        return userRepo.findById(id);
-    }
-
-    @Override
-    public List<User> getAllUsers() {
-        return userRepo.findAll();
+    public User saveUser(User user) {
+        return repo.save(user);
     }
 
     @Override
     public Optional<User> getUserByEmail(String email) {
-        return userRepo.findByEmail(email);
+        return repo.findByEmail(email);
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return repo.existsByEmail(email);
     }
 }
