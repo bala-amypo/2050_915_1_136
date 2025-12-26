@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/eligibility") // Adjusted to standard /api prefix often used in these tests
+@RequestMapping("/api/eligibility")
 public class EligibilityController {
 
     private final EligibilityService eligibilityService;
@@ -15,20 +15,17 @@ public class EligibilityController {
         this.eligibilityService = eligibilityService;
     }
 
-    // Matches the test requirement for evaluateEligibility
+    // Evaluate eligibility (creates a new result)
     @PostMapping("/evaluate/{loanRequestId}")
     public ResponseEntity<EligibilityResult> evaluateEligibility(@PathVariable Long loanRequestId) {
-        
-        // Use the method name evaluateEligibility to match the Service/Test
         EligibilityResult result = eligibilityService.evaluateEligibility(loanRequestId);
-
         return ResponseEntity.ok(result);
     }
 
-    // Optional: Get endpoint if the test suite attempts to retrieve existing results
+    // Retrieve eligibility result (does NOT create a new one)
     @GetMapping("/{loanRequestId}")
     public ResponseEntity<EligibilityResult> getEligibility(@PathVariable Long loanRequestId) {
-        EligibilityResult result = eligibilityService.evaluateEligibility(loanRequestId);
+        EligibilityResult result = eligibilityService.getByLoanRequestId(loanRequestId);
         return ResponseEntity.ok(result);
     }
 }

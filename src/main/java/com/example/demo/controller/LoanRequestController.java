@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/loan")
+@RequestMapping("/api/loan") // added /api prefix
 public class LoanRequestController {
 
     private final LoanRequestService service;
@@ -20,11 +20,9 @@ public class LoanRequestController {
         this.service = service;
     }
 
-    // ✅ SUBMIT LOAN REQUEST
+    // SUBMIT LOAN REQUEST
     @PostMapping
-    public ResponseEntity<Map<String, Object>> submit(
-            @RequestBody LoanDtos.LoanRequestDto dto) {
-
+    public ResponseEntity<Map<String, Object>> submit(@RequestBody LoanDtos.LoanRequestDto dto) {
         LoanRequest saved = service.submitRequest(dto);
 
         Map<String, Object> response = new HashMap<>();
@@ -34,10 +32,9 @@ public class LoanRequestController {
         return ResponseEntity.ok(response);
     }
 
-    // ✅ GET LOAN REQUESTS BY USER
+    // GET LOAN REQUESTS BY USER
     @GetMapping("/user/{userId}")
     public ResponseEntity<Map<String, Object>> byUser(@PathVariable Long userId) {
-
         List<LoanRequest> list = service.getRequestsByUser(userId);
 
         Map<String, Object> response = new HashMap<>();
@@ -47,10 +44,9 @@ public class LoanRequestController {
         return ResponseEntity.ok(response);
     }
 
-    // ✅ GET LOAN REQUEST BY ID
+    // GET LOAN REQUEST BY ID
     @GetMapping("/{id}")
     public ResponseEntity<Map<String, Object>> getById(@PathVariable Long id) {
-
         LoanRequest request = service.getRequestById(id);
 
         Map<String, Object> response = new HashMap<>();
@@ -60,10 +56,9 @@ public class LoanRequestController {
         return ResponseEntity.ok(response);
     }
 
-    // ✅ GET ALL LOAN REQUESTS
+    // GET ALL LOAN REQUESTS
     @GetMapping
     public ResponseEntity<Map<String, Object>> getAll() {
-
         List<LoanRequest> list = service.getAllRequests();
 
         Map<String, Object> response = new HashMap<>();

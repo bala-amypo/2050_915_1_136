@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/financial-profile")
+@RequestMapping("/api/financial-profile") // added /api prefix
 public class FinancialProfileController {
 
     private final FinancialProfileService service;
@@ -18,11 +18,9 @@ public class FinancialProfileController {
         this.service = service;
     }
 
-    // ✅ CREATE OR UPDATE FINANCIAL PROFILE
+    // CREATE OR UPDATE FINANCIAL PROFILE
     @PostMapping
-    public ResponseEntity<Map<String, Object>> save(
-            @RequestBody FinancialProfile fp) {
-
+    public ResponseEntity<Map<String, Object>> save(@RequestBody FinancialProfile fp) {
         FinancialProfile saved = service.createOrUpdate(fp);
 
         Map<String, Object> response = new HashMap<>();
@@ -32,16 +30,15 @@ public class FinancialProfileController {
         return ResponseEntity.ok(response);
     }
 
+    // FETCH PROFILE BY USER ID
     @GetMapping("/user/{userId}")
-public ResponseEntity<Map<String, Object>> getByUserId(
-        @PathVariable Long userId) {
+    public ResponseEntity<Map<String, Object>> getByUserId(@PathVariable Long userId) {
+        FinancialProfile profile = service.getByUserId(userId); // returns null if not found
 
-    FinancialProfile profile = service.getByUserId(userId);  // ✅ fixed
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "Financial profile fetched successfully");
+        response.put("data", profile);
 
-    Map<String, Object> response = new HashMap<>();
-    response.put("message", "Financial profile fetched successfully");
-    response.put("data", profile);
-
-    return ResponseEntity.ok(response);
-}
+        return ResponseEntity.ok(response);
+    }
 }
