@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.RiskAssessmentLog;
-import com.example.demo.service.RiskAssessmentLogService;
+import com.example.demo.entity.RiskAssessment;
+import com.example.demo.service.RiskAssessmentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,9 +13,9 @@ import java.util.Map;
 @RequestMapping("/risk/logs")
 public class RiskLogController {
 
-    private final RiskAssessmentLogService service;
+    private final RiskAssessmentService service;
 
-    public RiskLogController(RiskAssessmentLogService service) {
+    public RiskLogController(RiskAssessmentService service) {
         this.service = service;
     }
 
