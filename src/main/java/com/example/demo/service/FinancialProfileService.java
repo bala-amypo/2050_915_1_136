@@ -6,5 +6,5 @@ public interface FinancialProfileService {
 
     FinancialProfile createOrUpdate(FinancialProfile profile);
 
-    FinancialProfile getProfileByUser(Long userId);
+     FinancialProfile getByUserId(Long userId);
 }
