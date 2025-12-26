@@ -7,11 +7,5 @@ import java.util.Optional;
 
 public interface FinancialProfileRepository extends JpaRepository<FinancialProfile, Long> {
 
-    // Your existing methods
-    Optional<FinancialProfile> findTopByUserIdOrderByCreatedAtDesc(Long userId);
-
-    // ✅ Add this for the test
-    default Optional<FinancialProfile> findByUserId(Long userId) {
-        return findTopByUserIdOrderByCreatedAtDesc(userId);
-    }
+    Optional<FinancialProfile> findByUserId(Long userId);
 }
