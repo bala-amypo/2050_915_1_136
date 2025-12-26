@@ -18,7 +18,7 @@ public class JwtUtil {
     // No-arg constructor for Spring
     public JwtUtil() {
         this.secret = "mySecretKey12345";
-        this.expiration = 1000 * 60 * 60 * 10;
+        this.expiration = 1000 * 60 * 60 * 10; // 10 hours
     }
 
     // Constructor expected by tests
@@ -56,12 +56,11 @@ public class JwtUtil {
     public String extractRole(String token) {
         return getClaims(token).get("role", String.class);
     }
-    // Use this version to match test cases
-public boolean validateToken(String token, User user) {
-    String email = extractEmail(token);
-    return email.equals(user.getEmail()) && !isTokenExpired(token);
-}
 
+    public boolean validateToken(String token, User user) {
+        String email = extractEmail(token);
+        return email.equals(user.getEmail()) && !isTokenExpired(token);
+    }
 
     public Claims getAllClaims(String token) {
         return getClaims(token);
