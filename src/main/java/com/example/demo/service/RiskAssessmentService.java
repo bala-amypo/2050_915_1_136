@@ -8,11 +8,11 @@ public interface RiskAssessmentService {
 
     RiskAssessment logAssessment(RiskAssessment log);
 
-    List<RiskAssessment> getLogsByRequest(Long userId);
+    List<RiskAssessment> getLogsByUser(Long userId); // test expects getLogsByUser
 
     RiskAssessment assessRisk(Long userId);
 
-    RiskAssessment getByUserId(Long userId);
+    RiskAssessment getLatestByUser(Long userId); // test expects getLatestByUser
 
-    RiskAssessment getByLoanRequestId(long loanRequestId); // ✅ Add this method
+    RiskAssessment getByLoanRequestId(Long loanRequestId);
 }

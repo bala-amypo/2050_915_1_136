@@ -7,11 +7,11 @@ import java.util.List;
 
 public interface LoanRequestService {
 
-    LoanRequest createLoanRequest(LoanDtos.LoanRequestDto dto);
+    LoanRequest submitRequest(LoanDtos.LoanRequestDto dto); // test expects submitRequest
 
-    List<LoanRequest> getByUserId(Long userId);
+    List<LoanRequest> getRequestsByUser(Long userId); // test expects getRequestsByUser
 
-    LoanRequest getById(Long id); // ✅ Add this method
+    LoanRequest getRequestById(Long id); // test expects getRequestById
 
-    List<LoanRequest> getAll();
+    List<LoanRequest> getAllRequests(); // test expects getAllRequests
 }
