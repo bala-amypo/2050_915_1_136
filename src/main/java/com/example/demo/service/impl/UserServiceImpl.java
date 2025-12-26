@@ -5,18 +5,18 @@ import com.example.demo.exception.BadRequestException;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
-import org.springframework.stereotype.Service;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepo;
-    private final PasswordEncoder encoder = new BCryptPasswordEncoder();
+    private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepo) {
+    public UserServiceImpl(UserRepository userRepo, PasswordEncoder passwordEncoder) {
         this.userRepo = userRepo;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -26,9 +26,9 @@ public class UserServiceImpl implements UserService {
         if (userRepo.findByEmail(user.getEmail()).isPresent())
             throw new BadRequestException("Email already exists");
 
-        user.setPassword(encoder.encode(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        // Set default role
+        // Default role if null
         if (user.getRole() == null) {
             user.setRole(User.Role.CUSTOMER.name());
         }
@@ -46,5 +46,10 @@ public class UserServiceImpl implements UserService {
     public User getById(Long id) {
         return userRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return userRepo.existsByEmail(email);
     }
 }

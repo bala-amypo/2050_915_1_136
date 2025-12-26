@@ -74,7 +74,6 @@ public class User {
         this.password = password;
     }
 
-    // 🔥 IMPORTANT: TEST EXPECTS STRING ROLE
     public String getRole() {
         return role != null ? role.name() : null;
     }
@@ -83,7 +82,6 @@ public class User {
         this.role = role;
     }
 
-    // 🔥 REQUIRED FOR TESTS
     public void setRole(String role) {
         if (role != null) {
             this.role = Role.valueOf(role.toUpperCase());
