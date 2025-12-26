@@ -2,11 +2,9 @@ package com.example.demo.service.impl;
 
 import com.example.demo.dto.LoanDtos;
 import com.example.demo.entity.LoanRequest;
-import com.example.demo.entity.User;
 import com.example.demo.repository.LoanRequestRepository;
 import com.example.demo.service.LoanRequestService;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
@@ -23,18 +21,13 @@ public class LoanRequestServiceImpl implements LoanRequestService {
         LoanRequest request = new LoanRequest();
         request.setRequestedAmount(dto.getRequestedAmount());
         request.setTenureMonths(dto.getTenureMonths());
-
-        // Set user using userId from DTO
-        User user = new User();
-        user.setId(dto.getUserId());
-        request.setUser(user);
-
+        request.setUser(dto.getUser()); // Use dto.getUser() instead of setUserId
         return repo.save(request);
     }
 
     @Override
     public List<LoanRequest> getRequestsByUser(Long userId) {
-        return repo.findByUserId(userId);
+        return repo.findByUser_Id(userId); // Correct repository method
     }
 
     @Override
