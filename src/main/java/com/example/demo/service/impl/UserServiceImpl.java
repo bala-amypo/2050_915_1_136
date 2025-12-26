@@ -1,8 +1,8 @@
-
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.User;
 import com.example.demo.exception.BadRequestException;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
 import org.springframework.stereotype.Service;
@@ -27,6 +27,12 @@ public class UserServiceImpl implements UserService {
             throw new BadRequestException("Email already exists");
 
         user.setPassword(encoder.encode(user.getPassword()));
+
+        // Set default role
+        if (user.getRole() == null) {
+            user.setRole(User.Role.CUSTOMER.name());
+        }
+
         return userRepo.save(user);
     }
 
@@ -39,6 +45,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getById(Long id) {
         return userRepo.findById(id)
-                .orElseThrow(() -> new BadRequestException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 }
