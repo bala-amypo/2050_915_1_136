@@ -20,6 +20,9 @@ public class RiskAssessment {
     @Column(name = "credit_check_status")
     private String creditCheckStatus;
 
+    @Column(name = "risk_score")
+    private Integer riskScore;
+
     @Column(name = "timestamp")
     private LocalDateTime timestamp;
 
@@ -30,20 +33,47 @@ public class RiskAssessment {
         this.timestamp = LocalDateTime.now();
     }
 
-    // Getters & Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public Long getLoanRequestId() { return loanRequestId; }
-    public void setLoanRequestId(Long loanRequestId) { this.loanRequestId = loanRequestId; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public Double getDtiRatio() { return dtiRatio; }
-    public void setDtiRatio(Double dtiRatio) { this.dtiRatio = dtiRatio; }
+    public Long getLoanRequestId() {
+        return loanRequestId;
+    }
 
-    public String getCreditCheckStatus() { return creditCheckStatus; }
+    public void setLoanRequestId(Long loanRequestId) {
+        this.loanRequestId = loanRequestId;
+    }
+
+    public Double getDtiRatio() {
+        return dtiRatio;
+    }
+
+    public void setDtiRatio(Double dtiRatio) {
+        this.dtiRatio = dtiRatio;
+    }
+
+    public String getCreditCheckStatus() {
+        return creditCheckStatus;
+    }
+
     public void setCreditCheckStatus(String creditCheckStatus) {
         this.creditCheckStatus = creditCheckStatus;
     }
 
-    public LocalDateTime getTimestamp() { return timestamp; }
+    public Integer getRiskScore() {
+        return riskScore;
+    }
+
+    public void setRiskScore(Integer riskScore) {
+        this.riskScore = riskScore;
+    }
+
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
 }
