@@ -4,12 +4,12 @@ import com.example.demo.entity.RiskAssessment;
 import com.example.demo.service.RiskAssessmentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/risk/logs")
+@RequestMapping("/risk")
 public class RiskLogController {
 
     private final RiskAssessmentService service;
@@ -18,30 +18,16 @@ public class RiskLogController {
         this.service = service;
     }
 
-    @PostMapping
-    public ResponseEntity<Map<String, Object>> logAssessment(@RequestBody RiskAssessment log) {
-        RiskAssessment saved = service.logAssessment(log);
-        Map<String, Object> response = new HashMap<>();
-        response.put("message", "Risk assessment logged successfully");
-        response.put("data", saved);
-        return ResponseEntity.ok(response);
-    }
+    @PostMapping("/{loanId}")
+    public ResponseEntity<Map<String, Object>> assess(
+            @PathVariable Long loanId) {
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<Map<String, Object>> getLogs(@PathVariable Long userId) {
-        List<RiskAssessment> logs = service.getLogsByUser(userId);
-        Map<String, Object> response = new HashMap<>();
-        response.put("message", "Risk logs fetched successfully");
-        response.put("data", logs);
-        return ResponseEntity.ok(response);
-    }
+        RiskAssessment result = service.assessRisk(loanId);
 
-    @GetMapping("/latest/{userId}")
-    public ResponseEntity<Map<String, Object>> getLatest(@PathVariable Long userId) {
-        RiskAssessment latest = service.getLatestByUser(userId);
         Map<String, Object> response = new HashMap<>();
-        response.put("message", "Latest risk assessment fetched successfully");
-        response.put("data", latest);
+        response.put("message", "Risk assessment completed");
+        response.put("data", result);
+
         return ResponseEntity.ok(response);
     }
 }
