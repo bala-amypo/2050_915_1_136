@@ -42,11 +42,11 @@ public class RiskAssessment {
     }
 
     public Long getUserId() {
-        return UserId;
+        return userId;
     }
 
-    public void setUserId(Long UserId) {
-        this.UserId = UserId;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public Double getDtiRatio() {

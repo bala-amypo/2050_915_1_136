@@ -35,7 +35,7 @@ public class RiskAssessmentServiceImpl implements RiskAssessmentService {
     @Override
     public RiskAssessment assessRisk(Long loanRequestId) {
         RiskAssessment assessment = new RiskAssessment();
-        assessment.setLoanRequestId(loanRequestId);
+        assessment.setUserId(userId);
         assessment.setRiskScore(50);
         assessment.setCreditCheckStatus("OK");
 
