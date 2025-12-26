@@ -9,11 +9,9 @@ public interface LoanRequestService {
 
     LoanRequest submitRequest(LoanDtos.LoanRequestDto dto);
 
-    LoanRequest submitRequest(LoanRequest loanRequest);
-
     List<LoanRequest> getRequestsByUser(Long userId);
 
-    LoanRequest getById(Long id);
+    LoanRequest getRequestById(Long id);  // Add this
 
-    List<LoanRequest> getAll();
+    List<LoanRequest> getAllRequests();   // Add this
 }
