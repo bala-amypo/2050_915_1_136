@@ -44,14 +44,7 @@ public class FinancialProfileServiceImpl implements FinancialProfileService {
                 });
     }
 
-    // ✅ EXISTING METHOD (KEEP IT)
-    @Override
-    public FinancialProfile getProfileByUser(Long userId) {
-        return repo.findTopByUserIdOrderByCreatedAtDesc(userId)
-                .orElseThrow(() ->
-                        new BadRequestException("Financial profile not found"));
-    }
-
+ 
     // ✅ ADD THIS METHOD (FOR TEST CASE)
     @Override
     public FinancialProfile getByUserId(Long userId) {
