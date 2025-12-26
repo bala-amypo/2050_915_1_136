@@ -7,9 +7,7 @@ import com.example.demo.repository.RiskAssessmentRepository;
 import com.example.demo.service.RiskAssessmentService;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class RiskAssessmentServiceImpl implements RiskAssessmentService {
@@ -37,10 +35,8 @@ public class RiskAssessmentServiceImpl implements RiskAssessmentService {
         return riskAssessmentRepository.findByLoanRequestId(requestId);
     }
 
-    // ✅ TEST EXPECTS THIS METHOD TO RETURN SAVED ENTITY
     @Override
     public RiskAssessment assessRisk(Long loanRequestId) {
-
         RiskAssessment assessment = new RiskAssessment();
         assessment.setLoanRequestId(loanRequestId);
         assessment.setRiskScore(50);
@@ -49,20 +45,9 @@ public class RiskAssessmentServiceImpl implements RiskAssessmentService {
         return riskAssessmentRepository.save(assessment);
     }
 
-    // ✅ TEST EXPECTS LIST-BASED RETURN (NOT Optional)
     @Override
-    public List<RiskAssessment> getByLoanRequestId(Long loanRequestId) {
-        return riskAssessmentRepository.findByLoanRequestId(loanRequestId);
-    }
-
-    // ✅ KEEP Optional VERSION (SAFE BACKWARD SUPPORT)
-    public Optional<RiskAssessment> getLatestByLoanRequestId(Long loanRequestId) {
-        List<RiskAssessment> list =
-                riskAssessmentRepository.findByLoanRequestId(loanRequestId);
-
-        if (list.isEmpty()) {
-            return Optional.empty();
-        }
-        return Optional.of(list.get(0));
+    public RiskAssessment getByLoanRequestId(Long loanRequestId) {
+        List<RiskAssessment> list = riskAssessmentRepository.findByLoanRequestId(loanRequestId);
+        return list.isEmpty() ? null : list.get(0); // returns first assessment
     }
 }
