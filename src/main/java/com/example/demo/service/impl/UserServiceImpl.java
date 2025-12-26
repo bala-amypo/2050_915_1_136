@@ -1,61 +1,44 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.User;
-import com.example.demo.exception.BadRequestException;
-import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
+import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepo;
-    private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder encoder = new BCryptPasswordEncoder();
 
-    // Original 2-arg constructor
-    public UserServiceImpl(UserRepository userRepo, PasswordEncoder passwordEncoder) {
-        this.userRepo = userRepo;
-        this.passwordEncoder = passwordEncoder;
-    }
-
-    // Single-arg constructor for tests
+    // ✅ Constructor injection (Spring will autowire the repository)
     public UserServiceImpl(UserRepository userRepo) {
         this.userRepo = userRepo;
-        this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
     @Override
-    public User register(User user) {
-        if (user == null) throw new BadRequestException("Invalid user");
-        if (userRepo.findByEmail(user.getEmail()).isPresent())
-            throw new BadRequestException("Email already exists");
-
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-
-        if (user.getRole() == null) {
-            user.setRole(User.Role.CUSTOMER.name());
-        }
-
+    public User createUser(User user) {
+        user.setPassword(encoder.encode(user.getPassword()));
         return userRepo.save(user);
     }
 
     @Override
-    public User findByEmail(String email) {
-        return userRepo.findByEmail(email)
-                .orElseThrow(() -> new BadRequestException("User not found"));
+    public Optional<User> getUserById(Long id) {
+        return userRepo.findById(id);
     }
 
     @Override
-    public User getById(Long id) {
-        return userRepo.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    public List<User> getAllUsers() {
+        return userRepo.findAll();
     }
 
     @Override
-    public boolean existsByEmail(String email) {
-        return userRepo.existsByEmail(email);
+    public Optional<User> getUserByEmail(String email) {
+        return userRepo.findByEmail(email);
     }
 }

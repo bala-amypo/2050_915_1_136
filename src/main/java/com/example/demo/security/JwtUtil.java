@@ -12,13 +12,13 @@ import java.util.Map;
 @Component
 public class JwtUtil {
 
-    private String secret;
-    private long expiration;
+    private final String secret;
+    private final long expiration; // in milliseconds
 
     // No-arg constructor for Spring
     public JwtUtil() {
         this.secret = "mySecretKey12345";
-        this.expiration = 1000 * 60 * 60 * 10; // 10 hours
+        this.expiration = 1000 * 60 * 60 * 10;
     }
 
     // Constructor expected by tests
@@ -57,6 +57,7 @@ public class JwtUtil {
         return getClaims(token).get("role", String.class);
     }
 
+    // ✅ Fixed validateToken to accept User
     public boolean validateToken(String token, User user) {
         String email = extractEmail(token);
         return email.equals(user.getEmail()) && !isTokenExpired(token);
