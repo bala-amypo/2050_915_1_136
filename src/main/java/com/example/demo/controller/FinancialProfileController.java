@@ -18,12 +18,26 @@ public class FinancialProfileController {
         this.service = service;
     }
 
-    // ✅ CREATE OR UPDATE FINANCIAL PROFILE
     @PostMapping
     public ResponseEntity<Map<String, Object>> save(
-            @RequestBody FinancialProfile fp) {
+            @RequestBody Map<String, Object> body) {
 
-        FinancialProfile saved = service.createOrUpdate(fp);
+        // 🔴 READ userId manually
+        if (!body.containsKey("userId")) {
+            throw new RuntimeException("user ID is required");
+        }
+
+        Long userId = Long.valueOf(body.get("userId").toString());
+
+        // 🔴 BUILD FinancialProfile manually
+        FinancialProfile fp = new FinancialProfile();
+        fp.setMonthlyIncome(Double.valueOf(body.get("monthlyIncome").toString()));
+        fp.setMonthlyExpenses(Double.valueOf(body.get("monthlyExpenses").toString()));
+        fp.setExistingEmis(Double.valueOf(body.get("existingEmis").toString()));
+        fp.setCreditScore(Integer.valueOf(body.get("creditScore").toString()));
+        fp.setSavingsBalance(Double.valueOf(body.get("savingsBalance").toString()));
+
+        FinancialProfile saved = service.createOrUpdate(fp, userId);
 
         Map<String, Object> response = new HashMap<>();
         response.put("message", "Financial profile saved successfully");
