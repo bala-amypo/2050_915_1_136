@@ -17,7 +17,10 @@ public class User {
     @Column(unique = true, nullable = false)
     private String email;
 
-    private String password;
+    @JsonIgnore
+@Column(nullable = false)
+private String password;
+
 
     @Enumerated(EnumType.STRING)
     private Role role = Role.CUSTOMER;
