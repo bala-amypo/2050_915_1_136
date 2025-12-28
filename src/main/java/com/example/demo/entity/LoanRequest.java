@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+
+
 @Entity
 public class LoanRequest {
 
@@ -14,13 +16,16 @@ public class LoanRequest {
     private Double requestedAmount;
     private Integer tenureMonths;
 
-    // Store status as String instead of Enum
-    private String status = "PENDING";
+    @Enumerated(EnumType.STRING)
+    private Status status = Status.PENDING;
 
     @ManyToOne
     private User user;
 
     private LocalDateTime submittedAt = LocalDateTime.now();
+
+    // ✅ Make enum public for tests
+    public enum Status { PENDING, APPROVED, REJECTED }
 
     // Getters & Setters
     public Long getId() { return id; }
@@ -32,10 +37,8 @@ public class LoanRequest {
     public Integer getTenureMonths() { return tenureMonths; }
     public void setTenureMonths(Integer tenureMonths) { this.tenureMonths = tenureMonths; }
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { 
-        if(status != null) this.status = status.toUpperCase(); 
-    }
+    public Status getStatus() { return status; }
+    public void setStatus(Status status) { this.status = status; }
 
     public User getUser() { return user; }
     public void setUser(User user) { this.user = user; }
