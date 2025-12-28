@@ -21,8 +21,7 @@ public class FinancialProfileController {
         if (profile.getUser() == null || profile.getUser().getId() == null) {
             throw new BadRequestException("User ID must be provided in the profile");
         }
-        Long userId = profile.getUser().getId();
-        FinancialProfile saved = service.createOrUpdate(profile, userId);
+        FinancialProfile saved = service.createOrUpdate(profile, profile.getUser().getId());
         return ResponseEntity.ok(saved);
     }
 

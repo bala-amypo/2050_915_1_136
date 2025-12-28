@@ -29,7 +29,7 @@ public class FinancialProfileServiceImpl implements FinancialProfileService {
         User user = userRepo.findById(userId)
                 .orElseThrow(() -> new BadRequestException("User not found"));
 
-        return repo.findTopByUserIdOrderByCreatedAtDesc(user.getId())
+        return repo.findTopByUserIdOrderByCreatedAtDesc(userId)
                 .map(existing -> {
                     existing.setMonthlyIncome(profile.getMonthlyIncome());
                     existing.setMonthlyExpenses(profile.getMonthlyExpenses());
