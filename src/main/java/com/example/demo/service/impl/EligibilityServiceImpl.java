@@ -18,18 +18,20 @@ public class EligibilityServiceImpl implements EligibilityService {
     private final EligibilityResultRepository repo;
 
     public EligibilityServiceImpl(
-            LoanRequestRepository lr,
-            FinancialProfileRepository fpr,
-            EligibilityResultRepository r) {
-        this.loanRepo = lr;
-        this.profileRepo = fpr;
-        this.repo = r;
+            LoanRequestRepository loanRepo,
+            FinancialProfileRepository profileRepo,
+            EligibilityResultRepository repo) {
+        this.loanRepo = loanRepo;
+        this.profileRepo = profileRepo;
+        this.repo = repo;
     }
 
     @Override
-    public EligibilityResult evaluateEligibility(long loanRequestId) {
-        if (repo.findByLoanRequestId(loanRequestId).isPresent())
+    public EligibilityResult evaluateEligibility(Long loanRequestId) {
+
+        if (repo.findByLoanRequestId(loanRequestId).isPresent()) {
             throw new BadRequestException("Eligibility already exists");
+        }
 
         LoanRequest lr = loanRepo.findById(loanRequestId)
                 .orElseThrow(() -> new BadRequestException("Loan request not found"));
@@ -38,12 +40,21 @@ public class EligibilityServiceImpl implements EligibilityService {
             throw new BadRequestException("User not associated with loan request");
         }
 
-        FinancialProfile fp = profileRepo.findTopByUserIdOrderByCreatedAtDesc(lr.getUser().getId())
+        FinancialProfile fp = profileRepo
+                .findTopByUserIdOrderByCreatedAtDesc(lr.getUser().getId())
                 .orElseThrow(() -> new BadRequestException("Financial profile not found"));
 
-        double disposable = fp.getMonthlyIncome() - fp.getMonthlyExpenses() - fp.getExistingEmis();
+        double disposable =
+                fp.getMonthlyIncome()
+                        - fp.getMonthlyExpenses()
+                        - fp.getExistingEmis();
+
         double emi = lr.getRequestedAmount() / lr.getTenureMonths();
-        boolean eligible = disposable >= (emi * 1.5) && fp.getCreditScore() != null && fp.getCreditScore() >= 700;
+
+        boolean eligible =
+                disposable >= (emi * 1.5)
+                        && fp.getCreditScore() != null
+                        && fp.getCreditScore() >= 700;
 
         EligibilityResult res = new EligibilityResult();
         res.setLoanRequest(lr);
@@ -55,8 +66,9 @@ public class EligibilityServiceImpl implements EligibilityService {
     }
 
     @Override
-    public EligibilityResult getByLoanRequestId(long loanRequestId) {
+    public EligibilityResult getByLoanRequestId(Long loanRequestId) {
         return repo.findByLoanRequestId(loanRequestId)
-                .orElseThrow(() -> new BadRequestException("Eligibility result not found"));
+                .orElseThrow(() ->
+                        new BadRequestException("Eligibility result not found"));
     }
 }
