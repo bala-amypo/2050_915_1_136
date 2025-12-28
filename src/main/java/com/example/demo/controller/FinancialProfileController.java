@@ -1,12 +1,10 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.FinancialProfile;
+import com.example.demo.exception.BadRequestException;
 import com.example.demo.service.FinancialProfileService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/financial-profile")
@@ -18,15 +16,22 @@ public class FinancialProfileController {
         this.service = service;
     }
 
-   @PostMapping("/financial-profile")
-public FinancialProfile createProfile(@RequestBody Map<String, Object> body) {
-    Long userId = Long.valueOf(body.get("userId").toString());
-    
-    FinancialProfile profile = new FinancialProfile();
-    profile.setMonthlyIncome(Double.valueOf(body.get("monthlyIncome").toString()));
-    profile.setMonthlyExpenses(Double.valueOf(body.get("monthlyExpenses").toString()));
-    profile.setExistingEmis(Double.valueOf(body.get("existingEmis").toString()));
-    
-    return service.createOrUpdate(profile, userId);
-}
+    @PostMapping
+    public ResponseEntity<FinancialProfile> createProfile(@RequestBody FinancialProfile profile) {
+        if (profile.getUser() == null || profile.getUser().getId() == null) {
+            throw new BadRequestException("User ID must be provided in the profile");
+        }
+        Long userId = profile.getUser().getId();
+        FinancialProfile saved = service.createOrUpdate(profile, userId);
+        return ResponseEntity.ok(saved);
+    }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<FinancialProfile> getProfile(@PathVariable Long userId) {
+        FinancialProfile profile = service.getByUserId(userId);
+        if (profile == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(profile);
+    }
 }
