@@ -25,20 +25,28 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest authRequest) {
-        User user = userRepository.findByEmail(authRequest.getEmail())
-                .orElseThrow(() -> new BadRequestException("User not found"));
+public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest authRequest) {
 
-        String token = jwtUtil.generateToken(user);
+    User user = userRepository.findByEmail(authRequest.getEmail())
+            .orElseThrow(() -> new BadRequestException("Invalid email or password"));
 
-        AuthResponse response = new AuthResponse(
-                token,
-                user.getEmail(),
-                user.getRole() != null ? user.getRole().name() : "CUSTOMER"
-        );
+    BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-        return ResponseEntity.ok(response);
+    if (!encoder.matches(authRequest.getPassword(), user.getPassword())) {
+        throw new BadRequestException("Invalid email or password");
     }
+
+    String token = jwtUtil.generateToken(user);
+
+    AuthResponse response = new AuthResponse(
+            token,
+            user.getEmail(),
+            user.getRole().name()
+    );
+
+    return ResponseEntity.ok(response);
+}
+
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody User user) {
