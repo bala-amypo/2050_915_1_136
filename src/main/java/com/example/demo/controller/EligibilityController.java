@@ -20,18 +20,14 @@ public class EligibilityController {
      * REQUIRED by Swagger + integration flow
      */
     @PostMapping("/evaluate/{loanRequestId}")
-public ResponseEntity<?> evaluateEligibility(@PathVariable Long loanRequestId) {
-    try {
-        EligibilityResult result = eligibilityService.evaluateEligibility(loanRequestId);
-        return ResponseEntity.ok(result);
-    } catch (Exception ex) {
-        ex.printStackTrace(); // Prints real exception in console
-        // Return the exception message in the response for debugging
-        return ResponseEntity.status(500)
-                .body("Error evaluating eligibility: " + ex.getMessage());
-    }
-}
+    public ResponseEntity<EligibilityResult> evaluateEligibility(
+            @PathVariable Long loanRequestId) {
 
+        EligibilityResult result =
+                eligibilityService.evaluateEligibility(loanRequestId);
+
+        return ResponseEntity.ok(result);
+    }
 
     /**
      * GET: Fetch eligibility result by loanRequestId
