@@ -1,5 +1,5 @@
 package com.example.demo.entity;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
