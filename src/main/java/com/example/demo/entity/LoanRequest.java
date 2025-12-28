@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-
-
 @Entity
 public class LoanRequest {
 
@@ -24,7 +22,6 @@ public class LoanRequest {
 
     private LocalDateTime submittedAt = LocalDateTime.now();
 
-    // ✅ Make enum public for tests
     public enum Status { PENDING, APPROVED, REJECTED }
 
     // Getters & Setters
@@ -39,6 +36,7 @@ public class LoanRequest {
 
     public Status getStatus() { return status; }
     public void setStatus(Status status) { this.status = status; }
+    public void setStatus(String status) { if(status != null) this.status = Status.valueOf(status.toUpperCase()); }
 
     public User getUser() { return user; }
     public void setUser(User user) { this.user = user; }

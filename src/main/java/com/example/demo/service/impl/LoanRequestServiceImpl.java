@@ -22,21 +22,10 @@ public class LoanRequestServiceImpl implements LoanRequestService {
 
     @Override
     public LoanRequest submitRequest(LoanRequest request) {
-        // Find and set the user
         User user = userRepo.findById(request.getUser().getId())
                 .orElseThrow(() -> new BadRequestException("User not found"));
+
         request.setUser(user);
-
-        // Ensure default status is set if null
-        if (request.getStatus() == null) {
-            request.setStatus(LoanRequest.Status.PENDING);
-        }
-
-        // Ensure submittedAt is set
-        if (request.getSubmittedAt() == null) {
-            request.setSubmittedAt(java.time.LocalDateTime.now());
-        }
-
         return repo.save(request);
     }
 
@@ -51,3 +40,4 @@ public class LoanRequestServiceImpl implements LoanRequestService {
                 .orElseThrow(() -> new BadRequestException("Loan request not found"));
     }
 }
+
