@@ -26,28 +26,28 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest authRequest) {
+    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest authRequest) {
 
-    User user = userRepository.findByEmail(authRequest.getEmail())
-            .orElseThrow(() -> new BadRequestException("Invalid email or password"));
+        User user = userRepository.findByEmail(authRequest.getEmail())
+                .orElseThrow(() -> new BadRequestException("Invalid email or password"));
 
-    BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-    if (!encoder.matches(authRequest.getPassword(), user.getPassword())) {
-        throw new BadRequestException("Invalid email or password");
+        if (!encoder.matches(authRequest.getPassword(), user.getPassword())) {
+            throw new BadRequestException("Invalid email or password");
+        }
+
+        String token = jwtUtil.generateToken(user);
+
+        // ✅ FIX HERE
+        AuthResponse response = new AuthResponse(
+                token,
+                user.getEmail(),
+                user.getRole()   // <-- STRING, NOT enum
+        );
+
+        return ResponseEntity.ok(response);
     }
-
-    String token = jwtUtil.generateToken(user);
-
-    AuthResponse response = new AuthResponse(
-            token,
-            user.getEmail(),
-            user.getRole().name()
-    );
-
-    return ResponseEntity.ok(response);
-}
-
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody User user) {
