@@ -20,16 +20,10 @@ public class FinancialProfileServiceImpl implements FinancialProfileService {
         this.repo = repo;
         this.userRepo = userRepo;
     }
-
-  @Override
+    @Override
 public FinancialProfile createOrUpdate(FinancialProfile profile, Long userId) {
-    if (profile == null) {
-        throw new BadRequestException("Profile cannot be null");
-    }
-
-    if (userId == null) {
-        throw new BadRequestException("User ID is required");
-    }
+    if (profile == null) throw new BadRequestException("Profile cannot be null");
+    if (userId == null) throw new BadRequestException("User ID is required");
 
     User user = userRepo.findById(userId)
             .orElseThrow(() -> new BadRequestException("User not found"));
@@ -46,6 +40,7 @@ public FinancialProfile createOrUpdate(FinancialProfile profile, Long userId) {
                 return repo.save(profile);
             });
 }
+
 
     @Override
     public FinancialProfile getByUserId(Long userId) {
