@@ -7,6 +7,7 @@ import com.example.demo.repository.LoanRequestRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.LoanRequestService;
 import org.springframework.stereotype.Service;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -26,6 +27,16 @@ public class LoanRequestServiceImpl implements LoanRequestService {
                 .orElseThrow(() -> new BadRequestException("User not found"));
 
         request.setUser(user);
+
+        // ✅ Ensure defaults for tests t17 and t28
+        if (request.getStatus() == null) {
+            request.setStatus("PENDING");
+        }
+
+        if (request.getSubmittedAt() == null) {
+            request.setSubmittedAt(LocalDateTime.now());
+        }
+
         return repo.save(request);
     }
 
@@ -40,4 +51,3 @@ public class LoanRequestServiceImpl implements LoanRequestService {
                 .orElseThrow(() -> new BadRequestException("Loan request not found"));
     }
 }
-

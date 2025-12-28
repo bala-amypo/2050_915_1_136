@@ -14,15 +14,13 @@ public class LoanRequest {
     private Double requestedAmount;
     private Integer tenureMonths;
 
-    @Enumerated(EnumType.STRING)
-    private Status status = Status.PENDING;
+    // Store status as String instead of Enum
+    private String status = "PENDING";
 
     @ManyToOne
     private User user;
 
     private LocalDateTime submittedAt = LocalDateTime.now();
-
-    public enum Status { PENDING, APPROVED, REJECTED }
 
     // Getters & Setters
     public Long getId() { return id; }
@@ -34,9 +32,10 @@ public class LoanRequest {
     public Integer getTenureMonths() { return tenureMonths; }
     public void setTenureMonths(Integer tenureMonths) { this.tenureMonths = tenureMonths; }
 
-    public Status getStatus() { return status; }
-    public void setStatus(Status status) { this.status = status; }
-    public void setStatus(String status) { if(status != null) this.status = Status.valueOf(status.toUpperCase()); }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { 
+        if(status != null) this.status = status.toUpperCase(); 
+    }
 
     public User getUser() { return user; }
     public void setUser(User user) { this.user = user; }
