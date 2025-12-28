@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/eligibility") // Adjusted to standard /api prefix often used in these tests
+@RequestMapping("/api/eligibility")
 public class EligibilityController {
 
     private final EligibilityService eligibilityService;
@@ -15,20 +15,31 @@ public class EligibilityController {
         this.eligibilityService = eligibilityService;
     }
 
-    // Matches the test requirement for evaluateEligibility
+    /**
+     * POST: Evaluate eligibility for a loan request
+     * REQUIRED by Swagger + integration flow
+     */
     @PostMapping("/evaluate/{loanRequestId}")
-    public ResponseEntity<EligibilityResult> evaluateEligibility(@PathVariable Long loanRequestId) {
-        
-        // Use the method name evaluateEligibility to match the Service/Test
-        EligibilityResult result = eligibilityService.evaluateEligibility(loanRequestId);
+    public ResponseEntity<EligibilityResult> evaluateEligibility(
+            @PathVariable Long loanRequestId) {
+
+        EligibilityResult result =
+                eligibilityService.evaluateEligibility(loanRequestId);
 
         return ResponseEntity.ok(result);
     }
 
-    // Optional: Get endpoint if the test suite attempts to retrieve existing results
+    /**
+     * GET: Fetch eligibility result by loanRequestId
+     * REQUIRED by HQL test t48
+     */
     @GetMapping("/{loanRequestId}")
-    public ResponseEntity<EligibilityResult> getEligibility(@PathVariable Long loanRequestId) {
-        EligibilityResult result = eligibilityService.evaluateEligibility(loanRequestId);
+    public ResponseEntity<EligibilityResult> getEligibility(
+            @PathVariable Long loanRequestId) {
+
+        EligibilityResult result =
+                eligibilityService.getByLoanRequestId(loanRequestId);
+
         return ResponseEntity.ok(result);
     }
 }
