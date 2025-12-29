@@ -19,7 +19,6 @@ public class LoanRequestController {
         this.service = service;
     }
 
-    // ✅ SUBMIT LOAN REQUEST
     @PostMapping
     public ResponseEntity<Map<String, Object>> submit(
             @RequestBody LoanRequest lr) {
@@ -33,7 +32,6 @@ public class LoanRequestController {
         return ResponseEntity.ok(response);
     }
 
-    // ✅ GET LOAN REQUESTS BY USER
     @GetMapping("/user/{id}")
     public ResponseEntity<Map<String, Object>> byUser(
             @PathVariable Long id) {

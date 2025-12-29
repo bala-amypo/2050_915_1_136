@@ -15,10 +15,7 @@ public class EligibilityController {
         this.eligibilityService = eligibilityService;
     }
 
-    /**
-     * POST: Evaluate eligibility for a loan request
-     * REQUIRED by Swagger + integration flow
-     */
+   
     @PostMapping("/evaluate/{loanRequestId}")
     public ResponseEntity<EligibilityResult> evaluateEligibility(
             @PathVariable Long loanRequestId) {
@@ -29,10 +26,7 @@ public class EligibilityController {
         return ResponseEntity.ok(result);
     }
 
-    /**
-     * GET: Fetch eligibility result by loanRequestId
-     * REQUIRED by HQL test t48
-     */
+   
     @GetMapping("/{loanRequestId}")
     public ResponseEntity<EligibilityResult> getEligibility(
             @PathVariable Long loanRequestId) {

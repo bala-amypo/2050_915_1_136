@@ -8,9 +8,9 @@ public class LoanDtos {
 
         private Double requestedAmount;
         private Integer tenureMonths;
-        private User user; // Required by service
+        private User user; 
 
-        // ---------- Getters & Setters ----------
+
 
         public Double getRequestedAmount() {
             return requestedAmount;

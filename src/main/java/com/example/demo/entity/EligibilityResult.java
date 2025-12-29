@@ -17,7 +17,7 @@ public class EligibilityResult {
     private Boolean eligible;
     private Double disposableIncome;
     
-    // This is the actual database column
+    
     private Double maxEligibleAmount = 0.0;
 
     private LocalDateTime createdAt = LocalDateTime.now();
@@ -29,7 +29,7 @@ public class EligibilityResult {
         if (this.maxEligibleAmount == null) this.maxEligibleAmount = 0.0;
     }
 
-    /* ---------- Standard Getters & Setters ---------- */
+  
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -46,9 +46,8 @@ public class EligibilityResult {
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 
-    /* ---------- The "Bridge" Methods for Test and Service Compatibility ---------- */
 
-    // 1. Matches the TEST SUITE requirements (Fixes your current build error)
+    
     public Double getMaxEligibleAmount() { 
         return maxEligibleAmount; 
     }
@@ -56,7 +55,7 @@ public class EligibilityResult {
         this.maxEligibleAmount = maxEligibleAmount; 
     }
 
-    // 2. Matches the SERVICE IMPL requirements (Prevents the previous build error)
+    
     public void setMaxEmiPossible(Double maxEmiPossible) { 
         this.maxEligibleAmount = maxEmiPossible; 
     }

@@ -39,11 +39,11 @@ public class AuthController {
 
         String token = jwtUtil.generateToken(user);
 
-        // ✅ FIX HERE
+       
         AuthResponse response = new AuthResponse(
                 token,
                 user.getEmail(),
-                user.getRole()   // <-- STRING, NOT enum
+                user.getRole()  
         );
 
         return ResponseEntity.ok(response);
