@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
             throw new BadRequestException("Email already exists");
         }
 
-        // ✅ REQUIRED FOR T11
+        
         user.setRole(User.Role.CUSTOMER.name());
 
         user.setPassword(encoder.encode(user.getPassword()));
