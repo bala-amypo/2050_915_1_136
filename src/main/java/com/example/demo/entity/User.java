@@ -22,13 +22,12 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    // ✅ MUST BE STRING FOR T11
     private String role;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    // Enum kept ONLY for .name() usage
+ 
     public enum Role {
         CUSTOMER, ADMIN
     }
@@ -44,7 +43,6 @@ public class User {
         updatedAt = LocalDateTime.now();
     }
 
-    // -------- GETTERS & SETTERS --------
 
     public Long getId() {
         return id;
@@ -78,7 +76,7 @@ public class User {
         this.password = password;
     }
 
-    // ✅ T11 EXPECTS STRING
+    
     public String getRole() {
         return role;
     }
@@ -103,7 +101,6 @@ public class User {
         this.updatedAt = updatedAt;
     }
 
-    // -------- equals & hashCode --------
 
     @Override
     public boolean equals(Object o) {

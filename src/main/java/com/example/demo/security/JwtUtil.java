@@ -23,7 +23,7 @@ public class JwtUtil {
     public String generateToken(User user) {
         return Jwts.builder()
                 .setSubject(user.getEmail())
-                // ✅ FIX: role is STRING
+                
                 .claim("role", user.getRole() != null ? user.getRole() : "CUSTOMER")
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))

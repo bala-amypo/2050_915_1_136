@@ -10,6 +10,6 @@ public interface FinancialProfileRepository
 
     Optional<FinancialProfile> findByUserId(Long userId);
 
-    // 🔥 REQUIRED for tests
+    
     Optional<FinancialProfile> findTopByUserIdOrderByCreatedAtDesc(Long userId);
 }
